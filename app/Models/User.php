@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
+
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    public $incrementing = false;
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
+    
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +29,17 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'password_hint'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->id = Str::uuid();
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -39,7 +57,33 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'name' => 'string',
+        'email' => 'string',
+        'password' => 'string',
+        'password_hint' => 'string',
     ];
+
+    // Owner method
+    public function project() {
+        return $this->hasMany(Project::class);
+    }
+    
+    //A User can be a member of many Projects through the project_members table
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');
+    }
+
+    public function tasks() {
+        return $this->hasMany(Task::class);
+    }
+
+    public function receivedInvites()
+    {
+        return $this->hasMany(Invitation::class, 'invited_user_id');
+    }
+
+
+
+
 }

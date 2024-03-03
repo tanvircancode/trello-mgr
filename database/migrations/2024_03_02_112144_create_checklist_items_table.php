@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('checklist_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('checklist_id');
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('password_hint');
-            $table->rememberToken();
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
+
+            $table->foreign('checklist_id')
+            ->references('id')->on('checklists')
+            ->onDelete('cascade');
         });
     }
 
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('checklist_items');
     }
 };

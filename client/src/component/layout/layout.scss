@@ -1,0 +1,95 @@
+:root {
+    --nav-container-width: 42vw; 
+  }
+  
+  @media (max-width: 768px) {
+    :root {
+      --nav-container-width: 60vw; 
+    }
+  }
+  @media (max-width: 1650px) {
+    :root {
+      --nav-container-width: 40vw; 
+    }
+  }
+  @media (max-width: 1390px) {
+    :root {
+      --nav-container-width: 45vw; 
+    }
+  }
+  @media (max-width: 1200px) {
+    :root {
+      --nav-container-width: 52vw; 
+    }
+  }
+  @media (max-width: 991px) {
+    :root {
+      --nav-container-width: 64vw; 
+    }
+  }
+  @media (max-width: 768px) {
+    :root {
+      --nav-container-width: 80vw; 
+    }
+  }
+
+.is-blur {
+    opacity: 0.5;
+}
+.nav-item.active {
+    font-weight: bold;
+}
+.xxx{
+    padding: 0.2rem calc(-500px + var(--nav-container-width)) !important;
+}
+.logout-custom {
+  @media (min-width: 991px) {
+    position: absolute;
+    right: 0 !important;
+  }
+   
+}
+.circular-button {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;
+    border: none;
+    background-color: #7667b8; 
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .circular-button:hover {
+    background-color: #0056b3; 
+  }
+  .signout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #333; 
+    font-size: 16px;
+    position: relative;
+  }
+  
+  .signout-icon {
+    margin-right: 5px; 
+    font-size: 24px;
+  }
+  
+  .logout-text {
+    position: absolute; 
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%); 
+    opacity: 0; 
+    transition: opacity 0.3s;
+  }
+  
+  .signout-button:hover .logout-text {
+    opacity: 1;
+  }
+  
