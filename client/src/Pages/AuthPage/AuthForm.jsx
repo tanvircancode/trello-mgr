@@ -5,21 +5,23 @@ import { BASE_URL, REGISTER_TOKEN } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
-import "./login.scss";
+import "./auth.scss";
 
 const AuthForm = ({ mode }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordHint, setPasswordHint] = useState("");
 
     const handleSubmit = async (e, mode) => {
+        setLoading(true);
         e.preventDefault();
-    }
-      
+        setLoading(false);
+    };
 
     useEffect(() => {
         setEmail("");
@@ -93,13 +95,19 @@ const AuthForm = ({ mode }) => {
                     </div>
                 )}
             </div>
-            <button
-                className={`button button--primary full-width ${
-                    mode === "login" ? "mt-2" : " mt-4"
-                }`}
+            <button  
                 type="submit"
+                className={`button button--primary full-width ${
+                    mode === "login" ? "mt-2" : "mt-4"
+                } ${loading ? "disabled" : ""}`}
+                disabled={loading}
+                style={{ opacity: loading ? 0.5 : 1 }}
             >
-                {mode === "login" ? "Log In" : "Sign Up"}
+                {loading
+                    ? "Loading..."
+                    : mode === "login"
+                    ? "Log In"
+                    : "Sign Up"}
             </button>
         </form>
     );

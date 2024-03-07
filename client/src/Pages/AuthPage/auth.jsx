@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./login.scss";
+import "./auth.scss";
 import AuthForm from "./AuthForm";
 
 const Auth = () => {

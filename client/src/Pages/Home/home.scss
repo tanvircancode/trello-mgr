@@ -1,0 +1,146 @@
+.maxWidthContainer {
+    max-width: 100%;
+}
+.hr-line {
+    width: 85%;
+    margin: 7px 0px;
+}
+.logo-div-bg{
+    background-color: #8FD1F9;
+}
+.trello-logo {
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+    background-color: #285746; /* Trello blue */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+
+.trello-logo::before,
+.trello-logo::after {
+    content: "";
+    position: absolute;
+    background-color: #fff; /* White */
+}
+
+.trello-logo::before {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+}
+
+.trello-logo::after {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 2px;
+}
+.custom-sm-icon{
+    margin-right: 8px;
+    color: #8C9BAB;
+}
+.custom-sm-trash-icon{
+   
+    color: #ca3521;
+}
+.sidebar-text{
+    font-size: 14px;
+}
+.icon-color{
+    border-radius: 2px;
+    opacity: 0.7;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+.no-left-padding {
+    padding-left: 0 !important;
+}
+.no-border{
+    border: none;
+}
+.accordion-button:not(.collapsed) {
+    background-color: transparent;
+}
+
+.card {
+    @media (max-width: 991px) and (min-width: 768px) {
+        width: 15rem;
+    }
+}
+.active-menu {
+    color: rgb(54 54 63 / 84%);
+    font-weight: bold;
+}
+
+.active-menu {
+    color: #8fd1f9;
+}
+.custom-item-list {
+    @media (max-width: 768px) {
+        margin-top: 30px !important;
+    }
+}
+.add-folder-text {
+    @media (max-width: 1204px) and (min-width: 768px) {
+        margin-right: 56px !important;
+    }
+}
+.add-org-text {
+    @media (max-width: 1204px) and (min-width: 768px) {
+        margin-right: 10px !important;
+    }
+}
+
+.custom-modal-bg {
+    background: linear-gradient(0.25turn, #bedeef, #bbdf9f, #8ad6e9);
+}
+.custom-modal-body {
+    background-color: #f0faf2;
+}
+.modal-save {
+    padding: 6px 8px;
+    border-radius: 0.5em;
+    background: linear-gradient(0.25turn, #7acdf7, #7fb358, #659fad);
+    color: white;
+    border: none;
+}
+.modal-cancel {
+    padding: 6px 8px;
+    border-radius: 0.5em;
+    color: white;
+    border: none;
+    background-image: linear-gradient(
+        to right,
+        #eba5a5 0%,
+        #ff7c50 51%,
+        #b79d79 100%
+    );
+}
+.modal-yes {
+    padding: 5px 15px;
+    margin-right: 10px;
+    border-radius: 0.5em;
+    background: linear-gradient(0.25turn, #a9bd84, #7ebb50, #5ebad1);
+    color: white;
+    border: none;
+}
+.modal-no {
+    padding: 5px 15px;
+    border-radius: 0.5em;
+    color: white;
+    border: none;
+    background-image: linear-gradient(
+        to right,
+        #f3be9f 0%,
+        #e55f32 51%,
+        #d59030 100%
+    );
+}

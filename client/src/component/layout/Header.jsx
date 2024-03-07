@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { BsBoxArrowRight } from "react-icons/bs";
+import { BsBoxArrowRight , BsFillPersonPlusFill  } from "react-icons/bs";
 import {  useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate , useLocation} from "react-router-dom";
@@ -10,13 +10,17 @@ import axios from "axios";
 import "./layout.scss";
 
 const Header = () => {
+    const [isSharing, setIsSharing] = useState(false);
     const [activeLink, setActiveLink] = useState("");
+
 
     const navigate = useNavigate();
     const location = useLocation();
 
     const user = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
+    const blur = useSelector((state) => state.makeBlur);
+
     
 
 
@@ -70,9 +74,9 @@ const Header = () => {
 
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary navbar-custom">
-            <div className="container-fluid">
+            <div className={`container-fluid ${blur ? "is-blur disable-pointer-events" : ""}`}> 
                 <a className="navbar-brand" href="#">
-                    Vault Manager
+                    Trello
                 </a>
                 <button
                     className="navbar-toggler "
@@ -99,15 +103,18 @@ const Header = () => {
                                 Home
                             </a>
                         </li>
-                        <li className={`nav-item ${activeLink==="/tools" ? "active" : ''}`}>
+                        {/* <li className={`nav-item ${activeLink==="/tools" ? "active" : ''}`}>
                             <a className="nav-link" onClick={() => handleNavLinkClick("/tools")}>
                                 Tools
                             </a>
-                        </li>
+                        </li> */}
                         
                     </ul>
                     <div className="logout-custom d-flex ">
-                       {token && <button className="circular-button">{initials}</button>} 
+
+                   
+                       {/* {token && <button className="circular-button">{initials}</button>}  */}
+                       Tanvir
                         <button
                             onClick={handleLogout}
                             className="signout-button"
