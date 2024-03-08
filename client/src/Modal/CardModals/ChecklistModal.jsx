@@ -62,7 +62,7 @@ import { BlockPicker } from "react-color";
               
                     <button
                         type="button"
-                        className="btn btn-primary card-button d-flex align-items-center label-create justify-content-center"
+                        className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
                         onClick={() => handleAddChecklist()}
                     >
                       <span>Add</span>

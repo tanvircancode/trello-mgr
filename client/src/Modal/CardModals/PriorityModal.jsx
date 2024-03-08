@@ -6,9 +6,22 @@ import { useState, useEffect } from "react";
 import PriorityEditModal from "./PriorityEditModal";
 
 const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
-    const [openEditPriorityModal, setOpenEditPriorityModal] = useState(false);
 
-    const cancelModal = () => {};
+  const [priorityTitle, setPriorityTitle] = useState("");
+
+    const [openEditPriorityModal, setOpenEditPriorityModal] = useState(false);
+    const dispatch = useDispatch();
+
+
+    const cancelModal = () => {
+      setOpenPriorityModal(false);
+      dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+
+    };
+
+    const handleEditPriority = () => {
+      setOpenEditPriorityModal(true);
+    };
 
     return (
         <div>
@@ -57,7 +70,7 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                                     </span>
                                     <BsPencil
                                         className="edit-priority-pencil"
-                                        // onClick={() => handleEditLabel()}
+                                        onClick={() => handleEditPriority()}
                                     />
                                     <BsTrash
                                         className="delete-priority-trash"
@@ -72,10 +85,12 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                                     type="text"
                                     className="form-control w-100 priority-input"
                                     placeholder="Add item..."
+                                    onChange={(e) => setPriorityTitle(e.target.value)}
                                 />
                                 <button
                                     className="btn btn-primary priority-add"
                                     type="button"
+                                    disabled={!priorityTitle}
                                 >
                                     Add
                                 </button>

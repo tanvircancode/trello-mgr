@@ -146,7 +146,7 @@ const LabelModal = ({
                             ) : (
                                 <button
                                     type="button"
-                                    className="btn btn-primary label-create"
+                                    className="btn btn-primary create-button"
                                     onClick={() => handleCreateLabel()}
                                 >
                                     <span>Create label</span>

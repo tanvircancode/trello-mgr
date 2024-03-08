@@ -22,7 +22,7 @@ const CardModalButton = () => {
     const [isEditLabel, setIsEditLabel] = useState(false);
     const [openChecklistModal, setOpenChecklistModal] = useState(false);
     const [openPriorityModal, setOpenPriorityModal] = useState(false);
-    
+
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
 
@@ -84,31 +84,37 @@ const CardModalButton = () => {
                     <BsMegaphoneFill className="card-sm-icon" /> Priority
                 </button>
             </div>
-            <MemberModal
-                openMemberModal={openMemberModal}
-                setOpenMemberModal={setOpenMemberModal}
-            />
-            <LabelModal
+
+            {openMemberModal && (
+                <MemberModal
+                    openMemberModal={openMemberModal}
+                    setOpenMemberModal={setOpenMemberModal}
+                />
+            )}
+
+          { openLabelModal && <LabelModal
                 openLabelModal={openLabelModal}
                 setOpenLabelModal={setOpenLabelModal}
                 isEditLabel={isEditLabel}
                 setIsEditLabel={setIsEditLabel}
                 openEditLabelModal={openEditLabelModal}
                 setOpenEditLabelModal={setOpenEditLabelModal}
-            />
-            <EditLabel
+            />}
+
+            {openEditLabelModal && <EditLabel
                 openEditLabelModal={openEditLabelModal}
                 setOpenEditLabelModal={setOpenEditLabelModal}
-            />
-            <ChecklistModal
+            />}
+
+            {openChecklistModal && <ChecklistModal
                 openChecklistModal={openChecklistModal}
                 setOpenChecklistModal={setOpenChecklistModal}
-            />
-            <PriorityModal
+            />}
+
+            {openPriorityModal && <PriorityModal
                 openPriorityModal={openPriorityModal}
                 setOpenPriorityModal={setOpenPriorityModal}
-               
-            />
+            />}
         </div>
     );
 };

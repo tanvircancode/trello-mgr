@@ -100,8 +100,8 @@
     line-height: 20px;
     font-weight: 500;
     cursor: pointer;
-    padding: 5px 6px;
-    background: #4787ed !important;
+    padding: 10px 14px;
+    background: #5596ff !important;
     box-shadow: none;
     border: none;
     color: #ffffff;
@@ -187,9 +187,10 @@
     font-weight: 400;
     border-radius: 3px;
     cursor: pointer;
-    padding: 4px;
+    padding: 4px 10px;
+    background: #46ab89;
     border: none;
-    color: #dddada;
+    color: #ffffff;
     font-weight: 500;
 }
 
@@ -247,7 +248,7 @@
     font-weight: 500;
 }
 
-.label-create {
+.create-button {
     width: 100%;
     font-size: 14px;
     margin-top: 10px;
@@ -255,7 +256,7 @@
     border-radius: 3px;
     cursor: pointer;
     padding: 3px;
-    background-color: #2e6ccf;
+    background-color: #5596ff;
     border: none;
     color: #ffffff;
     font-weight: 500;
@@ -267,17 +268,17 @@
     font-weight: 400;
     border-radius: 3px;
     cursor: pointer;
-    padding: 3px;
+    padding: 5px 8px;
 
     border: none;
-    color: #dddada;
+    color: #ffffff;
     font-weight: 500;
 }
 .label-save {
     background-color: #4d90fe;
 }
 .label-delete {
-    background-color: #d34350f0;
+    background-color: #ff5656d9;
 }
 .label-edit-button {
     justify-content: space-between;

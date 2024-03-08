@@ -85,7 +85,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
 
                             <button
                                 type="button"
-                                className="btn btn-primary card-button d-flex align-items-center label-create justify-content-center"
+                                className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
                                 onClick={() => handleCreateLabel()}
                             >
                                 <span>Create label</span>

@@ -4,6 +4,7 @@ import "./cardmodal.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setMakeCardModalBlur } from "../../store";
 import { useState, useEffect } from "react";
+import { BlockPicker } from "react-color";
 
 
 
@@ -11,9 +12,34 @@ const PriorityEditModal = ({
     openEditPriorityModal,
     setOpenEditPriorityModal,
 }) => {
-    const cancelModal = () => {
-       
+
+    const [labelColor, setLabelColor] = useState("#f44336");
+    const handleChangeComplete = (color) => {
+        setLabelColor(color.hex);
     };
+
+    var colors = [
+        "#f44336",
+        "#e91e63",
+        "#9c27b0",
+        "#673ab7",
+        "#3f51b5",
+        "#2196f3",
+        "#03a9f4",
+        "#424242",
+        "#1F2022",
+        "#4b6387",
+        "#C02942",
+        "#007BFF",
+        "#009688",
+        "#795548",
+        "#607d8b",
+    ];
+
+    const cancelModal = () => {
+        setOpenEditPriorityModal(false);
+    };
+
     return (
         <div>
             <div>
@@ -36,7 +62,7 @@ const PriorityEditModal = ({
                                 className="modal-title fs-6 text-center"
                                 style={{ margin: "0 auto" }}
                             >
-                                Labels
+                                Priority
                             </h1>
                             <button
                                 type="button"
@@ -47,34 +73,34 @@ const PriorityEditModal = ({
                                 onClick={cancelModal}
                             ></button>
                         </div>
-
                         <div className="modal-body">
                             <div className="label-title mb-3">
-                                <label className="form-label">Labels</label>
-                                <div className="d-flex align-items-center gap-3">
-                                   
-
-                                    <span
-                                        className="styled-span w-100"
-                                        htmlFor="flexCheckChecked"
-                                    >
-                                        Doing
-                                    </span>
-
-                                    <BsPencil
-                                        className="edit-label-pencil"
-                                        onClick={() => handleEditLabel()}
-                                    />
-                                </div>
+                                <label className="form-label">Title</label>
+                                <input
+                                    type="text"
+                                    className="form-control label-input"
+                                />
                             </div>
 
-                            <button
-                                type="button"
-                                className="btn btn-primary card-button d-flex align-items-center label-create justify-content-center"
-                                onClick={() => handleCreateLabel()}
-                            >
-                                <span>Create label</span>
-                            </button>
+                            <BlockPicker
+                                colors={colors}
+                                color={labelColor}
+                                onChangeComplete={handleChangeComplete}
+                            />
+
+                            
+
+                           
+                               
+                           
+                                <button
+                                    type="button"
+                                    className="btn btn-primary create-button mt-3"
+                                    // onClick={() => handleCreateLabel()}
+                                >
+                                    <span>Update</span>
+                                </button>
+                           
                         </div>
                     </div>
                 </div>

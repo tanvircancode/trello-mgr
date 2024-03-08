@@ -1,0 +1,56 @@
+
+
+
+.member-modal-header{
+    border-bottom:none;
+}
+
+
+
+
+.search-member input {
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-weight: 500;
+    width: 94%;
+    margin: 0 auto 15px;
+    font-size: 13px;
+    display: block;
+}
+
+.member-name {
+   
+    font-weight: 500;
+   
+    font-size: 14px;
+
+}
+.member-email {
+   
+    font-weight: 500;
+   
+    font-size: 11px;
+
+}
+.member-details-row{
+    padding: 0 16px;
+}
+.add-member-button{
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 8px !important;
+    background: #c1dd69 !important;
+    border: none;
+    color: #262020 !important;
+    border-radius: 3px;
+}
+.search-member button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+
