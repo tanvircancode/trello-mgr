@@ -5,6 +5,8 @@ namespace App\Listeners;
 use Illuminate\Auth\Events\Registered;
 use App\Models\Priority;
 use App\Models\Task;
+use App\Models\User;
+
 
 
 use Illuminate\Contracts\Queue\ShouldQueue;

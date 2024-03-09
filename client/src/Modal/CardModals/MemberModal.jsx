@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setMakeBlur, setMakeCardModalBlur } from "../../store";
 import { BsPersonAdd, BsPersonDash } from "react-icons/bs";
@@ -9,9 +9,8 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
 
     const cancelModal = () => {
         setOpenMemberModal(false);
-        
-        dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
 
+        dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
     };
 
     return (
@@ -22,7 +21,6 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
             style={{
                 display: openMemberModal ? "block" : "none",
                 marginTop: "5em",
-              
             }}
         >
             <div className="modal-dialog modal-sm custom-modal-width">

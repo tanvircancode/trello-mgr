@@ -15,9 +15,14 @@
     font-weight: 600;
     font-size: 14px;
 }
+.board-title-input{
+    padding: 0.2rem 0.5rem;
+    font-size: 14px;
+    font-weight: 500;
+}
 .parent-modal-blur {
-    opacity: 0.5; /* Adjust opacity as needed */
-    pointer-events: none; /* Disable pointer events on the parent modal */
+    opacity: 0.5; 
+    pointer-events: none; 
 }
 .card-detail-header {
     font-size: 12px;

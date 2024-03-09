@@ -4,9 +4,9 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-// import { setLogout } from "../../store";
-// import { toast } from "react-toastify";
-// import { BASE_URL } from "../../config";
+import { setLogout } from "../../store";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../config";
 import "./layout.scss";
 
 const Header = () => {
@@ -29,25 +29,25 @@ const Header = () => {
         .join("");
 
     const handleLogout = async () => {
-        await axios;
-        // .get(`${BASE_URL}/api/logout`, {
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //     },
-        // })
-        // .then((res) => {
-        //     console.log(res);
-        //     if (res.data.status) {
-        //         localStorage.removeItem("token");
-        //         localStorage.removeItem("user_id");
-        //         toast.success(res.data.message);
-        //         dispatch(setLogout());
-        //         navigate("/login");
-        //     }
-        // })
-        // .catch((error) => {
-        //     toast.error("Server is not responding");
-        // });
+        await axios
+        .get(`${BASE_URL}/api/logout`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then((res) => {
+            console.log(res);
+            if (res.data.status) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user_id");
+                toast.success(res.data.message);
+                dispatch(setLogout());
+                navigate("/login");
+            }
+        })
+        .catch((error) => {
+            toast.error("Server is not responding");
+        });
     };
 
     useEffect(() => {
@@ -57,11 +57,7 @@ const Header = () => {
         setActiveLink(location.pathname);
     }, [user, location.pathname]);
 
-    // let loggedUserName = "";
-
-    // if (userData !== null) {
-    //     loggedUserName = userData.name;
-    // }
+   
 
     const handleNavLinkClick = (path) => {
         setActiveLink(path);
@@ -113,14 +109,14 @@ const Header = () => {
                             </a>
                         </li> */}
                     </ul>
-                    <div className="logout-custom d-flex align-items-center">
-                        {/* {token && <button className="circular-button">{initials}</button>}  */}
-                        Tanvir
+                    <div className="logout-custom d-flex align-items-center gap-2">
+                        {token && <button className="circular-button">{initials}</button>} 
+                        
                          <button
-                            onClick={handleLogout}
+                            
                             className="signout-button"
                         > 
-                             <span className="logout-text">Logout</span>  
+                             <span className="logout-text" onClick={handleLogout}>Logout</span>  
                              <BsBoxArrowRight className="signout-icon" /> 
                             
                         </button> 
@@ -134,13 +130,13 @@ const Header = () => {
                                 >
                                    
                                 </button>
-                                <ul className="dropdown-menu dropdown-menu-dark p-0 custom-dropdown-menu">
-                                    <li>
+                                <ul className="dropdown-menu dropdown-menu-dark p-0 mt-3 custom-dropdown-menu">
+                                    <li onClick={handleLogout}>
                                         <a className="dropdown-item" href="#">
                                             Logout
                                         </a>
                                     </li>
-                                    
+                    
                                 </ul>
                             </li>
                         </ul>

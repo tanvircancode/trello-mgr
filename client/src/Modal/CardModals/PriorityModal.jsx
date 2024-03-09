@@ -1,26 +1,23 @@
 import { BsPencil, BsTrash } from "react-icons/bs";
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setMakeCardModalBlur } from "../../store";
 import { useState, useEffect } from "react";
 import PriorityEditModal from "./PriorityEditModal";
 
 const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
-
-  const [priorityTitle, setPriorityTitle] = useState("");
+    const [priorityTitle, setPriorityTitle] = useState("");
 
     const [openEditPriorityModal, setOpenEditPriorityModal] = useState(false);
     const dispatch = useDispatch();
 
-
     const cancelModal = () => {
-      setOpenPriorityModal(false);
-      dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
-
+        setOpenPriorityModal(false);
+        dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
     };
 
     const handleEditPriority = () => {
-      setOpenEditPriorityModal(true);
+        setOpenEditPriorityModal(true);
     };
 
     return (
@@ -85,7 +82,9 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                                     type="text"
                                     className="form-control w-100 priority-input"
                                     placeholder="Add item..."
-                                    onChange={(e) => setPriorityTitle(e.target.value)}
+                                    onChange={(e) =>
+                                        setPriorityTitle(e.target.value)
+                                    }
                                 />
                                 <button
                                     className="btn btn-primary priority-add"

@@ -1,4 +1,4 @@
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useState, useEffect } from "react";
 
 import {
@@ -92,29 +92,37 @@ const CardModalButton = () => {
                 />
             )}
 
-          { openLabelModal && <LabelModal
-                openLabelModal={openLabelModal}
-                setOpenLabelModal={setOpenLabelModal}
-                isEditLabel={isEditLabel}
-                setIsEditLabel={setIsEditLabel}
-                openEditLabelModal={openEditLabelModal}
-                setOpenEditLabelModal={setOpenEditLabelModal}
-            />}
+            {openLabelModal && (
+                <LabelModal
+                    openLabelModal={openLabelModal}
+                    setOpenLabelModal={setOpenLabelModal}
+                    isEditLabel={isEditLabel}
+                    setIsEditLabel={setIsEditLabel}
+                    openEditLabelModal={openEditLabelModal}
+                    setOpenEditLabelModal={setOpenEditLabelModal}
+                />
+            )}
 
-            {openEditLabelModal && <EditLabel
-                openEditLabelModal={openEditLabelModal}
-                setOpenEditLabelModal={setOpenEditLabelModal}
-            />}
+            {openEditLabelModal && (
+                <EditLabel
+                    openEditLabelModal={openEditLabelModal}
+                    setOpenEditLabelModal={setOpenEditLabelModal}
+                />
+            )}
 
-            {openChecklistModal && <ChecklistModal
-                openChecklistModal={openChecklistModal}
-                setOpenChecklistModal={setOpenChecklistModal}
-            />}
+            {openChecklistModal && (
+                <ChecklistModal
+                    openChecklistModal={openChecklistModal}
+                    setOpenChecklistModal={setOpenChecklistModal}
+                />
+            )}
 
-            {openPriorityModal && <PriorityModal
-                openPriorityModal={openPriorityModal}
-                setOpenPriorityModal={setOpenPriorityModal}
-            />}
+            {openPriorityModal && (
+                <PriorityModal
+                    openPriorityModal={openPriorityModal}
+                    setOpenPriorityModal={setOpenPriorityModal}
+                />
+            )}
         </div>
     );
 };

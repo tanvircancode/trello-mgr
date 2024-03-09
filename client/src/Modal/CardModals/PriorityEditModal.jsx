@@ -1,18 +1,13 @@
-
-import { BsPencil } from "react-icons/bs";
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeCardModalBlur } from "../../store";
+
 import { useState, useEffect } from "react";
 import { BlockPicker } from "react-color";
-
-
 
 const PriorityEditModal = ({
     openEditPriorityModal,
     setOpenEditPriorityModal,
 }) => {
-
     const [labelColor, setLabelColor] = useState("#f44336");
     const handleChangeComplete = (color) => {
         setLabelColor(color.hex);
@@ -88,19 +83,13 @@ const PriorityEditModal = ({
                                 onChangeComplete={handleChangeComplete}
                             />
 
-                            
-
-                           
-                               
-                           
-                                <button
-                                    type="button"
-                                    className="btn btn-primary create-button mt-3"
-                                    // onClick={() => handleCreateLabel()}
-                                >
-                                    <span>Update</span>
-                                </button>
-                           
+                            <button
+                                type="button"
+                                className="btn btn-primary create-button mt-3"
+                                // onClick={() => handleCreateLabel()}
+                            >
+                                <span>Update</span>
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useSelector, useDispatch } from "react-redux";
 import {
     BsBarChartSteps,
@@ -79,7 +79,9 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                             <div className="row mb-2">
                                 <div
                                     className={`col-md-12 col-sm-12 col-lg-9 d-flex flex-column ${
-                                        doBlur ? "is-blur disable-pointer-events" : ""
+                                        doBlur
+                                            ? "is-blur disable-pointer-events"
+                                            : ""
                                     }`}
                                 >
                                     <div className="card-detail">

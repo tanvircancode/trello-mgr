@@ -55,7 +55,7 @@ const BoardList = () => {
                 </div>
             </div>
 
-            <div className="card-list d-flex flex-wrap">
+            <div >
                 {/* make a loop */}
                 <Card />
             </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./cardmodal.scss";
+import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { setMakeCardModalBlur } from "../../store";
 import { BlockPicker } from "react-color";
@@ -11,7 +11,7 @@ const LabelModal = ({
     isEditLabel,
     setIsEditLabel,
     openEditLabelModal,
-    setOpenEditLabelModal
+    setOpenEditLabelModal,
 }) => {
     const [labelColor, setLabelColor] = useState("#f44336");
     const dispatch = useDispatch();

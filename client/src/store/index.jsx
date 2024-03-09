@@ -4,13 +4,17 @@ const initialState = {
     user: null,
     token: null,
     setDotModal:false,
-    showTextarea:{ type: null, value: null } ,//confuse
     makeBlur: false,
     makeCardModalBlur:false,
+    showTextarea:{ type: null, value: null } ,//confuse
+    projects: [],
+
+
 };
 
-export const vaultSlice = createSlice({
-    name: "vault",
+export const trelloSlice = createSlice({
+
+    name: "trello",
     initialState,
     reducers: {
         setLogin: (state, action) => {
@@ -20,12 +24,9 @@ export const vaultSlice = createSlice({
         setLogout: (state) => {
             state.user = null;
             state.token = null;
-            state.folders = [];
-            state.organizations = [];
-            state.fetchSingleItem = null;
-            state.selectedItems = [];
+           
         },
-        //start
+        //start trello 
         
         setShowTextarea: (state, action) => {
             if (state.showTextarea === null || state.showTextarea === undefined) {
@@ -40,9 +41,11 @@ export const vaultSlice = createSlice({
         setMakeCardModalBlur: (state, action) => {
             state.makeCardModalBlur = action.payload.makeCardModalBlur;
         },
-        setFolders: (state, action) => {
-            state.folders = action.payload.folders;
+        setProjects: (state, action) => {
+            state.projects = action.payload.projects;
         },
+        
+        // end trello
         setOrgAndFolderLoading: (state, action) => {
             state.orgAndFolderLoading = action.payload.orgAndFolderLoading;
         },
@@ -60,12 +63,8 @@ export const vaultSlice = createSlice({
         setReloadPage: (state, action) => {
             state.reloadPage = action.payload.reloadPage;
         },
-        setMakeBlur: (state, action) => {
-            state.makeBlur = action.payload.makeBlur;
-        },
-        setDotModal: (state, action) => {
-            state.dotModal = action.payload.dotModal;
-        },
+       
+        
 
         setSelectedItems: (state, action) => {
             if (action.payload === null) {
@@ -107,7 +106,7 @@ export const vaultSlice = createSlice({
 export const {
     setLogin,
     setLogout,
-    setFolders,
+    setProjects,
     setOrganizations,
     setSelectMenu,
     setOrgAndFolderLoading,
@@ -119,6 +118,6 @@ export const {
     setDotModal,
     setSelectedItems,
     setFetchSingleItem,
-} = vaultSlice.actions;
+} = trelloSlice.actions;
 
-export default vaultSlice.reducer;
+export default trelloSlice.reducer;

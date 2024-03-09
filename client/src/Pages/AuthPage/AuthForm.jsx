@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-// import { toast } from "react-toastify";
-// import axios from "axios";
+import { toast } from "react-toastify";
+import axios from "axios";
 import { BASE_URL, REGISTER_TOKEN } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import "./auth.scss";
+import { setLogin } from "../../store";
 
 const AuthForm = ({ mode }) => {
     const navigate = useNavigate();
@@ -20,6 +21,102 @@ const AuthForm = ({ mode }) => {
     const handleSubmit = async (e, mode) => {
         setLoading(true);
         e.preventDefault();
+
+        if (mode === "login") {
+            if (email.length === 0) {
+                toast.error("Email is Required");
+            } else if (password.length === 0 || password.length > 255) {
+                toast.error("Invalid Input For Password");
+            } else {
+                await axios
+                    .post(
+                        `${BASE_URL}/api/login`,
+                        {
+                            email,
+                            password,
+                        },
+                        {
+                            headers: {
+                                "Content-type": "application/json",
+                            },
+                        }
+                    )
+                    .then((res) => {
+                        //    console.log(res)
+                        if (res.data.status && res.data.token) {
+                            toast.success("Logged in Successfully");
+                            dispatch(
+                                setLogin({
+                                    user: res.data.user,
+                                    token: res.data.token,
+                                })
+                            );
+                            localStorage.setItem("token", res.data.token);
+                            localStorage.setItem("user_id", res.data.user.id);
+
+                            navigate("/");
+                        } else {
+                            toast.error("Server is not responding");
+                        }
+                    })
+                    .catch((error) => {
+                        if (
+                            error?.response &&
+                            error.response?.status &&
+                            error.response?.data
+                        ) {
+                            toast.error(error.response.data.message);
+                        } else {
+                            toast.error("Server is not responding");
+                        }
+                    });
+            }
+        } else {
+            if (name.length === 0) {
+                toast.error("Name is Required");
+            } else if (email.length === 0) {
+                toast.error("Email is Required");
+            } else if (password.length === 0 || password.length < 5) {
+                toast.error("Password should be at least 5 characters");
+            } else {
+                var formData = new FormData();
+                formData.append("name", name);
+                formData.append("email", email);
+                formData.append("password", password);
+                formData.append("password_hint", passwordHint);
+                formData.append("token", REGISTER_TOKEN);
+                // console.log(formData);
+
+                await axios
+                    .post(`${BASE_URL}/api/register`, formData)
+                    .then((res) => {  
+                        if (res.data.status) {
+                            // setMode("signup");
+                           
+                            toast.success("Registration Successful");
+                            navigate("/login");
+                        } else {
+                            toast.error(res.data.message);
+                        }
+                        setEmail("");
+                        setName("");
+                        setPassword("");
+                        setPasswordHint("");
+                    })
+                    .catch((error) => {
+                        if (
+                            error?.response &&
+                            error.response?.status &&
+                            error.response?.data
+                        ) {
+                            toast.error(error.response.data.message);
+                        } else {
+                            toast.error("Server is not responding");
+                        }
+                    });
+                // navigate("/signin");
+            }
+        }
         setLoading(false);
     };
 
@@ -95,7 +192,7 @@ const AuthForm = ({ mode }) => {
                     </div>
                 )}
             </div>
-            <button  
+            <button
                 type="submit"
                 className={`button button--primary full-width ${
                     mode === "login" ? "mt-2" : "mt-4"

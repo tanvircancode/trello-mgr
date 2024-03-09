@@ -26,7 +26,6 @@ const Auth = () => {
                                 {mode === "login" ? "Register" : "Login"} here
                             </span>
                         </span>
-
                     </div>
                 </header>
                 <AuthForm mode={mode} />
