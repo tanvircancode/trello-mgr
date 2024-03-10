@@ -38,15 +38,15 @@ class Project extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function member()
+    public function members()
     {
         return $this->belongsToMany(User::class , 'project_members', 'project_id', 'user_id');
     }
-    public function task()
+    public function tasks()
     {
         return $this->hasMany(Task::class);
     }
-    public function invitation()
+    public function invitations()
     {
         return $this->hasMany(Invitation::class);
     }

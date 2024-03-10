@@ -8,8 +8,9 @@ const initialState = {
     makeCardModalBlur:false,
     showTextarea:{ type: null, value: null } ,//confuse
     projects: [],
-
-
+    tasks:[],
+    selectedProject:null,
+    isCardsLoading:true,
 };
 
 export const trelloSlice = createSlice({
@@ -44,7 +45,15 @@ export const trelloSlice = createSlice({
         setProjects: (state, action) => {
             state.projects = action.payload.projects;
         },
-        
+        setTasks: (state, action) => {
+            state.tasks = action.payload.tasks;
+        },
+        setSelectedProject: (state, action) => {
+            state.selectedProject = action.payload.selectedProject;
+        },
+        setIsCardsLoading: (state, action) => {
+            state.isCardsLoading = action.payload.isCardsLoading;
+        },
         // end trello
         setOrgAndFolderLoading: (state, action) => {
             state.orgAndFolderLoading = action.payload.orgAndFolderLoading;
@@ -107,6 +116,9 @@ export const {
     setLogin,
     setLogout,
     setProjects,
+    setTasks,
+    setSelectedProject,
+    setIsCardsLoading,
     setOrganizations,
     setSelectMenu,
     setOrgAndFolderLoading,

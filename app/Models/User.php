@@ -17,7 +17,7 @@ class User extends Authenticatable
     public $incrementing = false;
     protected $primaryKey = 'id';
     protected $keyType = 'string';
-    
+
     protected $table = 'users';
 
     /**
@@ -56,7 +56,7 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    
+
     protected $casts = [
         'name' => 'string',
         'email' => 'string',
@@ -64,18 +64,20 @@ class User extends Authenticatable
         'password_hint' => 'string',
     ];
 
-    // Owner method
-    public function project() {
+    
+    public function project()
+    {
         return $this->hasMany(Project::class);
     }
-    
+
     //A User can be a member of many Projects through the project_members table
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasMany(Task::class);
     }
 
@@ -84,7 +86,15 @@ class User extends Authenticatable
         return $this->hasMany(Invitation::class, 'invited_user_id');
     }
 
-
-
-
+    //custom extra methods
+    public function getProjectsWithOwnerAndTasks()
+    {
+        return $this->projects()
+        ->with(['user', 'tasks'])
+        ->get()
+        ->map(function ($project) {
+            $project->is_owner = $project->user_id === $this->id;
+            return $project;
+        });
+    }
 }

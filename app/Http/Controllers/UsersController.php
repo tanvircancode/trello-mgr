@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class UsersController extends Controller
         }
 
         $user = User::create($input);
-        
+
         $data['id'] = $user->id;
         $data['name'] = $user->name;
         $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
@@ -72,11 +73,9 @@ class UsersController extends Controller
             ];
 
             return response()->json($response, 200);
-
-            
         }
 
-       
+
         $response = [
             'status' => false,
             'message' => 'Invalid Credentials'
@@ -92,17 +91,16 @@ class UsersController extends Controller
                 'message' => 'Logged out successfully'
             ];
             return response()->json($response, 200);
-        }
-        else {
+        } else {
             return response()->json(['status' => false], 404);
-        }   
+        }
 
         // return redirect('/login');
     }
 
     public function me(Request $request)
     {
-        
+
         if (!Auth::user()) {
             return response()->json(['status' => false], 403);
         }
@@ -116,28 +114,29 @@ class UsersController extends Controller
         return response()->json($response, 200);
     }
 
-    // public function show($id)
-    // {
+    public function show($id)
+    {
 
-    //     if ($id !== Auth::user()->id) {
-    //         return response()->json(['status' => false], 403);
-    //     }
+        if ($id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
 
-    //     $user = User::with('organizations', 'folders')->find($id);
-    //     if (!$user) {
-    //         $response = [
-    //             'status' => false,
-    //             'message' => 'User not found'
-    //         ];
-    //         return response()->json($response, 404);
-    //     }
+        $user = User::find($id);
+        
+        if (!$user) {
+            $response = [
+                'status' => false,
+                'message' => 'User not found'
+            ];
+            return response()->json($response, 404);
+        }
+        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
 
-    //     $response = [
-    //         'status' => true,
-    //         'data' => $user
-    //     ];
+        $response = [
+            'status' => true,
+            'data' => $projectsWithRelatedData
+        ];
 
-    //     return response()->json($response, 200);
-    // }
-   
+        return response()->json($response, 200);
+    }
 }

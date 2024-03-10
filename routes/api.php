@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
   // project apis
   Route::post('/project', [ProjectsController::class, 'store']);
+  Route::get('/projects/{id}', [UsersController::class, 'show']);
+
+   // task apis
+   Route::post('/task/{id}', [TasksController::class, 'store']);
+
   
 });
 

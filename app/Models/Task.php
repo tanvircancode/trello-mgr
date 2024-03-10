@@ -59,5 +59,21 @@ class Task extends Model
     {
         return $this->belongsToMany(Label::class);
     }
+
+    //custom methods
+    public static function createTask(array $data)
+    {
+        $project = Project::find($data['project_id']);
+
+        if (!$project) {
+            return false;
+        }
+
+        $task = new static;
+        $task->fill($data);
+        $task->save();
+
+        return $task;
+    }
    
 }
