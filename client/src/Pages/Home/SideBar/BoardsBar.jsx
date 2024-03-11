@@ -5,12 +5,18 @@ import { BASE_URL } from "../../../config";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsCardsLoading, setProjects, setSelectedProject } from "../../../store";
+import {
+    setIsCardsLoading,
+    setProjects,
+    setSelectedProject,
+    setTasks,
+} from "../../../store";
 
 const BoardsBar = () => {
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const projects = useSelector((state) => state.projects);
+    const selectedProject = useSelector((state) => state.selectedProject);
     const dispatch = useDispatch();
 
     var colors = [
@@ -31,8 +37,14 @@ const BoardsBar = () => {
         "#2196f3",
     ];
 
-    const getProjectsData = async () => {
+    const handleSelectedProject = (project) => {
+        console.log(project)
+        dispatch(setSelectedProject({ selectedProject: project }));
+        dispatch(setTasks({ tasks: project.tasks }));
 
+    };
+
+    const getProjectsData = async () => {
         await axios
             .get(`${BASE_URL}/api/projects/` + userId, {
                 headers: {
@@ -40,9 +52,27 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
                 if (res.data?.status && res.status === 200) {
-                    dispatch(setProjects({ projects: res.data.data }));
+                    const allProjects = res.data.data;
+
+                    dispatch(setProjects({ projects: allProjects }));
+                    console.log(allProjects);
+                    if (allProjects.length > 0) {
+                        dispatch(
+                            setSelectedProject({
+                                selectedProject: allProjects[0],
+                            })
+                        );
+                        dispatch(
+                            setTasks({
+                                tasks: allProjects[0].tasks,
+                            })
+                        );
+                        console.log(selectedProject);
+                        // console.log(tasks);
+
+                    }
                 }
             })
             .catch((error) => {
@@ -61,11 +91,6 @@ const BoardsBar = () => {
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
         // setLoading(false);
-    };
-
-    const handleSelectedProject = (project) => {
-        
-        dispatch(setSelectedProject({ selectedProject: project }));
     };
 
     useEffect(() => {
@@ -96,7 +121,11 @@ const BoardsBar = () => {
                                     }}
                                 ></div>
                                 <span
-                                    className="sidebar-text "
+                                    className={`sidebar-text ${
+                                        selectedProject.id === project.id
+                                            ? "active-menu"
+                                            : ""
+                                    }`}
                                     style={{ cursor: "pointer" }}
                                 >
                                     {project.title}

@@ -3,18 +3,18 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     user: null,
     token: null,
-    setDotModal:false,
+    setDotModal: false,
     makeBlur: false,
-    makeCardModalBlur:false,
-    showTextarea:{ type: null, value: null } ,//confuse
+    makeCardModalBlur: false,
+    showTextarea: { type: null, value: null }, //confuse
     projects: [],
-    tasks:[],
-    selectedProject:null,
-    isCardsLoading:true,
+    tasks: [],
+    fetchSingleCard: null,
+    selectedProject: null,
+    isCardsLoading: true,
 };
 
 export const trelloSlice = createSlice({
-
     name: "trello",
     initialState,
     reducers: {
@@ -25,12 +25,18 @@ export const trelloSlice = createSlice({
         setLogout: (state) => {
             state.user = null;
             state.token = null;
-           
+            state.projects = [];
+            state.tasks = [];
+            state.fetchSingleCard = null;
+            state.selectedProject = null;
         },
-        //start trello 
-        
+        //start trello
+
         setShowTextarea: (state, action) => {
-            if (state.showTextarea === null || state.showTextarea === undefined) {
+            if (
+                state.showTextarea === null ||
+                state.showTextarea === undefined
+            ) {
                 state.showTextarea = { type: null, value: null };
             }
             state.showTextarea.type = action.payload.type;
@@ -43,16 +49,35 @@ export const trelloSlice = createSlice({
             state.makeCardModalBlur = action.payload.makeCardModalBlur;
         },
         setProjects: (state, action) => {
-            state.projects = action.payload.projects;
+            if (action.payload === null) {
+                state.projects = [];
+            } else {
+                state.projects = action.payload.projects;
+            }
         },
         setTasks: (state, action) => {
-            state.tasks = action.payload.tasks;
+            if (action.payload === null) {
+                state.tasks = [];
+            } else {
+                state.tasks = action.payload.tasks;
+            }
         },
         setSelectedProject: (state, action) => {
-            state.selectedProject = action.payload.selectedProject;
+            if (action.payload === null) {
+                state.selectedProject = null;
+            } else {
+                state.selectedProject = action.payload.selectedProject;
+            }
         },
         setIsCardsLoading: (state, action) => {
             state.isCardsLoading = action.payload.isCardsLoading;
+        },
+        setFetchSingleCard: (state, action) => {
+            if (action.payload === null) {
+                state.fetchSingleCard = null;
+            } else if (action.payload.fetchSingleCard) {
+                state.fetchSingleCard = action.payload.fetchSingleCard;
+            }
         },
         // end trello
         setOrgAndFolderLoading: (state, action) => {
@@ -72,16 +97,13 @@ export const trelloSlice = createSlice({
         setReloadPage: (state, action) => {
             state.reloadPage = action.payload.reloadPage;
         },
-       
-        
 
         setSelectedItems: (state, action) => {
             if (action.payload === null) {
                 state.selectedItems = [];
-            }else {
+            } else {
                 state.selectedItems = action.payload.selectedItems;
             }
-            
         },
         setPopup: (state, action) => {
             if (action.payload === null) {
@@ -119,6 +141,7 @@ export const {
     setTasks,
     setSelectedProject,
     setIsCardsLoading,
+    setFetchSingleCard,
     setOrganizations,
     setSelectMenu,
     setOrgAndFolderLoading,

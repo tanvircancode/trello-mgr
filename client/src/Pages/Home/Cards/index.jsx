@@ -3,7 +3,7 @@ import { BsBarChartSteps, BsCheck2Square } from "react-icons/bs";
 import "./cards.scss";
 import CardMainModal from "../../../Modal/CardModals/CardMainModal";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeBlur, setTasks } from "../../../store";
+import { setFetchSingleCard, setMakeBlur, setTasks } from "../../../store";
 import { toast } from "react-toastify";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
@@ -20,11 +20,14 @@ const Card = () => {
 
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
+    const tasks = useSelector((state) => state.tasks);
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
 
-    const handleCardClick = () => {
+    const handleOpenPopup = (task) => {
+        console.log(task);
         setOpenNewCardModal(true);
+        dispatch(setFetchSingleCard({ fetchSingleCard: task }));
         dispatch(setMakeBlur({ makeBlur: true }));
     };
 
@@ -33,11 +36,9 @@ const Card = () => {
     };
 
     const handleCreateCard = async () => {
-        
-      if (cardTitle.length === 0 || cardTitle.length > 50) {
+        if (cardTitle.length === 0 || cardTitle.length > 50) {
             toast.error("Invalid Title");
         } else {
-
             var formData = new FormData();
             formData.append("title", cardTitle);
             formData.append("project_id", selectedProject.id);
@@ -51,9 +52,9 @@ const Card = () => {
                     },
                 })
                 .then((res) => {
-                       console.log(res);
+                    console.log(res);
 
-                    if (res.data?.status) {
+                    if (res.data?.status && res.data?.data) {
                         dispatch(
                             setTasks({
                                 tasks: res.data.data.tasks,
@@ -77,7 +78,6 @@ const Card = () => {
                         toast.error("Server is not responding");
                     }
                 });
-           
         }
     };
 
@@ -92,27 +92,30 @@ const Card = () => {
                     <HashLoader color="#36d7b7" />
                 </div>
             )}
-            {!isCardsLoading && selectedProject.tasks.length > 0 && (
-                <div
-                    className={`card custom-card ${
-                        blur ? "is-blur disable-pointer-events" : ""
-                    }`}
-                    onClick={() => handleCardClick()}
-                >
-                    <div className="card-body">
-                        <h5 className="card-title">Card title</h5>
-                        <h6 className="card-subtitle mb-2 text-body-secondary">
-                            Card Label
-                        </h6>
-                        <div className="desc-label">
-                            <BsBarChartSteps className="card-sm-icon" />
-                            <BsCheck2Square className="card-sm-icon" />
-                        </div>
+            {!isCardsLoading &&
+                tasks.length > 0 &&
+                tasks.map((task, index) => (
+                    <div
+                        key={index}
+                        className={`card custom-card ${
+                            blur ? "is-blur disable-pointer-events" : ""
+                        }`}
+                        onClick={() => handleOpenPopup(task)}
+                    >
+                        <div className="card-body">
+                            <h5 className="card-title">{task.title}</h5>
+                            <h6 className="card-subtitle mb-2 text-body-secondary">
+                                Card Label
+                            </h6>
+                            <div className="desc-label">
+                                <BsBarChartSteps className="card-sm-icon" />
+                                <BsCheck2Square className="card-sm-icon" />
+                            </div>
 
-                        <span>priority</span>
+                            <span>priority</span>
+                        </div>
                     </div>
-                </div>
-            )}
+                ))}
 
             <div className="custom-card">
                 <input

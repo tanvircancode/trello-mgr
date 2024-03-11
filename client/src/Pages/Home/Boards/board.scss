@@ -24,6 +24,19 @@
 
     padding: 0 10px;
 }
+.create-project-button{
+   
+    font-size: 12px;
+    line-height: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 8px;
+    background: #d0e395 !important;
+    box-shadow: none;
+    border: none;
+    color: #000000;
+    border-radius: 3px;
+}
 .board-header-button {
     position: relative;
     display: flex;

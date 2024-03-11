@@ -34,7 +34,6 @@ class ProjectsController extends Controller
                 'data' => $projects,
                 'message' => "Project created Successfully"
             ];
-
             return response()->json($response, 200);
         }
 

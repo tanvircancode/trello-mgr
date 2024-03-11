@@ -6,7 +6,7 @@ import axios from "axios";
 import Layout from "./Pages/Layout";
 import Home from "./Pages/Home";
 import { BASE_URL } from "./config";
-import { setLogin } from "./store";
+import { setFetchSingleCard, setLogin, setProjects, setSelectedProject, setTasks } from "./store";
 
 function App() {
   const authChecked = Boolean(useSelector((state) => state.token));
@@ -53,7 +53,11 @@ function InitUser() {
                         token: null,
                     })
                 );
-                // dispatch(setSelectedItems(null));
+                dispatch(setProjects(null));
+                dispatch(setTasks(null));
+                dispatch(setSelectedProject(null));
+                dispatch(setFetchSingleCard(null));
+
                 localStorage.removeItem("token");
                 localStorage.removeItem("user_id");
             }
@@ -64,6 +68,10 @@ function InitUser() {
                     token: null,
                 })
             );
+            dispatch(setProjects(null));
+            dispatch(setTasks(null));
+            dispatch(setSelectedProject(null));
+            dispatch(setFetchSingleCard(null));
             // dispatch(setSelectedItems(null));
             localStorage.removeItem("token");
             localStorage.removeItem("user_id");

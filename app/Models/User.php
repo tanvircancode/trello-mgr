@@ -64,7 +64,7 @@ class User extends Authenticatable
         'password_hint' => 'string',
     ];
 
-    
+
     public function project()
     {
         return $this->hasMany(Project::class);
@@ -90,11 +90,11 @@ class User extends Authenticatable
     public function getProjectsWithOwnerAndTasks()
     {
         return $this->projects()
-        ->with(['user', 'tasks'])
-        ->get()
-        ->map(function ($project) {
-            $project->is_owner = $project->user_id === $this->id;
-            return $project;
-        });
+            ->with(['user', 'tasks'])
+            ->get()
+            ->map(function ($project) {
+                $project->is_owner = $project->user_id === $this->id;
+                return $project;
+            });
     }
 }

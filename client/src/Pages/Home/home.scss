@@ -79,13 +79,11 @@
     }
 }
 .active-menu {
-    color: rgb(54 54 63 / 84%);
+    color: #000000;
     font-weight: bold;
 }
 
-.active-menu {
-    color: #8fd1f9;
-}
+
 .custom-item-list {
     @media (max-width: 768px) {
         margin-top: 30px !important;

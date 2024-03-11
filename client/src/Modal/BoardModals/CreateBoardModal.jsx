@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeBlur, setProjects } from "../../store";
+import { setMakeBlur, setProjects, setSelectedProject } from "../../store";
 import { BASE_URL } from "../../config";
 
 const CreateBoardModal = ({
@@ -14,6 +14,7 @@ const CreateBoardModal = ({
 
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
+    const selectedProject = useSelector((state) => state.selectedProject);
     const userId = localStorage.getItem("user_id");
 
     const cancelModal = () => {
@@ -23,6 +24,7 @@ const CreateBoardModal = ({
     };
 
     const handleCreateBoard = async () => {
+        
         if (boardTitle.length === 0 || boardTitle.length > 50) {
             toast.error("Invalid Name");
         } else {
@@ -38,20 +40,26 @@ const CreateBoardModal = ({
                     },
                 })
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
 
-                    if (res.data.status && res.status === 200) {
+                    if (res.data?.status && res.data?.data) {
+                        const allProjects = res.data.data.project;
                         dispatch(
-                            setProjects({ projects: res.data.data.projects })
+                            setProjects({ projects: allProjects })
                         );
-                        toast.success(res.data.message);
+                        if (allProjects.length > 0) {
+                        
+                            dispatch(setSelectedProject({selectedProject:allProjects[0]}));
+                            console.log(selectedProject)
+                        }
+                        toast.success(res.data?.message);
                     } else {
                         toast.error("Server is not responding");
                     }
                     cancelModal();
                 })
                 .catch((error) => {
-                    // console.log(error)
+                    console.log(error)
                     if (
                         error.response &&
                         error.response?.status &&

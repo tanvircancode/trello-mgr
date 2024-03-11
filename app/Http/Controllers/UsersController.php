@@ -59,13 +59,10 @@ class UsersController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-
             // $request->session()->regenerate();
             $user = Auth::user();
 
-
             $token = $user->createToken('MyAppToken')->plainTextToken;
-
             $response = [
                 'status' => true,
                 'user' => $user,
@@ -74,7 +71,6 @@ class UsersController extends Controller
 
             return response()->json($response, 200);
         }
-
 
         $response = [
             'status' => false,
@@ -100,7 +96,6 @@ class UsersController extends Controller
 
     public function me(Request $request)
     {
-
         if (!Auth::user()) {
             return response()->json(['status' => false], 403);
         }
@@ -139,4 +134,5 @@ class UsersController extends Controller
 
         return response()->json($response, 200);
     }
+
 }

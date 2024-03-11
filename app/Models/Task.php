@@ -73,6 +73,18 @@ class Task extends Model
         $task->fill($data);
         $task->save();
 
+        // Create priorities for the task
+        $prioritiesData = [
+            ['name' => 'High', 'color' => '#FF0000','task_id'=>$task->id],
+            ['name' => 'Medium', 'color' => '#00FF00','task_id'=>$task->id],
+            ['name' => 'Low', 'color' => '#0000FF' , 'task_id'=>$task->id],
+        ];
+
+        foreach ($prioritiesData as $priorityData) {
+            $priority = new Priority($priorityData);
+            $task->priorities()->save($priority);
+        }
+
         return $task;
     }
    
