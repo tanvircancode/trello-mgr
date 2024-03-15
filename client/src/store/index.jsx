@@ -9,6 +9,7 @@ const initialState = {
     showTextarea: { type: null, value: null }, //confuse
     projects: [],
     tasks: [],
+    labels: [],
     fetchSingleCard: null,
     selectedProject: null,
     isCardsLoading: true,
@@ -27,6 +28,7 @@ export const trelloSlice = createSlice({
             state.token = null;
             state.projects = [];
             state.tasks = [];
+            state.labels = [];
             state.fetchSingleCard = null;
             state.selectedProject = null;
         },
@@ -60,6 +62,13 @@ export const trelloSlice = createSlice({
                 state.tasks = [];
             } else {
                 state.tasks = action.payload.tasks;
+            }
+        },
+        setLabels: (state, action) => {
+            if (action.payload === null) {
+                state.labels = [];
+            } else {
+                state.labels = action.payload.labels;
             }
         },
         setSelectedProject: (state, action) => {
@@ -139,6 +148,7 @@ export const {
     setLogout,
     setProjects,
     setTasks,
+    setLabels,
     setSelectedProject,
     setIsCardsLoading,
     setFetchSingleCard,

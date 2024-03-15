@@ -89,16 +89,8 @@
         margin-top: 30px !important;
     }
 }
-.add-folder-text {
-    @media (max-width: 1204px) and (min-width: 768px) {
-        margin-right: 56px !important;
-    }
-}
-.add-org-text {
-    @media (max-width: 1204px) and (min-width: 768px) {
-        margin-right: 10px !important;
-    }
-}
+
+
 
 .custom-modal-bg {
     background: linear-gradient(0.25turn, #bedeef, #bbdf9f, #8ad6e9);
@@ -125,23 +117,4 @@
         #b79d79 100%
     );
 }
-.modal-yes {
-    padding: 5px 15px;
-    margin-right: 10px;
-    border-radius: 0.5em;
-    background: linear-gradient(0.25turn, #a9bd84, #7ebb50, #5ebad1);
-    color: white;
-    border: none;
-}
-.modal-no {
-    padding: 5px 15px;
-    border-radius: 0.5em;
-    color: white;
-    border: none;
-    background-image: linear-gradient(
-        to right,
-        #f3be9f 0%,
-        #e55f32 51%,
-        #d59030 100%
-    );
-}
+

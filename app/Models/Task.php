@@ -37,18 +37,21 @@ class Task extends Model
         'description' => 'string',
     ];
 
-    public function project() {
+    public function project()
+    {
         return $this->belongsTo(Project::class);
     }
 
-    public function checklists() {
+    public function checklists()
+    {
         return $this->hasMany(Checklist::class);
     }
 
-    public function priorities() {
+    public function priorities()
+    {
         return $this->hasMany(Priority::class);
     }
-    
+
     // for active priority
     public function activePriority()
     {
@@ -57,8 +60,9 @@ class Task extends Model
 
     public function labels()
     {
-        return $this->belongsToMany(Label::class);
+        return $this->hasMany(Label::class);
     }
+
 
     //custom methods
     public static function createTask(array $data)
@@ -75,9 +79,9 @@ class Task extends Model
 
         // Create priorities for the task
         $prioritiesData = [
-            ['name' => 'High', 'color' => '#FF0000','task_id'=>$task->id],
-            ['name' => 'Medium', 'color' => '#00FF00','task_id'=>$task->id],
-            ['name' => 'Low', 'color' => '#0000FF' , 'task_id'=>$task->id],
+            ['name' => 'High', 'color' => '#FF0000', 'task_id' => $task->id],
+            ['name' => 'Medium', 'color' => '#00FF00', 'task_id' => $task->id],
+            ['name' => 'Low', 'color' => '#0000FF', 'task_id' => $task->id],
         ];
 
         foreach ($prioritiesData as $priorityData) {
@@ -85,7 +89,18 @@ class Task extends Model
             $task->priorities()->save($priority);
         }
 
+        // Create labels for the task
+        $labelsData = [
+            ['color' => '#216E4E', 'name' => '', 'task_id' => $task->id],
+            ['color' => '#7F5F01', 'name' => '', 'task_id' => $task->id],
+            ['color' => '#A54800', 'name' => '', 'task_id' => $task->id],
+        ];
+
+        foreach ($labelsData as $labelData) {
+            $label = new Label($labelData);
+            $task->labels()->save($label);
+        }
+
         return $task;
     }
-   
 }

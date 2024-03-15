@@ -17,6 +17,7 @@ const BoardsBar = () => {
     const token = useSelector((state) => state.token);
     const projects = useSelector((state) => state.projects);
     const selectedProject = useSelector((state) => state.selectedProject);
+
     const dispatch = useDispatch();
 
     var colors = [
@@ -37,10 +38,54 @@ const BoardsBar = () => {
         "#2196f3",
     ];
 
-    const handleSelectedProject = (project) => {
-        console.log(project)
-        dispatch(setSelectedProject({ selectedProject: project }));
-        dispatch(setTasks({ tasks: project.tasks }));
+    const handleClickSingleProject = async (project) => {
+   
+        await axios
+            .get(`${BASE_URL}/api/projects/` + userId, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then((res) => {
+                
+                if (res.data?.status && res.status === 200) {
+                    const allProjects = res.data.data;
+
+                    dispatch(setProjects({ projects: allProjects }));
+                    console.log(allProjects);
+
+                    const filteredProject = projects.find(
+                        (singleProj) => singleProj.id === project.id
+                    );
+                    // console.log(filteredProject)
+                    dispatch(
+                        setSelectedProject({
+                            selectedProject: filteredProject,
+                        })
+                    );
+                    dispatch(
+                        setTasks({
+                            tasks: filteredProject.tasks,
+                        })
+                    );
+                }
+                
+            })
+            .catch((error) => {
+                console.log(error);
+
+                if (
+                    error.response &&
+                    error.response?.data?.status &&
+                    !error.response.data.status
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
+
+        dispatch(setIsCardsLoading({ isCardsLoading: false }));
 
     };
 
@@ -52,13 +97,16 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                // console.log(res);
+                console.log(res);
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
                     dispatch(setProjects({ projects: allProjects }));
                     console.log(allProjects);
+
                     if (allProjects.length > 0) {
+                        
+
                         dispatch(
                             setSelectedProject({
                                 selectedProject: allProjects[0],
@@ -70,8 +118,6 @@ const BoardsBar = () => {
                             })
                         );
                         console.log(selectedProject);
-                        // console.log(tasks);
-
                     }
                 }
             })
@@ -111,7 +157,9 @@ const BoardsBar = () => {
                         >
                             <div
                                 className="d-flex align-items-center"
-                                onClick={() => handleSelectedProject(project)}
+                                onClick={() =>
+                                    handleClickSingleProject(project)
+                                }
                             >
                                 <div
                                     className="icon-color"

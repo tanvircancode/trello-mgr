@@ -24,7 +24,7 @@ class TasksController extends Controller
             return response()->json(['status' => false, 'message' => 'Project not found'], 404);
         }
 
-        $tasks = Project::with('tasks')->find($task->project_id);
+        $tasks = Project::with('tasks','tasks.labels')->find($task->project_id);
 
         $response = [
             'status' => true,

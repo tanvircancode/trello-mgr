@@ -1,0 +1,28 @@
+.custom-modal-content {
+    width: 68%;
+    display: block;
+    margin: 90px auto;
+}
+
+.modal-yes {
+    padding: 4px 10px;
+    
+    margin-right: 10px;
+    width: 75px;
+    font-size: 14px;
+    border-radius: 0.2em;
+    background: #8779ff;
+    color: black;
+    border: none;
+    font-weight: 500;
+}
+.modal-no {
+    padding: 4px 10px;
+    width: 75px;
+    font-size: 14px;
+    border-radius: 0.2em;
+    background: #b1d964;
+    color: black;
+    border: none;
+    font-weight: 500;
+}

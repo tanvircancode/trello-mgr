@@ -18,7 +18,7 @@ class Label extends Model
 
 
     protected $fillable = [
-        'name', 'color', 
+        'name', 'color', 'task_id','is_active'
     ];
 
     protected static function boot()
@@ -33,11 +33,34 @@ class Label extends Model
     protected $casts = [
         'name' => 'string',
         'color' => 'string',
+        'task_id' => 'string',
+        'is_active' => 'boolean'
     ];
 
 
-    public function tasks()
+    public function task()
     {
-        return $this->belongsToMany(Task::class);
+        return $this->belongsTo(Task::class);
     }
+
+     //custom methods
+     public static function createLabel(array $data)
+     {
+         $task = Task::find($data['task_id']);
+         
+         if (!$task) {
+            return null;
+        }
+
+         if($data['name'] === null)  {
+            $data['name'] = "";
+         }
+ 
+ 
+         $label = new static;
+         $label->fill($data);
+         $label->save();
+ 
+         return $label;
+     }
 }

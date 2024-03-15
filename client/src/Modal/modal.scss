@@ -15,14 +15,14 @@
     font-weight: 600;
     font-size: 14px;
 }
-.board-title-input{
+.board-title-input {
     padding: 0.2rem 0.5rem;
     font-size: 14px;
     font-weight: 500;
 }
 .parent-modal-blur {
-    opacity: 0.5; 
-    pointer-events: none; 
+    opacity: 0.5;
+    pointer-events: none;
 }
 .card-detail-header {
     font-size: 12px;
@@ -74,17 +74,15 @@
 .card-detail-label-text {
     margin-bottom: 0;
     border-radius: 3px;
-    padding: 0 12px;
+    padding: 4px 12px;
     max-width: 100%;
-    min-width: 48px;
-    height: 32px;
+    min-width: 65px;
+    height: 26px;
     box-sizing: border-box;
-    background-color: #6eca5177;
-    line-height: 32px;
-    color: #172b4d;
-    font-size: 14px;
+    color: #ffffff;
+    font-size: 13px;
     font-weight: 500;
-    text-align: left;
+    text-align: center;
     overflow: hidden;
 }
 .custom-fake-form {
@@ -281,6 +279,12 @@
 }
 .label-save {
     background-color: #4d90fe;
+}
+.label-save:disabled , .create-button:disabled{
+    opacity: 0.4;
+    pointer-events: none;
+    color: rgb(0 0 0);
+    background-color: #889197;
 }
 .label-delete {
     background-color: #ff5656d9;

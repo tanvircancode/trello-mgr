@@ -31,6 +31,9 @@ const CardModalButton = () => {
     const dispatch = useDispatch();
 
     const handleModal = (value) => {
+        dispatch(setMakeBlur({ makeBlur: true }));
+        dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
+        
         if (value === "member") {
             setOpenMemberModal(true);
         } else if (value === "label") {
@@ -41,8 +44,6 @@ const CardModalButton = () => {
         } else if (value === "priority") {
             setOpenPriorityModal(true);
         }
-        dispatch(setMakeBlur({ makeBlur: true }));
-        dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
     };
 
     return (

@@ -3,7 +3,12 @@ import { BsBarChartSteps, BsCheck2Square } from "react-icons/bs";
 import "./cards.scss";
 import CardMainModal from "../../../Modal/CardModals/CardMainModal";
 import { useDispatch, useSelector } from "react-redux";
-import { setFetchSingleCard, setMakeBlur, setTasks } from "../../../store";
+import {
+    setFetchSingleCard,
+    setLabels,
+    setMakeBlur,
+    setTasks,
+} from "../../../store";
 import { toast } from "react-toastify";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
@@ -25,10 +30,11 @@ const Card = () => {
     const dispatch = useDispatch();
 
     const handleOpenPopup = (task) => {
+        dispatch(setMakeBlur({ makeBlur: true }));
         console.log(task);
         setOpenNewCardModal(true);
         dispatch(setFetchSingleCard({ fetchSingleCard: task }));
-        dispatch(setMakeBlur({ makeBlur: true }));
+        dispatch(setLabels({ labels: task.labels }));
     };
 
     const cancelAddCard = () => {
@@ -60,6 +66,7 @@ const Card = () => {
                                 tasks: res.data.data.tasks,
                             })
                         );
+
                         toast.success(res.data?.message);
                     } else {
                         toast.error("Server is not responding");
@@ -104,9 +111,19 @@ const Card = () => {
                     >
                         <div className="card-body">
                             <h5 className="card-title">{task.title}</h5>
-                            <h6 className="card-subtitle mb-2 text-body-secondary">
-                                Card Label
-                            </h6>
+                            <div className="d-flex flex-wrap gap-1">  
+                                {task.labels.length > 0 &&
+                                    task.labels.map((label, index) => (
+                                        label.is_active &&  (
+                                        <span
+                                            className="label-color-small"
+                                            key={index}
+                                            style={{
+                                                backgroundColor: label.color,
+                                            }}
+                                        ></span> )
+                                    ))}
+                            </div>
                             <div className="desc-label">
                                 <BsBarChartSteps className="card-sm-icon" />
                                 <BsCheck2Square className="card-sm-icon" />
