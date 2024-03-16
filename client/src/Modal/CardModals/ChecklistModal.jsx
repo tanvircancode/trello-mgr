@@ -1,15 +1,64 @@
 import { useState, useEffect } from "react";
 import "../modal.scss";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMakeCardModalBlur } from "../../store";
+import axios from "axios";
+import { BASE_URL } from "../../config";
+import { toast } from "react-toastify";
 
 const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
+    const [title, setTitle] = useState("");
+    const userId = localStorage.getItem("user_id");
+    const token = useSelector((state) => state.token);
+    const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    console.log(fetchSingleCard);
+
     const dispatch = useDispatch();
 
     const cancelModal = () => {
         setOpenChecklistModal(false);
 
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+    };
+
+    const handleAddChecklist = async () => {
+        var formData = new FormData();
+        formData.append("name", title);
+        formData.append("user_id", userId);
+        formData.append("task_id", fetchSingleCard.id);
+
+        await axios
+            .post(`${BASE_URL}/api/checklist`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                console.log(res);
+
+                // if (res.data.status) {
+                //     dispatch(setTasks({ tasks: res.data.project.tasks }));
+                //     dispatch(setPriorities({ priorities: res.data.task.priorities }));
+                //     // toast.success(res.data.message);
+                // } else {
+                //     toast.error("Server is not responding");
+                // }
+
+                // setTitle("");
+            })
+            .catch((error) => {
+                // console.log(error)
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
     };
 
     return (
@@ -51,14 +100,17 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                                 <label className="form-label">Title</label>
                                 <input
                                     type="text"
-                                    className="form-control"
-                                    style={{ padding: "0.2rem" }}
+                                    className="form-control checklist-input"
+                                    style={{ padding: "0.4rem" }}
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
                                 />
                             </div>
 
                             <button
                                 type="button"
                                 className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
+                                disabled={!title}
                                 onClick={() => handleAddChecklist()}
                             >
                                 <span>Add</span>

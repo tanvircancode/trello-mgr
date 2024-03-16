@@ -10,6 +10,8 @@ const initialState = {
     projects: [],
     tasks: [],
     labels: [],
+    priorities: [],
+    checklists: [],
     fetchSingleCard: null,
     selectedProject: null,
     isCardsLoading: true,
@@ -69,6 +71,20 @@ export const trelloSlice = createSlice({
                 state.labels = [];
             } else {
                 state.labels = action.payload.labels;
+            }
+        },
+        setPriorities: (state, action) => {
+            if (action.payload === null) {
+                state.priorities = [];
+            } else {
+                state.priorities = action.payload.priorities;
+            }
+        },
+        setChecklists: (state, action) => {
+            if (action.payload === null) {
+                state.checklists = [];
+            } else {
+                state.checklists = action.payload.checklists;
             }
         },
         setSelectedProject: (state, action) => {
@@ -149,6 +165,8 @@ export const {
     setProjects,
     setTasks,
     setLabels,
+    setPriorities,
+    setChecklists,
     setSelectedProject,
     setIsCardsLoading,
     setFetchSingleCard,

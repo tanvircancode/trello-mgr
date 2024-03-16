@@ -47,12 +47,12 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                
+                console.log(res)
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
                     dispatch(setProjects({ projects: allProjects }));
-                    console.log(allProjects);
+                    console.log(projects);
 
                     const filteredProject = projects.find(
                         (singleProj) => singleProj.id === project.id
@@ -102,7 +102,7 @@ const BoardsBar = () => {
                     const allProjects = res.data.data;
 
                     dispatch(setProjects({ projects: allProjects }));
-                    console.log(allProjects);
+                    console.log(projects);
 
                     if (allProjects.length > 0) {
                         

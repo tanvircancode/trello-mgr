@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "../modal.scss";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -14,8 +14,12 @@ import {
     setShowTextarea,
 } from "../../store";
 import CardModalButton from "./CardModalButton";
+import EditDescription from "../../component/description/EditDescription";
+import PrioritySelection from "../../component/priority/PrioritySelection";
 
 const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
+    const textareaRef = useRef(null);
+    const [showEditDesc, setShowEditDesc] = useState(false);
     const [showDescForm, setShowDescForm] = useState(false);
     const [nameForm, setNameForm] = useState(false);
     const [checklistForm, setChecklistForm] = useState(false);
@@ -24,40 +28,71 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
-    // console.log(fetchSingleCard);
 
     const labels = useSelector((state) => state.labels);
-    console.log(labels);
+
+    const priorities = useSelector((state) => state.priorities);
+    console.log(priorities);
 
     var doBlur = blur && cardModalblur;
 
-    const [descVal, setDescVal] = useState("valo ni vai");
-
-    const showTextarea = useSelector((state) => state.showTextarea);
+    const [descValue, setDescValue] = useState("");
 
     const dispatch = useDispatch();
-
-    const handleShowTextarea = (type, value) => {
-        dispatch(
-            setShowTextarea({
-                type: type,
-                value: value,
-            })
-        );
-    };
 
     const cancelModal = () => {
         setOpenNewCardModal(false);
         dispatch(setMakeBlur({ makeBlur: false }));
+        setShowDescForm(false);
+        setShowEditDesc(false);
+        setDescValue("");
+    };
+
+    const handleDescSubmit = () => {
+        setShowEditDesc(true);
+    };
+    const handleDescCancel = () => {
+        setShowDescForm(false);
+        setShowEditDesc(false);
+        setDescValue("");
+        if (fetchSingleCard?.description) {
+            setDescValue(fetchSingleCard.description);
+        }
+    };
+
+    const clickTextarea = () => {
+        if (textareaRef.current) {
+            textareaRef.current.focus();
+        }
+        setShowDescForm(true);
+        if (fetchSingleCard?.description) {
+            setDescValue(fetchSingleCard.description);
+        }
+    };
+
+    const handleTextareaChange = (e) => {
+        setDescValue(e.target.value);
     };
 
     useEffect(() => {
         dispatch(setMakeBlur({ makeBlur: false }));
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+        if (fetchSingleCard?.description) {
+            setDescValue(fetchSingleCard.description);
+        }
     }, []);
 
     return (
         <div>
+            {showEditDesc && (
+                <EditDescription
+                    setShowDescForm={setShowDescForm}
+                    descValue={descValue}
+                    setDescValue={setDescValue}
+                    setShowEditDesc={setShowEditDesc}
+                    fetchSingleCard={fetchSingleCard}
+                />
+            )}
             {fetchSingleCard && (
                 <div
                     className={`modal fade ${openNewCardModal ? "show" : ""} `}
@@ -111,7 +146,10 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                         }
                                                                         style={{
                                                                             backgroundColor:
-                                                                                label.color
+                                                                                label.color !==
+                                                                                    null &&
+                                                                                label.color !==
+                                                                                    "null"
                                                                                     ? label.color
                                                                                     : "#3B444C",
                                                                         }}
@@ -139,9 +177,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                             type="button"
                                                             className="modal-edit"
                                                             onClick={() =>
-                                                                setShowDescForm(
-                                                                    true
-                                                                )
+                                                                clickTextarea()
                                                             }
                                                         >
                                                             Edit
@@ -156,30 +192,39 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                 resize: "none",
                                                                 fontSize:
                                                                     "12px",
-                                                                cursor: "pointer",
+                                                                fontWeight:
+                                                                    "500",
+                                                                pointerEvents:
+                                                                    "none",
                                                             }}
                                                             rows="4"
-                                                            // value={descVal}
-                                                            placeholder="Add a more detailed description"
-                                                            onClick={() =>
-                                                                setShowDescForm(
-                                                                    true
-                                                                )
+                                                            placeholder={
+                                                                fetchSingleCard?.description ??
+                                                                "Add a more detailed description"
                                                             }
                                                         ></textarea>
                                                     )}
                                                     {showDescForm && (
                                                         <div className="description-form ">
                                                             <textarea
+                                                                ref={
+                                                                    textareaRef
+                                                                }
                                                                 className="form-control custom-description-form mb-2"
                                                                 style={{
                                                                     resize: "none",
                                                                     fontSize:
                                                                         "13px",
+                                                                    pointerEvents:
+                                                                        "auto",
                                                                 }}
                                                                 rows="2"
-                                                                // value={descVal}
-                                                                placeholder="Make your description even better. Type '/' to insert content, formatting, and more."
+                                                                value={
+                                                                    descValue
+                                                                }
+                                                                onChange={
+                                                                    handleTextareaChange
+                                                                }
                                                             ></textarea>
                                                             <button
                                                                 type="button"
@@ -188,6 +233,9 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                     marginRight:
                                                                         "5px",
                                                                 }}
+                                                                onClick={() =>
+                                                                    handleDescSubmit()
+                                                                }
                                                             >
                                                                 Save
                                                             </button>
@@ -195,9 +243,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                 type="button"
                                                                 className="modal-cancel"
                                                                 onClick={() =>
-                                                                    setShowDescForm(
-                                                                        false
-                                                                    )
+                                                                    handleDescCancel()
                                                                 }
                                                             >
                                                                 Cancel
@@ -214,37 +260,30 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                         Priority
                                                     </h3>
                                                 </div>
-                                                <select className="form-select priority-dropdown">
-                                                    <option value={null}>
-                                                        --Select--
-                                                    </option>
-                                                    <option value={null}>
-                                                        Highest
-                                                    </option>
-                                                </select>
+
+                                                <PrioritySelection
+                                                    priorities={priorities}
+                                                />
                                             </div>
+                                            
                                             <div className="card-detail">
                                                 <div className="card-detail-checklist-header d-flex mb-2">
                                                     <div className="d-flex w-100">
                                                         <BsCheck2Square className="card-sm-icon" />
 
-                                                        {/* {showTextarea && (showTextarea.value != 1) && ( */}
                                                         {!nameForm && (
                                                             <h3
                                                                 className="card-detail-header m-0 cursor-pointer"
                                                                 onClick={() =>
-                                                                    // handleShowTextarea("checklist",1)
                                                                     setNameForm(
                                                                         true
                                                                     )
                                                                 }
                                                             >
-                                                                Checklist Name
+                                                                Checklist
+                                                                Namexxx
                                                             </h3>
                                                         )}
-
-                                                        {/* )}  */}
-                                                        {/* {showTextarea && (showTextarea.value == 1) && ( */}
 
                                                         {nameForm && (
                                                             <EditNameDescModal
@@ -256,7 +295,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                         )}
                                                         {/* )} */}
                                                     </div>
-                                                    {/* {showTextarea && (showTextarea.value != 1) && ( */}
+
                                                     <div className="d-flex">
                                                         {!nameForm && (
                                                             <button
@@ -322,7 +361,6 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                     <label
                                                                         className="form-check-label checklist-label"
                                                                         onClick={() =>
-                                                                            // handleShowTextarea("checklist",1)
                                                                             setChecklistForm(
                                                                                 true
                                                                             )

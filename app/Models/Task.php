@@ -52,12 +52,6 @@ class Task extends Model
         return $this->hasMany(Priority::class);
     }
 
-    // for active priority
-    public function activePriority()
-    {
-        return $this->hasOne(Priority::class)->where('is_active', true);
-    }
-
     public function labels()
     {
         return $this->hasMany(Label::class);
@@ -79,9 +73,9 @@ class Task extends Model
 
         // Create priorities for the task
         $prioritiesData = [
-            ['name' => 'High', 'color' => '#FF0000', 'task_id' => $task->id],
-            ['name' => 'Medium', 'color' => '#00FF00', 'task_id' => $task->id],
-            ['name' => 'Low', 'color' => '#0000FF', 'task_id' => $task->id],
+            ['name' => 'Highest', 'color' => '#f12323b3', 'task_id' => $task->id],
+            ['name' => 'Medium', 'color' => '#68c757c7', 'task_id' => $task->id],
+            ['name' => 'Low', 'color' => '#0079BF', 'task_id' => $task->id],
         ];
 
         foreach ($prioritiesData as $priorityData) {

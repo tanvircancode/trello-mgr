@@ -44,4 +44,20 @@ class Checklist extends Model
         return $this->hasMany(ChecklistItem::class);
     }
 
+    //custom methods
+    public static function createChecklist(array $data)
+    {
+        $task = Task::find($data['task_id']);
+        
+        if (!$task) {
+           return null;
+       }
+
+        $checklist = new static;
+        $checklist->fill($data);
+        $checklist->save();
+        
+        return $checklist;
+    }
+
 }

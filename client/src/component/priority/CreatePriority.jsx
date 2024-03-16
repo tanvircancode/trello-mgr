@@ -1,46 +1,37 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setLabels, setTasks } from "../../store";
+import {
+    setMakeCardModalBlur,
+    setLabels,
+    setTasks,
+    setMakeBlur,
+    setPriorities,
+} from "../../store";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 
-const UpdateLabel = ({
-    title,
-    setTitle,
-    labelColor,
-    editingLabel,
-    setEditingLabel,
-    isEditLabel,
-    setIsEditLabel,
-    setOpenLabelModal,
-    setShowUpdateLabel,
-}) => {
-    console.log(editingLabel);
+const CreatePriority = ({ title, setShowCreatePriority , setPriorityTitle}) => {
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
-    const labelId = editingLabel.id;
-
-    const cancelModalAll = () => {
-        setOpenLabelModal(false);
-        setIsEditLabel(false);
-        setShowUpdateLabel(false);
-        setTitle("");
-        setEditingLabel(null);
-    };
+    const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    
 
     const dispatch = useDispatch();
 
-    const handleUpdateLabel = async () => {
+
+    const handleCreatePriority = async () => {
+    
         var formData = new FormData();
         formData.append("name", title);
-        formData.append("color", labelColor);
+        formData.append("color", "#3B444C");
         formData.append("user_id", userId);
-        formData.append("task_id", editingLabel.task_id);
-        formData.append("is_active", editingLabel.is_active ? 1 : 0);
-
+        formData.append("task_id", fetchSingleCard.id);
+        formData.append("project_id", fetchSingleCard.project_id);
+        formData.append("is_active", 0);
+       
         await axios
-            .put(`${BASE_URL}/api/label/${labelId}`, formData, {
+            .post(`${BASE_URL}/api/priority`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-type": "application/json",
@@ -49,14 +40,18 @@ const UpdateLabel = ({
             .then((res) => {
                 // console.log(res);
 
-                if (res.data.status) {
+                if (res.data.status && res.status === 200) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    dispatch(setLabels({ labels: res.data.task.labels }));
+                    dispatch(setPriorities({ priorities: res.data.task.priorities }));
                     // toast.success(res.data.message);
                 } else {
                     toast.error("Server is not responding");
                 }
-                cancelModalAll();
+              
+                setShowCreatePriority(false);
+               
+                setPriorityTitle("");
+               
             })
             .catch((error) => {
                 // console.log(error)
@@ -73,10 +68,10 @@ const UpdateLabel = ({
     };
 
     useEffect(() => {
-        handleUpdateLabel();
+        handleCreatePriority();
     }, []);
 
     return <div></div>;
 };
 
-export default UpdateLabel;
+export default CreatePriority;

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Card from "../Cards";
 import AddMemberModal from "../../../Modal/BoardModals/AddMemberModal";
 import { setMakeBlur, setSelectedProject } from "../../../store";
+import HashLoader from "react-spinners/HashLoader";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 
 const BoardList = () => {
@@ -15,6 +16,8 @@ const BoardList = () => {
 
     const blur = useSelector((state) => state.makeBlur);
     const projects = useSelector((state) => state.projects);
+    const isCardsLoading = useSelector((state) => state.isCardsLoading);
+
     console.log(projects)
     
     const selectedProject = useSelector((state) => state.selectedProject);
@@ -101,7 +104,12 @@ const BoardList = () => {
                     )}
                 </div>
             )}
-            {tasks.length === 0 && (
+            {isCardsLoading && (
+                <div style={{ width: "100px", margin: "50px auto auto" }}>
+                    <HashLoader color="#36d7b7" />
+                </div>
+            )}
+            {!isCardsLoading && tasks.length === 0 && (
                 <>
                 <div
                     className={`d-flex flex-column gap-3 justify-content-center align-items-center w-100 h-100 ${
@@ -126,6 +134,8 @@ const BoardList = () => {
                 )}
                 </>
             )}
+
+
         </>
     );
 };

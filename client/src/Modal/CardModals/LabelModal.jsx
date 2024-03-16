@@ -78,7 +78,7 @@ const LabelModal = ({
     };
 
     const handleChangeCompleteLabel = (color) => {
-        console.log(color.hex);
+        // console.log(color.hex);
         setLabelColor(color.hex);
     };
 
@@ -115,8 +115,7 @@ const LabelModal = ({
         }
     }, [editingLabel, isEditLabel]);
 
-    console.log(editingLabel);
-    // console.log(title);
+    
 
     return (
         <>

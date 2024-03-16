@@ -13,6 +13,7 @@ const Home = () => {
 
     const token = useSelector((state) => state.token);
     const blur = useSelector((state) => state.makeBlur);
+    console.log(blur)
 
     const dispatch = useDispatch();
 
@@ -23,6 +24,7 @@ const Home = () => {
 
     return (
         <div className="container maxWidthContainer">
+          
             <div className={`row d-flex`}>
                 <div
                     className={`col-xs-12 col-sm-4 col-md-4 col-lg-3 p-0  ${

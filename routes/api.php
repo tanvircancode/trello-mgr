@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChecklistsController;
 use App\Http\Controllers\LabelsController;
+use App\Http\Controllers\PrioritiesController;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
@@ -31,13 +33,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
    // task apis
    Route::post('/task/{id}', [TasksController::class, 'store']);
+   Route::put('/task', [TasksController::class, 'update']);
+
 
   //label apis
   Route::post('/label', [LabelsController::class, 'store']);
   Route::put('/label/{id}', [LabelsController::class, 'update']);
   Route::delete('/deletelabel/{id}', [LabelsController::class, 'destroy']);
 
+  //priority apis
+  Route::post('/priority', [PrioritiesController::class, 'store']);
+  Route::put('/priority', [PrioritiesController::class, 'update']);
+  Route::delete('/deletepriority/{id}', [PrioritiesController::class, 'destroy']);
+  Route::put('/changepriority', [PrioritiesController::class, 'updateSelected']);
 
+   //checklist apis
+   Route::post('/checklist', [ChecklistsController::class, 'store']);
 });
 
 Route::post('/register', [UsersController::class, 'store']);

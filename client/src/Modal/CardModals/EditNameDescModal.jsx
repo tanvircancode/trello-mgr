@@ -7,11 +7,10 @@ const EditNameDescModal = ({ name , setNameForm, button}) => {
                 style={{
                     resize: "none",
                     fontSize: "13px",
-                   
                 }}
                 rows="2"
                 // value={name}
-                placeholder="Make your description even better. Type '/' to insert content, formatting, and more."
+                placeholder="Write Something..."
             ></textarea>
             <button
                 type="button"

@@ -4,9 +4,12 @@ import "./cards.scss";
 import CardMainModal from "../../../Modal/CardModals/CardMainModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    setChecklists,
     setFetchSingleCard,
     setLabels,
     setMakeBlur,
+    setPriorities,
+    setProjects,
     setTasks,
 } from "../../../store";
 import { toast } from "react-toastify";
@@ -29,12 +32,15 @@ const Card = () => {
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
 
+    //store single task's labels and priorities here
     const handleOpenPopup = (task) => {
         dispatch(setMakeBlur({ makeBlur: true }));
         console.log(task);
         setOpenNewCardModal(true);
         dispatch(setFetchSingleCard({ fetchSingleCard: task }));
         dispatch(setLabels({ labels: task.labels }));
+        dispatch(setPriorities({ priorities: task.priorities }));
+        dispatch(setChecklists({ checklists: task.checklists }));
     };
 
     const cancelAddCard = () => {
@@ -111,18 +117,26 @@ const Card = () => {
                     >
                         <div className="card-body">
                             <h5 className="card-title">{task.title}</h5>
-                            <div className="d-flex flex-wrap gap-1">  
+                            <div className="d-flex flex-wrap gap-1">
                                 {task.labels.length > 0 &&
-                                    task.labels.map((label, index) => (
-                                        label.is_active &&  (
-                                        <span
-                                            className="label-color-small"
-                                            key={index}
-                                            style={{
-                                                backgroundColor: label.color,
-                                            }}
-                                        ></span> )
-                                    ))}
+                                    task.labels.map(
+                                        (label, index) =>
+                                            label.is_active && (
+                                                <span
+                                                    className="label-color-small"
+                                                    key={index}
+                                                    style={{
+                                                        backgroundColor:
+                                                            label.color !==
+                                                                null &&
+                                                            label.color !==
+                                                                "null"
+                                                                ? label.color
+                                                                : "#3B444C"
+                                                    }}
+                                                ></span>
+                                            )
+                                    )}
                             </div>
                             <div className="desc-label">
                                 <BsBarChartSteps className="card-sm-icon" />
