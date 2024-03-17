@@ -51,7 +51,7 @@ const PriorityEditModal = ({
     };
 
     const handleUpdatePriority = async () => {
-        console.log(title.length);
+     
         if (title.length === 0 || title.length > 50) {
             toast.error("Invalid title");
         } else {
@@ -70,7 +70,7 @@ const PriorityEditModal = ({
                     },
                 })
                 .then((res) => {
-                    console.log(res);
+                    // console.log(res);
 
                     if (res.data.status) {
                         dispatch(setTasks({ tasks: res.data.project.tasks }));

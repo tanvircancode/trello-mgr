@@ -36,7 +36,7 @@ const Header = () => {
             },
         })
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             if (res.data.status) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user_id");
@@ -103,11 +103,7 @@ const Header = () => {
                                 Home
                             </a>
                         </li>
-                        {/* <li className={`nav-item ${activeLink==="/tools" ? "active" : ''}`}>
-                            <a className="nav-link" onClick={() => handleNavLinkClick("/tools")}>
-                                Tools
-                            </a>
-                        </li> */}
+                     
                     </ul>
                     <div className="logout-custom d-flex align-items-center gap-2">
                         {token && <button className="circular-button">{initials}</button>} 

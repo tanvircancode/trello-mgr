@@ -7,6 +7,7 @@ import BoardsBar from "./SideBar/BoardsBar";
 import BoardList from "./Boards/BoardList";
 import CreateBoardModal from "../../Modal/BoardModals/CreateBoardModal";
 import { setMakeBlur } from "../../store";
+import Footer from "../../component/layout/Footer";
 
 const Home = () => {
     const [openCreateBoardModal, setOpenCreateBoardModal] = useState(false);
@@ -23,7 +24,7 @@ const Home = () => {
     };
 
     return (
-        <div className="container maxWidthContainer">
+        <div className="container maxWidthContainer" >
           
             <div className={`row d-flex`}>
                 <div
@@ -77,6 +78,7 @@ const Home = () => {
                     setOpenCreateBoardModal={setOpenCreateBoardModal}
                 />
             )}
+            <Footer />
         </div>
     );
 };

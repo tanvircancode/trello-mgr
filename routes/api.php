@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChecklistItemsController;
 use App\Http\Controllers\ChecklistsController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\PrioritiesController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Models\ChecklistItem;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +51,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
    //checklist apis
    Route::post('/checklist', [ChecklistsController::class, 'store']);
+  Route::put('/checklist', [ChecklistsController::class, 'update']);
+  Route::delete('/deletechecklist/{id}', [ChecklistsController::class, 'destroy']);
+
+   //checklist itema pis
+   Route::post('/item', [ChecklistItemsController::class, 'store']);
+  
+
+
 });
 
 Route::post('/register', [UsersController::class, 'store']);

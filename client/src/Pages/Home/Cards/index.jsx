@@ -9,7 +9,6 @@ import {
     setLabels,
     setMakeBlur,
     setPriorities,
-    setProjects,
     setTasks,
 } from "../../../store";
 import { toast } from "react-toastify";
@@ -32,7 +31,7 @@ const Card = () => {
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
 
-    //store single task's labels and priorities here
+    //store single task's labels, priorities,checklists here
     const handleOpenPopup = (task) => {
         dispatch(setMakeBlur({ makeBlur: true }));
         console.log(task);
@@ -132,7 +131,7 @@ const Card = () => {
                                                             label.color !==
                                                                 "null"
                                                                 ? label.color
-                                                                : "#3B444C"
+                                                                : "#3B444C",
                                                     }}
                                                 ></span>
                                             )

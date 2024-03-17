@@ -33,14 +33,16 @@ class Checklist extends Model
     protected $casts = [
         'task_id' => 'string',
         'name' => 'string',
-       
+
     ];
 
-    public function task() {
+    public function task()
+    {
         return $this->belongsTo(Task::class);
     }
 
-    public function checklist_items() {
+    public function checklistitems()
+    {
         return $this->hasMany(ChecklistItem::class);
     }
 
@@ -48,16 +50,32 @@ class Checklist extends Model
     public static function createChecklist(array $data)
     {
         $task = Task::find($data['task_id']);
-        
+
         if (!$task) {
-           return null;
-       }
+            return null;
+        }
 
         $checklist = new static;
         $checklist->fill($data);
         $checklist->save();
-        
+
         return $checklist;
     }
 
+    public static function updateChecklist(array $data)
+    {
+
+        $checklist = Checklist::find($data['id']);
+        if (!$checklist) {
+            return null;
+        }
+
+        if (isset($data['name'])) {
+            $checklist->name = $data['name'];
+        }
+
+        $checklist->save();
+
+        return $checklist;
+    }
 }

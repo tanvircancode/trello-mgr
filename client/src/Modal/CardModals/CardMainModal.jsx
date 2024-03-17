@@ -16,13 +16,25 @@ import {
 import CardModalButton from "./CardModalButton";
 import EditDescription from "../../component/description/EditDescription";
 import PrioritySelection from "../../component/priority/PrioritySelection";
+import DeleteChecklist from "../../component/checklist/DeleteChecklist";
+import AddItem from "../../component/checklist/AddItem";
 
 const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const textareaRef = useRef(null);
     const [showEditDesc, setShowEditDesc] = useState(false);
     const [showDescForm, setShowDescForm] = useState(false);
-    const [nameForm, setNameForm] = useState(false);
-    const [checklistForm, setChecklistForm] = useState(false);
+
+    const [nameFormText, setNameFormText] = useState("");
+
+    //for sending props
+    const [editingChecklistId, setEditingChecklistId] = useState(null);
+    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [editingItemId, setEditingItemId] = useState(null);
+
+    // const [checklistDataForItem, setChecklistDataForItem] = useState(null);
+
+    const [deletingChecklist, setDeletingChecklist] = useState(null);
+
     const [addItem, setAddItem] = useState(false);
 
     const blur = useSelector((state) => state.makeBlur);
@@ -32,7 +44,13 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const labels = useSelector((state) => state.labels);
 
     const priorities = useSelector((state) => state.priorities);
-    console.log(priorities);
+    // console.log(priorities);
+
+    const checklists = useSelector((state) => state.checklists);
+    const tasks = useSelector((state) => state.tasks);
+
+    console.log(tasks);
+    console.log(checklists);
 
     var doBlur = blur && cardModalblur;
 
@@ -74,6 +92,36 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
         setDescValue(e.target.value);
     };
 
+    //new
+    const handleEditChecklist = (checklist) => {
+        setAddItem(false);
+
+        console.log(checklist);
+        setEditingChecklistId(checklist.id);
+        setEditingTaskId(checklist.task_id);
+        setNameFormText(checklist.name);
+    };
+
+    const handleEditItem = (item) => {
+        setEditingItemId(item.id);
+        setNameFormText(item.name);
+    };
+
+    const handleDeleteChecklist = (checklist) => {
+        // console.log(priority);
+        setDeletingChecklist(checklist);
+    };
+
+    const handleAddItem = (checklist) => {
+        setAddItem(true);
+        setEditingChecklistId(checklist);
+
+        dispatch(setMakeBlur({ makeBlur: true }));
+        dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
+    };
+
+    //new end
+
     useEffect(() => {
         dispatch(setMakeBlur({ makeBlur: false }));
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
@@ -91,6 +139,13 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                     setDescValue={setDescValue}
                     setShowEditDesc={setShowEditDesc}
                     fetchSingleCard={fetchSingleCard}
+                />
+            )}
+
+            {deletingChecklist && (
+                <DeleteChecklist
+                    deletingChecklist={deletingChecklist}
+                    setDeletingChecklist={setDeletingChecklist}
                 />
             )}
             {fetchSingleCard && (
@@ -265,186 +320,210 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                     priorities={priorities}
                                                 />
                                             </div>
-                                            
-                                            <div className="card-detail">
-                                                <div className="card-detail-checklist-header d-flex mb-2">
-                                                    <div className="d-flex w-100">
-                                                        <BsCheck2Square className="card-sm-icon" />
 
-                                                        {!nameForm && (
-                                                            <h3
-                                                                className="card-detail-header m-0 cursor-pointer"
-                                                                onClick={() =>
-                                                                    setNameForm(
-                                                                        true
-                                                                    )
-                                                                }
-                                                            >
-                                                                Checklist
-                                                                Namexxx
-                                                            </h3>
-                                                        )}
+                                            {/* checklist start */}
 
-                                                        {nameForm && (
-                                                            <EditNameDescModal
-                                                                name="Checklist Name"
-                                                                setNameForm={
-                                                                    setNameForm
-                                                                }
-                                                            />
-                                                        )}
-                                                        {/* )} */}
-                                                    </div>
-
-                                                    <div className="d-flex">
-                                                        {!nameForm && (
-                                                            <button
-                                                                type="button"
-                                                                className="modal-hide-item"
-                                                                onClick={() =>
-                                                                    setNameForm(
-                                                                        true
-                                                                    )
-                                                                }
-                                                            >
-                                                                Hide checked
-                                                                items
-                                                            </button>
-                                                        )}
-                                                        {!nameForm && (
-                                                            <button
-                                                                type="button"
-                                                                className="modal-edit"
-                                                                onClick={() =>
-                                                                    setNameForm(
-                                                                        true
-                                                                    )
-                                                                }
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        )}
-                                                        {/* )} */}
-                                                    </div>
-                                                </div>
-
-                                                <div className="card-detail-checklist-text ">
-                                                    <div
-                                                        className="progress mb-2"
-                                                        role="progressbar"
-                                                        aria-valuemin="0"
-                                                        aria-valuemax="100"
-                                                        style={{
-                                                            height: "0.4rem",
-                                                        }}
-                                                    >
+                                            {checklists.length > 0 &&
+                                                checklists.map(
+                                                    (checklist, index) => (
                                                         <div
-                                                            className="progress-bar"
-                                                            style={{
-                                                                width: "30%",
-                                                            }}
-                                                        ></div>
-                                                    </div>
-                                                    <div className="cheklist-item-list d-flex flex-column gap-2">
-                                                        <div className="d-flex justify-content-between align-items-center">
-                                                            <div className="checklist-item-single d-flex gap-3 w-100">
-                                                                <input
-                                                                    className="form-check-input m-0"
-                                                                    type="checkbox"
-                                                                    style={{
-                                                                        cursor: "pointer",
-                                                                    }}
-                                                                    // checked={true}
-                                                                />
+                                                            key={index}
+                                                            className="card-detail"
+                                                        >
+                                                            <div className="card-detail-checklist-header d-flex mb-2">
+                                                                <div className="d-flex w-100">
+                                                                    <BsCheck2Square className="card-sm-icon" />
 
-                                                                {!checklistForm && (
-                                                                    <label
-                                                                        className="form-check-label checklist-label"
-                                                                        onClick={() =>
-                                                                            setChecklistForm(
-                                                                                true
-                                                                            )
-                                                                        }
+                                                                    <h3
+                                                                        className="card-detail-header m-0"
                                                                         style={{
+                                                                            display:
+                                                                                nameFormText &&
+                                                                                editingChecklistId ===
+                                                                                    checklist.id
+                                                                                    ? "none"
+                                                                                    : "block",
                                                                             cursor: "pointer",
                                                                         }}
-                                                                        // style={{ textDecoration: true ? 'line-through' : 'none' }}
-                                                                    >
-                                                                        hhh
-                                                                    </label>
-                                                                )}
-
-                                                                {checklistForm && (
-                                                                    <EditNameDescModal
-                                                                        name="Checklist Name"
-                                                                        setNameForm={
-                                                                            setChecklistForm
+                                                                        onClick={() =>
+                                                                            handleEditChecklist(
+                                                                                checklist
+                                                                            )
                                                                         }
-                                                                    />
-                                                                )}
-                                                            </div>
-                                                            {!checklistForm && (
-                                                                <BsTrash
-                                                                    className="card-sm-icon "
-                                                                    style={{
-                                                                        cursor: "pointer",
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                        <div className="d-flex justify-content-between align-items-center">
-                                                            <div className="checklist-item-single d-flex align-items-center gap-3 w-100">
-                                                                <input
-                                                                    className="form-check-input m-0"
-                                                                    type="checkbox"
-                                                                    style={{
-                                                                        cursor: "pointer",
-                                                                    }}
+                                                                    >
+                                                                        {
+                                                                            checklist.name
+                                                                        }
+                                                                    </h3>
 
-                                                                    // checked={true}
-                                                                />
-                                                                <label
-                                                                    className="form-check-label checklist-label"
+                                                                    {editingChecklistId ===
+                                                                        checklist.id && (
+                                                                        <EditNameDescModal
+                                                                            setNameFormText={
+                                                                                setNameFormText
+                                                                            }
+                                                                            nameFormText={
+                                                                                nameFormText
+                                                                            }
+                                                                            setEditingChecklistId={
+                                                                                setEditingChecklistId
+                                                                            }
+                                                                            editingChecklistId={
+                                                                                editingChecklistId
+                                                                            }
+                                                                            setEditingTaskId={
+                                                                                setEditingTaskId
+                                                                            }
+                                                                            editingTaskId={
+                                                                                editingTaskId
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </div>
+
+                                                                <div className="d-flex">
+                                                                    {!(
+                                                                        editingChecklistId ===
+                                                                        checklist.id
+                                                                    ) && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="modal-hide-item"
+                                                                            // onClick={() =>
+
+                                                                            // }
+                                                                        >
+                                                                            Hide
+                                                                            checked
+                                                                            items
+                                                                        </button>
+                                                                    )}
+                                                                    {!(
+                                                                        editingChecklistId ===
+                                                                        checklist.id
+                                                                    ) && (
+                                                                        <button
+                                                                            type="button"
+                                                                            className="modal-edit"
+                                                                            onClick={() =>
+                                                                                handleDeleteChecklist(
+                                                                                    checklist
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="card-detail-checklist-text ">
+                                                                <div
+                                                                    className="progress mb-2"
+                                                                    role="progressbar"
+                                                                    aria-valuemin="0"
+                                                                    aria-valuemax="100"
                                                                     style={{
-                                                                        cursor: "pointer",
+                                                                        height: "0.4rem",
                                                                     }}
-                                                                    // style={{ textDecoration: true ? 'line-through' : 'none' }}
                                                                 >
-                                                                    ttt
-                                                                </label>
-                                                            </div>
-                                                            <BsTrash
-                                                                className="card-sm-icon"
-                                                                style={{
-                                                                    cursor: "pointer",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    {!addItem && (
-                                                        <button
-                                                            type="button"
-                                                            className="add-item"
-                                                            onClick={() =>
-                                                                setAddItem(true)
-                                                            }
-                                                        >
-                                                            Add an item
-                                                        </button>
-                                                    )}
+                                                                    <div
+                                                                        className="progress-bar"
+                                                                        style={{
+                                                                            width: "30%",
+                                                                        }}
+                                                                    ></div>
+                                                                </div>
+                                                                <div className="cheklist-item-list d-flex flex-column gap-2">
+                                                                    {/* checklist item start */}
+                                                                    {checklist
+                                                                        ?.checklistitems
+                                                                        ?.length >
+                                                                        0 &&
+                                                                        checklist.checklistitems.map(
+                                                                            (
+                                                                                item,
+                                                                                idx
+                                                                            ) => (
+                                                                                <div
+                                                                                    key={
+                                                                                        idx
+                                                                                    }
+                                                                                    className="d-flex justify-content-between align-items-center mb-2"
+                                                                                >
+                                                                                    <div className="checklist-item-single d-flex gap-3 w-100">
+                                                                                        <input
+                                                                                            className="form-check-input m-0"
+                                                                                            type="checkbox"
+                                                                                            style={{
+                                                                                                cursor: "pointer",
+                                                                                            }}
+                                                                                            // checked={true}
+                                                                                        />
 
-                                                    {addItem && (
-                                                        <EditNameDescModal
-                                                            name="Checklist Name"
-                                                            button="Add item"
-                                                            setNameForm={
-                                                                setAddItem
-                                                            }
-                                                        />
-                                                    )}
-                                                </div>
-                                            </div>
+                                                                                        <label
+                                                                                            className="form-check-label checklist-label"
+                                                                                            onClick={() =>
+                                                                                                handleEditItem(
+                                                                                                    item
+                                                                                                )
+                                                                                            }
+                                                                                            style={{
+                                                                                                display:
+                                                                                                    editingItemId ===
+                                                                                                    item.id
+                                                                                                        ? "none"
+                                                                                                        : "block",
+                                                                                                cursor: "pointer",
+                                                                                            }}
+                                                                                            // style={{ textDecoration: true ? 'line-through' : 'none' }}
+                                                                                        >
+                                                                                            {
+                                                                                                item.name
+                                                                                            }
+                                                                                        </label>
+
+                                                                                        {editingItemId ===
+                                                                                            item.id && (
+                                                                                            <EditNameDescModal />
+                                                                                        )}
+                                                                                    </div>
+                                                                                    {!(
+                                                                                        editingItemId ===
+                                                                                        item.id
+                                                                                    ) && (
+                                                                                        <BsTrash
+                                                                                            className="card-sm-icon "
+                                                                                            style={{
+                                                                                                cursor: "pointer",
+                                                                                            }}
+                                                                                        />
+                                                                                    )}
+                                                                                </div>
+                                                                            )
+                                                                        )}
+                                                                    {/* checklist item end */}
+                                                                </div>
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="add-item"
+                                                                    onClick={() =>
+                                                                        handleAddItem(
+                                                                            checklist
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    Add an item
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                )}
                                         </div>
+
+                                        {/* checklist end */}
+
                                         <div className="col-md-12 col-sm-12 col-lg-3 mt-3">
                                             <CardModalButton />
                                         </div>
@@ -454,6 +533,12 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                         </div>
                     </div>
                 </div>
+            )}
+            {addItem && (
+                <AddItem
+                    setAddItem={setAddItem}
+                    setEditingChecklistId={setEditingChecklistId}
+                />
             )}
         </div>
     );

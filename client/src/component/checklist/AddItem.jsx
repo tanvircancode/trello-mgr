@@ -1,44 +1,52 @@
-import { useState, useEffect } from "react";
-import "../modal.scss";
-import { useDispatch, useSelector } from "react-redux";
-import { setChecklists, setMakeCardModalBlur, setTasks } from "../../store";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setTasks, setChecklists,setMakeCardModalBlur } from "../../store";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 
-const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
-    const [title, setTitle] = useState("");
+const AddItem = ({ setAddItem, setEditingChecklistId }) => {
+    console.log(setEditingChecklistId);
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
-    const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
-    console.log(fetchSingleCard);
+    const checklistId = setEditingChecklistId.id;
+    const taskId = setEditingChecklistId.task_id;
+
+    const [title, setTitle] = useState("");
 
     const dispatch = useDispatch();
 
-    const cancelModal = () => {
+    const cancelCreateItem = () => {
         setTitle("");
-        setOpenChecklistModal(false);
+        setAddItem(false);
+        setEditingChecklistId(null);
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+
     };
 
-    const handleAddChecklist = async () => {
+    const handleCreateItem = async () => {
         var formData = new FormData();
         formData.append("name", title);
         formData.append("user_id", userId);
-        formData.append("task_id", fetchSingleCard.id);
+        formData.append("checklist_id", checklistId);
+        formData.append("task_id", taskId);
+        formData.append("is_completed", 0);
 
         await axios
-            .post(`${BASE_URL}/api/checklist`, formData, {
+            .post(`${BASE_URL}/api/item`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-type": "application/json",
                 },
             })
             .then((res) => {
-                console.log(res);
+                // console.log(res);
+
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    dispatch(setChecklists({ checklists: res.data.task.checklists }));
+                    dispatch(
+                        setChecklists({ checklists: res.data.task.checklists })
+                    );
                     // toast.success(res.data.message);
                 } else {
                     toast.error("Server is not responding");
@@ -56,17 +64,19 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                     toast.error("Server is not responding");
                 }
             });
-            cancelModal();
+        cancelCreateItem();
     };
 
     return (
-       
+     
+     
+            
             <div
-                className={`modal fade ${openChecklistModal ? "show" : ""}`}
+                className={`modal fade ${setAddItem ? "show" : ""}`}
                 tabIndex="-1"
                 role="dialog"
                 style={{
-                    display: openChecklistModal ? "block" : "none",
+                    display: setAddItem ? "block" : "none",
                     marginTop: "2em",
                 }}
             >
@@ -77,7 +87,7 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                                 className="modal-title fs-6 text-center"
                                 style={{ margin: "0 auto" }}
                             >
-                                Add Checklist
+                                Add Checklist Item
                             </h1>
                             <button
                                 type="button"
@@ -85,7 +95,7 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
                                 style={{ marginLeft: 0, fontSize: "10px" }}
-                                onClick={cancelModal}
+                                onClick={() => cancelCreateItem()}
                             ></button>
                         </div>
 
@@ -105,15 +115,16 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                                 type="button"
                                 className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
                                 disabled={!title}
-                                onClick={() => handleAddChecklist()}
+                                onClick={() => handleCreateItem()}
                             >
                                 <span>Add</span>
                             </button>
                         </div>
                     </div>
                 </div>
-            
-        </div>
+            </div>
+      
     );
 };
-export default ChecklistModal;
+
+export default AddItem;

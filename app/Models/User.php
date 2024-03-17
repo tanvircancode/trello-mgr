@@ -90,7 +90,7 @@ class User extends Authenticatable
     public function getProjectsWithOwnerAndTasks()
     {
         return $this->projects()
-            ->with(['user', 'tasks','tasks.labels','tasks.priorities', 'tasks.checklists'])
+            ->with(['user', 'tasks','tasks.labels','tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems'])
             ->get()
             ->map(function ($project) {
                 $project->is_owner = $project->user_id === $this->id;

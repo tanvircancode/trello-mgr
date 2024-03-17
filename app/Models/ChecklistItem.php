@@ -42,4 +42,21 @@ class ChecklistItem extends Model
         return $this->belongsTo(Checklist::class);
     }
 
+     //custom methods
+     public static function createItem(array $data)
+     {
+         $checklist = Checklist::find($data['checklist_id']);
+         
+         if (!$checklist) {
+            return null;
+        }
+     
+ 
+         $priority = new static;
+         $priority->fill($data);
+         $priority->save();
+         
+         return $priority;
+     }
+
 }
