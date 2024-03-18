@@ -88,7 +88,8 @@ class ChecklistsController extends Controller
 
         $checklist->delete();
         $task = Task::with('checklists','checklists.checklistitems')->find($checklist->task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')->find($task->project_id);
+        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,

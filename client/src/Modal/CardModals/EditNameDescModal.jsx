@@ -16,6 +16,8 @@ const EditNameDescModal = ({
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
 
+    console.log(editingChecklistId);
+
     const dispatch = useDispatch();
 
     const cancelEditing = () => {
@@ -89,7 +91,7 @@ const EditNameDescModal = ({
                     }}
                     onClick={() => handleSubmit()}
                 >
-                    Savesssss
+                    Save
                 </button>
                 <button
                     type="button"

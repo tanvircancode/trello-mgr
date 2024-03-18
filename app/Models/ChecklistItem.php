@@ -19,7 +19,7 @@ class ChecklistItem extends Model
 
 
     protected $fillable = [
-        'checklist_id', 'name','is_completed'
+        'checklist_id', 'name', 'is_completed'
     ];
 
     protected static function boot()
@@ -35,28 +35,41 @@ class ChecklistItem extends Model
         'checklist_id' => 'string',
         'name' => 'string',
         'is_completed' => 'boolean',
-       
+
     ];
 
-    public function checklist() {
+    public function checklist()
+    {
         return $this->belongsTo(Checklist::class);
     }
 
-     //custom methods
-     public static function createItem(array $data)
-     {
-         $checklist = Checklist::find($data['checklist_id']);
-         
-         if (!$checklist) {
+    //custom methods
+    public static function createItem(array $data)
+    {
+        $checklist = Checklist::find($data['checklist_id']);
+
+        if (!$checklist) {
             return null;
         }
-     
- 
-         $priority = new static;
-         $priority->fill($data);
-         $priority->save();
-         
-         return $priority;
-     }
 
+        $item = new static;
+        $item->fill($data);
+        $item->save();
+
+        return $item;
+    }
+
+    public static function updateItem(array $data)
+    {
+
+        $item = ChecklistItem::find($data['id']);
+        if (!$item) {
+            return null;
+        }
+
+        $item->fill($data);
+        $item->save();
+
+        return $item;
+    }
 }

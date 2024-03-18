@@ -54,12 +54,15 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::put('/checklist', [ChecklistsController::class, 'update']);
   Route::delete('/deletechecklist/{id}', [ChecklistsController::class, 'destroy']);
 
-   //checklist itema pis
+   //checklist item apis
    Route::post('/item', [ChecklistItemsController::class, 'store']);
+   Route::put('/item', [ChecklistItemsController::class, 'update']);
+   Route::delete('/deleteitem/{id}', [ChecklistItemsController::class, 'destroy']);
+
   
 
 
 });
-
+// Login and Register
 Route::post('/register', [UsersController::class, 'store']);
 Route::post('/login', [UsersController::class, 'login']);

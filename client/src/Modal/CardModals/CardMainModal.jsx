@@ -5,6 +5,7 @@ import {
     BsBarChartSteps,
     BsTrash,
     BsMegaphoneFill,
+    BsPencil,
     BsCheck2Square,
 } from "react-icons/bs";
 import EditNameDescModal from "./EditNameDescModal";
@@ -18,6 +19,9 @@ import EditDescription from "../../component/description/EditDescription";
 import PrioritySelection from "../../component/priority/PrioritySelection";
 import DeleteChecklist from "../../component/checklist/DeleteChecklist";
 import AddItem from "../../component/checklist/AddItem";
+import SelectionItem from "../../component/checklist/SelectionItem";
+import DeleteItem from "../../component/checklist/DeleteItem";
+
 
 const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const textareaRef = useRef(null);
@@ -31,9 +35,10 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const [editingTaskId, setEditingTaskId] = useState(null);
     const [editingItemId, setEditingItemId] = useState(null);
 
-    // const [checklistDataForItem, setChecklistDataForItem] = useState(null);
-
     const [deletingChecklist, setDeletingChecklist] = useState(null);
+
+    const [selectItem, setSelectItem] = useState(null);
+    const [deleteItem, setDeleteItem] = useState(null);
 
     const [addItem, setAddItem] = useState(false);
 
@@ -64,6 +69,10 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
         setShowDescForm(false);
         setShowEditDesc(false);
         setDescValue("");
+        setNameFormText("");
+        setEditingItemId(null);
+        setEditingTaskId(null);
+        setEditingChecklistId(null);
     };
 
     const handleDescSubmit = () => {
@@ -81,6 +90,9 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const clickTextarea = () => {
         if (textareaRef.current) {
             textareaRef.current.focus();
+
+            //     const descriptionLength = fetchSingleCard?.description ? fetchSingleCard.description.length : 0;
+            // textareaRef.current.setSelectionRange(descriptionLength, descriptionLength);
         }
         setShowDescForm(true);
         if (fetchSingleCard?.description) {
@@ -95,16 +107,9 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     //new
     const handleEditChecklist = (checklist) => {
         setAddItem(false);
-
-        console.log(checklist);
         setEditingChecklistId(checklist.id);
         setEditingTaskId(checklist.task_id);
         setNameFormText(checklist.name);
-    };
-
-    const handleEditItem = (item) => {
-        setEditingItemId(item.id);
-        setNameFormText(item.name);
     };
 
     const handleDeleteChecklist = (checklist) => {
@@ -115,10 +120,28 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const handleAddItem = (checklist) => {
         setAddItem(true);
         setEditingChecklistId(checklist);
+        setNameFormText("");
 
         dispatch(setMakeBlur({ makeBlur: true }));
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
     };
+
+    const handleDeleteItem = (item) => {
+        setDeleteItem(item);
+    };
+
+    const handleEditItem = (item) => {
+       
+        setSelectItem({...item, modal: true});
+        dispatch(setMakeBlur({ makeBlur: true }));
+        dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
+    };
+
+    //handling checkbox
+    const handleCheckboxChange = (item, checked) => {
+        setSelectItem({ ...item, checked: checked });
+    };
+    //handling checkbox end
 
     //new end
 
@@ -148,6 +171,16 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                     setDeletingChecklist={setDeletingChecklist}
                 />
             )}
+
+            {deleteItem && (
+                <DeleteItem
+                    deleteItem={deleteItem}
+                    setDeleteItem={setDeleteItem}
+                />
+            )}
+
+           
+
             {fetchSingleCard && (
                 <div
                     className={`modal fade ${openNewCardModal ? "show" : ""} `}
@@ -165,7 +198,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                         : ""
                                 }`}
                             >
-                                <h5 className="modal-title">
+                                <h5 className="modal-title modal-custom-title">
                                     {fetchSingleCard.title}
                                 </h5>
                                 <button
@@ -251,6 +284,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                     "500",
                                                                 pointerEvents:
                                                                     "none",
+                                                                cursor: "default",
                                                             }}
                                                             rows="4"
                                                             placeholder={
@@ -325,200 +359,235 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
 
                                             {checklists.length > 0 &&
                                                 checklists.map(
-                                                    (checklist, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className="card-detail"
-                                                        >
-                                                            <div className="card-detail-checklist-header d-flex mb-2">
-                                                                <div className="d-flex w-100">
-                                                                    <BsCheck2Square className="card-sm-icon" />
+                                                    (checklist, index) => {
+                                                        const totalItems =
+                                                        checklist.checklistitems ? checklist.checklistitems.length : 0;
+                                                        // Calculate the number of completed checklist items
+                                                        const completedItems = 
+                                                        checklist.checklistitems && checklist.checklistitems.filter(
+                                                                (item) =>
+                                                                    item.is_completed
+                                                            ).length;
+                                                        // Calculate the completion percentage
+                                                        const completionPercentage =
+                                                            totalItems > 0
+                                                                ? Math.round(
+                                                                      (completedItems /
+                                                                          totalItems) *
+                                                                          100
+                                                                  )
+                                                                : 0;
+                                                        return (
+                                                            <div
+                                                                key={index}
+                                                                className="card-detail"
+                                                            >
+                                                                <div className="card-detail-checklist-header d-flex mb-2">
+                                                                    <div className="d-flex w-100">
+                                                                        <BsCheck2Square className="card-sm-icon" />
 
-                                                                    <h3
-                                                                        className="card-detail-header m-0"
-                                                                        style={{
-                                                                            display:
-                                                                                nameFormText &&
-                                                                                editingChecklistId ===
+                                                                        <h3
+                                                                            className="card-detail-header m-0"
+                                                                            style={{
+                                                                                display:
+                                                                                    editingChecklistId ===
                                                                                     checklist.id
-                                                                                    ? "none"
-                                                                                    : "block",
-                                                                            cursor: "pointer",
-                                                                        }}
-                                                                        onClick={() =>
-                                                                            handleEditChecklist(
-                                                                                checklist
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            checklist.name
-                                                                        }
-                                                                    </h3>
-
-                                                                    {editingChecklistId ===
-                                                                        checklist.id && (
-                                                                        <EditNameDescModal
-                                                                            setNameFormText={
-                                                                                setNameFormText
-                                                                            }
-                                                                            nameFormText={
-                                                                                nameFormText
-                                                                            }
-                                                                            setEditingChecklistId={
-                                                                                setEditingChecklistId
-                                                                            }
-                                                                            editingChecklistId={
-                                                                                editingChecklistId
-                                                                            }
-                                                                            setEditingTaskId={
-                                                                                setEditingTaskId
-                                                                            }
-                                                                            editingTaskId={
-                                                                                editingTaskId
-                                                                            }
-                                                                        />
-                                                                    )}
-                                                                </div>
-
-                                                                <div className="d-flex">
-                                                                    {!(
-                                                                        editingChecklistId ===
-                                                                        checklist.id
-                                                                    ) && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="modal-hide-item"
-                                                                            // onClick={() =>
-
-                                                                            // }
-                                                                        >
-                                                                            Hide
-                                                                            checked
-                                                                            items
-                                                                        </button>
-                                                                    )}
-                                                                    {!(
-                                                                        editingChecklistId ===
-                                                                        checklist.id
-                                                                    ) && (
-                                                                        <button
-                                                                            type="button"
-                                                                            className="modal-edit"
+                                                                                        ? "none"
+                                                                                        : "block",
+                                                                                cursor: "pointer",
+                                                                            }}
                                                                             onClick={() =>
-                                                                                handleDeleteChecklist(
+                                                                                handleEditChecklist(
                                                                                     checklist
                                                                                 )
                                                                             }
                                                                         >
-                                                                            Delete
-                                                                        </button>
-                                                                    )}
+                                                                            {
+                                                                                checklist.name
+                                                                            }
+                                                                        </h3>
+
+                                                                        {editingChecklistId ===
+                                                                            checklist.id && (
+                                                                            <EditNameDescModal
+                                                                                setNameFormText={
+                                                                                    setNameFormText
+                                                                                }
+                                                                                nameFormText={
+                                                                                    nameFormText
+                                                                                }
+                                                                                setEditingChecklistId={
+                                                                                    setEditingChecklistId
+                                                                                }
+                                                                                editingChecklistId={
+                                                                                    editingChecklistId
+                                                                                }
+                                                                                setEditingTaskId={
+                                                                                    setEditingTaskId
+                                                                                }
+                                                                                editingTaskId={
+                                                                                    editingTaskId
+                                                                                }
+                                                                            />
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div className="d-flex">
+                                                                       
+                                                                        {!(
+                                                                            editingChecklistId ===
+                                                                            checklist.id
+                                                                        ) && (
+                                                                            <button
+                                                                                type="button"
+                                                                                className="modal-edit"
+                                                                                onClick={() =>
+                                                                                    handleDeleteChecklist(
+                                                                                        checklist
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                Delete
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <div className="card-detail-checklist-text ">
-                                                                <div
-                                                                    className="progress mb-2"
-                                                                    role="progressbar"
-                                                                    aria-valuemin="0"
-                                                                    aria-valuemax="100"
-                                                                    style={{
-                                                                        height: "0.4rem",
-                                                                    }}
-                                                                >
-                                                                    <div
-                                                                        className="progress-bar"
-                                                                        style={{
-                                                                            width: "30%",
-                                                                        }}
-                                                                    ></div>
-                                                                </div>
-                                                                <div className="cheklist-item-list d-flex flex-column gap-2">
-                                                                    {/* checklist item start */}
-                                                                    {checklist
-                                                                        ?.checklistitems
-                                                                        ?.length >
-                                                                        0 &&
-                                                                        checklist.checklistitems.map(
-                                                                            (
-                                                                                item,
-                                                                                idx
-                                                                            ) => (
-                                                                                <div
-                                                                                    key={
-                                                                                        idx
-                                                                                    }
-                                                                                    className="d-flex justify-content-between align-items-center mb-2"
-                                                                                >
-                                                                                    <div className="checklist-item-single d-flex gap-3 w-100">
-                                                                                        <input
-                                                                                            className="form-check-input m-0"
-                                                                                            type="checkbox"
-                                                                                            style={{
-                                                                                                cursor: "pointer",
-                                                                                            }}
-                                                                                            // checked={true}
-                                                                                        />
+                                                                <div className="card-detail-checklist-text ">
+                                                                    <div className="d-flex align-items-center mb-3">
+                                                                        <span className="progress-text">{`${completionPercentage}%`}</span>
 
-                                                                                        <label
-                                                                                            className="form-check-label checklist-label"
-                                                                                            onClick={() =>
-                                                                                                handleEditItem(
-                                                                                                    item
-                                                                                                )
-                                                                                            }
-                                                                                            style={{
-                                                                                                display:
-                                                                                                    editingItemId ===
-                                                                                                    item.id
-                                                                                                        ? "none"
-                                                                                                        : "block",
-                                                                                                cursor: "pointer",
-                                                                                            }}
-                                                                                            // style={{ textDecoration: true ? 'line-through' : 'none' }}
-                                                                                        >
-                                                                                            {
-                                                                                                item.name
-                                                                                            }
-                                                                                        </label>
+                                                                        <div
+                                                                            className="progress"
+                                                                            role="progressbar"
+                                                                            aria-valuemin="0"
+                                                                            aria-valuemax="100"
+                                                                            style={{
+                                                                                height: "0.4rem",
+                                                                                width: "100%",
+                                                                            }}
+                                                                        >
+                                                                            <div
+                                                                                className="progress-bar"
+                                                                                style={{
+                                                                                    width: `${completionPercentage}%`,
+                                                                                }}
+                                                                            ></div>
+                                                                        </div>
+                                                                    </div>
 
-                                                                                        {editingItemId ===
-                                                                                            item.id && (
-                                                                                            <EditNameDescModal />
+                                                                    <div className="cheklist-item-list d-flex flex-column gap-1">
+                                                                        {/* checklist item start */}
+                                                                        {checklist
+                                                                            ?.checklistitems
+                                                                            ?.length >
+                                                                            0 &&
+                                                                            checklist.checklistitems.map(
+                                                                                (
+                                                                                    item,
+                                                                                    idx
+                                                                                ) => (
+                                                                                    <div
+                                                                                        key={
+                                                                                            idx
+                                                                                        }
+                                                                                        className="d-flex justify-content-between align-items-center mb-2"
+                                                                                    >
+                                                                                        <div className="checklist-item-single d-flex gap-3 w-100">
+                                                                                            <input
+                                                                                                className="form-check-input m-0"
+                                                                                                type="checkbox"
+                                                                                                checked={
+                                                                                                    item.is_completed
+                                                                                                }
+                                                                                                style={{
+                                                                                                    cursor: "pointer",
+                                                                                                }}
+                                                                                                onChange={(
+                                                                                                    e
+                                                                                                ) =>
+                                                                                                    handleCheckboxChange(
+                                                                                                        item,
+                                                                                                        e
+                                                                                                            .target
+                                                                                                            .checked
+                                                                                                    )
+                                                                                                }
+                                                                                            />
+
+                                                                                            <label
+                                                                                                className="form-check-label checklist-label"
+                                                                                                style={{
+                                                                                                    display:
+                                                                                                        editingItemId ===
+                                                                                                        item.id
+                                                                                                            ? "none"
+                                                                                                            : "block",
+
+                                                                                                    textDecoration:
+                                                                                                        item.is_completed
+                                                                                                            ? "line-through"
+                                                                                                            : "none",
+                                                                                                }}
+                                                                                            >
+                                                                                                {
+                                                                                                    item.name
+                                                                                                }
+                                                                                            </label>
+
+                                                                                            {editingItemId ===
+                                                                                                item.id && (
+                                                                                                <EditNameDescModal />
+                                                                                            )}
+                                                                                        </div>
+                                                                                        {!(
+                                                                                            editingItemId ===
+                                                                                            item.id
+                                                                                        ) && (
+                                                                                            <>
+                                                                                                <BsPencil
+                                                                                                    className="edit-item-pencil"
+                                                                                                    onClick={() =>
+                                                                                                        handleEditItem(
+                                                                                                            item
+                                                                                                        )
+                                                                                                    }
+                                                                                                />
+                                                                                                <BsTrash
+                                                                                                    className="card-sm-icon item-trash"
+                                                                                                    style={{
+                                                                                                        cursor: "pointer",
+                                                                                                    }}
+                                                                                                    onClick={() =>
+                                                                                                        handleDeleteItem(
+                                                                                                            item
+                                                                                                        )
+                                                                                                    }
+                                                                                                />
+                                                                                            </>
                                                                                         )}
                                                                                     </div>
-                                                                                    {!(
-                                                                                        editingItemId ===
-                                                                                        item.id
-                                                                                    ) && (
-                                                                                        <BsTrash
-                                                                                            className="card-sm-icon "
-                                                                                            style={{
-                                                                                                cursor: "pointer",
-                                                                                            }}
-                                                                                        />
-                                                                                    )}
-                                                                                </div>
-                                                                            )
-                                                                        )}
-                                                                    {/* checklist item end */}
-                                                                </div>
+                                                                                )
+                                                                            )}
+                                                                        {/* checklist item end */}
+                                                                    </div>
 
-                                                                <button
-                                                                    type="button"
-                                                                    className="add-item"
-                                                                    onClick={() =>
-                                                                        handleAddItem(
-                                                                            checklist
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    Add an item
-                                                                </button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="add-item"
+                                                                        onClick={() =>
+                                                                            handleAddItem(
+                                                                                checklist
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Add an
+                                                                        item
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    )
+                                                        );
+                                                    }
                                                 )}
                                         </div>
 
@@ -536,8 +605,16 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
             )}
             {addItem && (
                 <AddItem
+                    addItem={addItem}
                     setAddItem={setAddItem}
+                    editingChecklistId={editingChecklistId}
                     setEditingChecklistId={setEditingChecklistId}
+                />
+            )}
+             {selectItem && (
+                <SelectionItem
+                    selectItem={selectItem}
+                    setSelectItem={setSelectItem}
                 />
             )}
         </div>

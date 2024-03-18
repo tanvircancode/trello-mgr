@@ -96,7 +96,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
                                     className="modal-title fs-6 text-center"
                                     style={{ margin: "0 auto" }}
                                 >
-                                    Labels
+                                    Labelssss
                                 </h1>
                                 <button
                                     type="button"

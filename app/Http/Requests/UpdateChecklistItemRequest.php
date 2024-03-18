@@ -31,7 +31,7 @@ class UpdateChecklistItemRequest extends FormRequest
     public function messages(): array
     {
         return [
-            
+            'name.required' => 'Title is required',
             'name.min' => 'Title is too short',
             'name.max' => 'Please Try To Use Shorter Title',
         ];

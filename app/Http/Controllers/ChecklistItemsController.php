@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreChecklistItemRequest;
 use App\Http\Requests\UpdateChecklistItemRequest;
+use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\Project;
 use App\Models\Task;
@@ -46,13 +47,75 @@ class ChecklistItemsController extends Controller
             'status' => true,
             'task' => $tasks,
             'project' => $projects,
-            'message' => "Priority Created Successfully"
+            'message' => "Checklist item Created Successfully"
         ];
 
 
         return response()->json($response, 200);
     }
-    public function update(UpdateChecklistItemRequest $request, $id){
+    public function update(UpdateChecklistItemRequest $request){
+        $user_id = $request->input('user_id');
+       
+        $checklist_id = $request->input('checklist_id');
+        
 
+        if ($user_id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $checklist = Checklist::find($checklist_id);
+       
+        
+        if (!$checklist) {
+            return response()->json(['status' => false, 'message' => 'Checklist not found'], 404);
+       }
+
+        $itemModel = new ChecklistItem();
+        $item = $itemModel->updateItem($request->all());
+
+        if (!$item) {
+            return response()->json(['status' => false, 'message' => 'Checklist item not found'], 404);
+        }
+
+        $task = Task::with('checklists','checklists.checklistitems')->find($checklist->task_id);
+        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($task->project_id);
+
+        $response = [
+            'status' => true,
+            'task' => $task,
+            'project' => $project,
+            'message' => "Checklist item Updated Successfully"
+        ];
+
+
+        return response()->json($response, 200);
     }
+
+    public function destroy($id)
+    {
+        $item = ChecklistItem::find($id);
+
+        if (!$item) {
+            return response()->json(['status' => false, 'message' => 'Checklist Item not found'], 404);
+        }
+
+        $item->delete();
+
+        $taskId = $item->checklist->task->id;
+
+        $task = Task::with('checklists','checklists.checklistitems')->find($taskId);
+        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($task->project_id);
+
+        $response = [
+            'status' => true,
+            'task' => $task,
+            'project' => $project,
+            'message' => "Checklist item Deleted Successfully"
+        ];
+        return response()->json($response, 200);
+    }
+
+
 }

@@ -11,9 +11,13 @@
     }
 }
 .modal-header-padding {
-    padding: 6px 28px;
+    padding: 9px 28px;
     font-weight: 600;
     font-size: 14px;
+}
+.modal-custom-title{
+    font-size: 18px;
+    font-weight: 600;
 }
 .board-title-input {
     padding: 0.2rem 0.5rem;
@@ -136,8 +140,8 @@
     border-radius: 3px;
 }
 .add-item {
-    margin-left: 32px;
-    margin-top: 12px;
+    // margin-left: 32px;
+    margin-top: 5px;
     font-size: 12px;
     line-height: 20px;
     font-weight: 500;
@@ -302,4 +306,18 @@
     font-size: 14px;
     text-align: left;
     color: #ffffff;
+}
+.progress-text{
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 6px;
+}
+.edit-item-pencil{
+    font-size: 14px;
+    color: #8c9bab;
+    margin-right: 16px;
+    cursor: pointer;
+}
+.item-trash{
+    margin-right: 0 !important;
 }

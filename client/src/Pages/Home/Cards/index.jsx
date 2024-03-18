@@ -115,7 +115,7 @@ const Card = () => {
                         onClick={() => handleOpenPopup(task)}
                     >
                         <div className="card-body">
-                            <h5 className="card-title">{task.title}</h5>
+                            <h5 className="card-title custom-card-title">{task.title}</h5>
                             <div className="d-flex flex-wrap gap-1">
                                 {task.labels.length > 0 &&
                                     task.labels.map(

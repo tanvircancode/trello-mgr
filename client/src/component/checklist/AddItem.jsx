@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { setTasks, setChecklists,setMakeCardModalBlur } from "../../store";
+import { setTasks, setChecklists, setMakeCardModalBlur } from "../../store";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 
-const AddItem = ({ setAddItem, setEditingChecklistId }) => {
-    console.log(setEditingChecklistId);
+const AddItem = ({
+    addItem,
+    setAddItem,
+    editingChecklistId,
+    setEditingChecklistId,
+}) => {
+    console.log(editingChecklistId);
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
-    const checklistId = setEditingChecklistId.id;
-    const taskId = setEditingChecklistId.task_id;
+    const checklistId = editingChecklistId.id;
+    const taskId = editingChecklistId.task_id;
 
     const [title, setTitle] = useState("");
 
     const dispatch = useDispatch();
+    // console.log(editingChecklistId);
 
     const cancelCreateItem = () => {
         setTitle("");
         setAddItem(false);
         setEditingChecklistId(null);
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
-
     };
 
     const handleCreateItem = async () => {
@@ -51,6 +56,7 @@ const AddItem = ({ setAddItem, setEditingChecklistId }) => {
                 } else {
                     toast.error("Server is not responding");
                 }
+                cancelCreateItem();
             })
             .catch((error) => {
                 // console.log(error)
@@ -64,66 +70,61 @@ const AddItem = ({ setAddItem, setEditingChecklistId }) => {
                     toast.error("Server is not responding");
                 }
             });
-        cancelCreateItem();
     };
 
     return (
-     
-     
-            
-            <div
-                className={`modal fade ${setAddItem ? "show" : ""}`}
-                tabIndex="-1"
-                role="dialog"
-                style={{
-                    display: setAddItem ? "block" : "none",
-                    marginTop: "2em",
-                }}
-            >
-                <div className="modal-dialog modal-sm custom-modal-width">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1
-                                className="modal-title fs-6 text-center"
-                                style={{ margin: "0 auto" }}
-                            >
-                                Add Checklist Item
-                            </h1>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                                style={{ marginLeft: 0, fontSize: "10px" }}
-                                onClick={() => cancelCreateItem()}
-                            ></button>
+        <div
+            className={`modal fade ${addItem ? "show" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+            style={{
+                display: addItem ? "block" : "none",
+                marginTop: "2em",
+            }}
+        >
+            <div className="modal-dialog modal-sm custom-modal-width">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h1
+                            className="modal-title fs-6 text-center"
+                            style={{ margin: "0 auto" }}
+                        >
+                            Add Checklist Item
+                        </h1>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            style={{ marginLeft: 0, fontSize: "10px" }}
+                            onClick={() => cancelCreateItem()}
+                        ></button>
+                    </div>
+
+                    <div className="modal-body">
+                        <div className="label-title mb-3">
+                            <label className="form-label">Title</label>
+                            <input
+                                type="text"
+                                className="form-control checklist-input"
+                                style={{ padding: "0.4rem" }}
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
                         </div>
 
-                        <div className="modal-body">
-                            <div className="label-title mb-3">
-                                <label className="form-label">Title</label>
-                                <input
-                                    type="text"
-                                    className="form-control checklist-input"
-                                    style={{ padding: "0.4rem" }}
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                />
-                            </div>
-
-                            <button
-                                type="button"
-                                className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
-                                disabled={!title}
-                                onClick={() => handleCreateItem()}
-                            >
-                                <span>Add</span>
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
+                            disabled={!title}
+                            onClick={() => handleCreateItem()}
+                        >
+                            <span>Add</span>
+                        </button>
                     </div>
                 </div>
             </div>
-      
+        </div>
     );
 };
 
