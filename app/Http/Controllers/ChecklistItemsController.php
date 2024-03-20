@@ -40,7 +40,7 @@ class ChecklistItemsController extends Controller
         }
 
         $tasks = Task::with('checklists', 'checklists.checklistitems')->find($task_id);
-        $projects = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        $projects = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
         ->find($tasks->project_id);
 
         $response = [
@@ -78,7 +78,7 @@ class ChecklistItemsController extends Controller
         }
 
         $task = Task::with('checklists','checklists.checklistitems')->find($checklist->task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
         ->find($task->project_id);
 
         $response = [
@@ -105,7 +105,7 @@ class ChecklistItemsController extends Controller
         $taskId = $item->checklist->task->id;
 
         $task = Task::with('checklists','checklists.checklistitems')->find($taskId);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
         ->find($task->project_id);
 
         $response = [

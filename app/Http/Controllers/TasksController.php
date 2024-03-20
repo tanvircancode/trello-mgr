@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +25,8 @@ class TasksController extends Controller
             return response()->json(['status' => false, 'message' => 'Project not found'], 404);
         }
 
-        $tasks = Project::with('tasks', 'tasks.labels' , 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $tasks = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($task->project_id);
 
         $response = [
             'status' => true,
@@ -58,8 +60,9 @@ class TasksController extends Controller
         $task->description = $description;
 
         $task->save();
-        
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($task->project_id);
 
         $response = [
             'status' => true,
@@ -70,5 +73,79 @@ class TasksController extends Controller
 
 
         return response()->json($response, 200);
+    }
+
+    public function assignTask(Request $request)
+    {
+        
+        $taskId = request()->input('task_id');
+        $task = Task::find($taskId);
+
+        if (!$task) {
+            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        }
+        
+        $owner_id = request()->input('owner_id');
+        if ($owner_id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $addedTask = $task->assignUser($request->all());
+        if(!$addedTask) {
+            return response()->json(['status' => false, 'message' => 'Member not found'], 404);
+        }
+
+        $tasks = Task::with('users')->find($task->id);
+
+            $projects = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+            ->find($task->project_id);
+
+            $response = [
+                'status' => true,
+                'task' => $tasks,
+                'project' => $projects,
+                'message' => "Task assigned Successfully"
+            ];
+    
+    
+            return response()->json($response, 200);
+
+    }
+    
+    public function removeTask(Request $request)
+    {
+        
+         $taskId = request()->input('task_id');
+         $task = Task::find($taskId);
+ 
+         if (!$task) {
+             return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+         }
+         
+         $owner_id = request()->input('owner_id');
+         if ($owner_id !== Auth::user()->id) {
+             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+         }
+ 
+         $removedTask = $task->removeUser($request->all());
+         if(!$removedTask) {
+             return response()->json(['status' => false, 'message' => 'Member not found'], 404);
+         }
+ 
+        
+         $tasks = Task::with('users')->find($task->id);
+ 
+             $projects = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+             ->find($task->project_id);
+ 
+             $response = [
+                 'status' => true,
+                 'task' => $tasks,
+                 'project' => $projects,
+                 'message' => "Task assigned Successfully"
+             ];
+     
+     
+             return response()->json($response, 200);
     }
 }

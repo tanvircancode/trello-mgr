@@ -9,6 +9,7 @@ import {
     setLabels,
     setMakeBlur,
     setPriorities,
+    setSelectedTaskMembers,
     setTasks,
 } from "../../../store";
 import { toast } from "react-toastify";
@@ -40,6 +41,7 @@ const Card = () => {
         dispatch(setLabels({ labels: task.labels }));
         dispatch(setPriorities({ priorities: task.priorities }));
         dispatch(setChecklists({ checklists: task.checklists }));
+        dispatch(setSelectedTaskMembers({ selectedTaskMembers: task.users }));
     };
 
     const cancelAddCard = () => {
@@ -104,48 +106,91 @@ const Card = () => {
                     <HashLoader color="#36d7b7" />
                 </div>
             )}
-            {!isCardsLoading &&
+            {!isCardsLoading && tasks &&
                 tasks.length > 0 &&
-                tasks.map((task, index) => (
-                    <div
-                        key={index}
-                        className={`card custom-card ${
-                            blur ? "is-blur disable-pointer-events" : ""
-                        }`}
-                        onClick={() => handleOpenPopup(task)}
-                    >
-                        <div className="card-body">
-                            <h5 className="card-title custom-card-title">{task.title}</h5>
-                            <div className="d-flex flex-wrap gap-1">
-                                {task.labels.length > 0 &&
-                                    task.labels.map(
-                                        (label, index) =>
-                                            label.is_active && (
-                                                <span
-                                                    className="label-color-small"
-                                                    key={index}
-                                                    style={{
-                                                        backgroundColor:
-                                                            label.color !==
-                                                                null &&
-                                                            label.color !==
-                                                                "null"
-                                                                ? label.color
-                                                                : "#3B444C",
-                                                    }}
-                                                ></span>
-                                            )
-                                    )}
-                            </div>
-                            <div className="desc-label">
-                                <BsBarChartSteps className="card-sm-icon" />
-                                <BsCheck2Square className="card-sm-icon" />
-                            </div>
+                tasks.map((task, index) => {
+                    const activePriority = task.priorities.find(
+                        (priority) => priority.is_active
+                    );
 
-                            <span>priority</span>
+                    // Calculated total checklist items
+                    let totalChecklistItems = 0;
+                    task.checklists.forEach((checklist) => {
+                        totalChecklistItems += checklist.checklistitems.length;
+                    });
+
+                    // Calculated total checked items
+                    let totalCheckedItems = 0;
+                    task.checklists.forEach((checklist) => {
+                        checklist.checklistitems.forEach((item) => {
+                            if (item.is_completed) {
+                                totalCheckedItems++;
+                            }
+                        });
+                    });
+
+                    return (
+                        <div
+                            key={index}
+                            className={`card custom-card ${
+                                blur ? "is-blur disable-pointer-events" : ""
+                            }`}
+                            onClick={() => handleOpenPopup(task)}
+                        >
+                            <div className="card-body d-flex flex-column gap-2">
+                                <h5 className="card-title custom-card-title">
+                                    {task && task.title}
+                                </h5>
+                                {task?.labels.length > 0 && (
+                                    <div className="d-flex flex-wrap gap-1">
+                                        {task.labels.map(
+                                            (label, index) =>
+                                                label.is_active && (
+                                                    <span
+                                                        className="label-color-small"
+                                                        key={index}
+                                                        style={{
+                                                            backgroundColor:
+                                                                label.color !==
+                                                                    null &&
+                                                                label.color !==
+                                                                    "null"
+                                                                    ? label.color
+                                                                    : "#3B444C",
+                                                        }}
+                                                    ></span>
+                                                )
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className="desc-label d-flex align-items-center">
+                                    {task?.description && (
+                                        <BsBarChartSteps className="card-sm-icon" />
+                                    )}
+                                    {totalChecklistItems > 0 && (
+                                        <div className="d-flex align-items-center">
+                                            <BsCheck2Square className="card-sm-icon" />
+                                            <span className="checked-items-count">
+                                                {totalCheckedItems}/
+                                                {totalChecklistItems}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <span
+                                    className="label-color-small small-card-priority"
+                                    style={{
+                                        backgroundColor: activePriority?.color,
+                                    }}
+                                >
+                                    {activePriority?.name}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
 
             <div className="custom-card">
                 <input

@@ -39,12 +39,5 @@ class Invitation extends Model
         'expires_at' => 'datetime',
     ];
 
-    public function project() {
-        return $this->belongsTo(Project::class);
-    }
-
-    public function invitedUser()
-    {
-        return $this->belongsTo(User::class, 'invited_user_id');
-    }
+   
 }

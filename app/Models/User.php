@@ -78,24 +78,46 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->belongsToMany(Task::class, 'task_users');
     }
 
-    public function receivedInvites()
+    // Custom method to check if a user is a member of a specific project
+    public function isMemberOfProject($projectId)
     {
-        return $this->hasMany(Invitation::class, 'invited_user_id');
+        return $this->projects()->where('project_id', $projectId)->exists();
     }
 
-    //custom extra methods
+
+    //custom methods
+   
+
     public function getProjectsWithOwnerAndTasks()
     {
         return $this->projects()
-            ->with(['user', 'tasks','tasks.labels','tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems'])
+            ->with(['members','user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
             ->get()
             ->map(function ($project) {
                 $project->is_owner = $project->user_id === $this->id;
                 return $project;
             });
-           
+    }
+
+    //new
+    public static function getUserProjects($userId)
+    {
+        return User::whereHas('projects', function ($query) use ($userId) {
+            $query->where('projects.user_id', $userId);  // Specify 'projects' table
+        })
+            ->with([
+                'projects' => function ($query) use ($userId) {
+                    $query->select('projects.*') // Select all project columns
+                        ->withPivot('user_id') // Include pivot table column
+                        ->where('projects.user_id', $userId) // Filter projects for ownership
+                        ->orWhereHas('members', function ($query) use ($userId) {
+                            $query->where('user_id', $userId); // Filter members
+                        });
+                },
+            ])
+            ->find($userId);
     }
 }

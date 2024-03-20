@@ -29,7 +29,8 @@ class LabelsController extends Controller
         }
 
         $tasks = Task::with('labels')->find($label->task_id);
-        $projects = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($project_id);
+        $projects = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($project_id);
 
         $response = [
             'status' => true,
@@ -46,31 +47,26 @@ class LabelsController extends Controller
     {
 
         $user_id = $request->input('user_id');
-        $label = Label::find($id);
+        $task_id = $request->input('task_id');
 
-        if (!$label) {
-            return response()->json(['status' => false, 'message' => 'Label not found'], 404);
+        $task = Task::find($task_id);
+
+        if (!$task) {
+            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
         }
 
         if ($user_id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
-        if ($request->has('is_active')) {
-            $label->is_active = $request->is_active;
+        $label = Label::updateLabel($request->all(), $id);
+        if (!$label) {
+            return response()->json(['status' => false, 'message' => 'Label not found'], 404);
         }
-
-        if ($request->has('name')) {
-            $label->name = $request->name ?? "";
-        }
-
-        if ($request->has('color')) {
-            $label->color = $request->color;
-        }
-
-        $label->save();
+        
         $task = Task::with('labels')->find($label->task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,
@@ -94,7 +90,8 @@ class LabelsController extends Controller
 
         $label->delete();
         $task = Task::with('labels')->find($label->task_id);
-        $project = Project::with('tasks', 'tasks.labels' , 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $project = Project::with('members','tasks', 'tasks.labels' , 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,

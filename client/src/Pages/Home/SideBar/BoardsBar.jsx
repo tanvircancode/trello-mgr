@@ -7,8 +7,10 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
     setIsCardsLoading,
+    setIsLoggedUserOwner,
     setProjects,
     setSelectedProject,
+    setSelectedProjectMembers,
     setTasks,
 } from "../../../store";
 
@@ -39,7 +41,6 @@ const BoardsBar = () => {
     ];
 
     const handleClickSingleProject = async (project) => {
-   
         await axios
             .get(`${BASE_URL}/api/projects/` + userId, {
                 headers: {
@@ -47,7 +48,7 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                console.log(res)
+                console.log(res);
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
@@ -69,7 +70,6 @@ const BoardsBar = () => {
                         })
                     );
                 }
-                
             })
             .catch((error) => {
                 console.log(error);
@@ -86,7 +86,6 @@ const BoardsBar = () => {
             });
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
-
     };
 
     const getProjectsData = async () => {
@@ -101,22 +100,33 @@ const BoardsBar = () => {
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
-                    dispatch(setProjects({ projects: allProjects }));
-                    console.log(projects);
 
                     if (allProjects.length > 0) {
-                        
-
+                        dispatch(setProjects({ projects: allProjects }));
                         dispatch(
                             setSelectedProject({
                                 selectedProject: allProjects[0],
                             })
                         );
                         dispatch(
+                            setSelectedProjectMembers({
+                                selectedProjectMembers: allProjects[0].members,
+                            })
+                        );
+
+                        dispatch(
                             setTasks({
                                 tasks: allProjects[0].tasks,
                             })
                         );
+
+                        if (allProjects[0].user_id === userId) {
+                            dispatch(
+                                setIsLoggedUserOwner({
+                                    isLoggedUserOwner: true,
+                                })
+                            );
+                        }
                         console.log(selectedProject);
                     }
                 }
@@ -137,6 +147,7 @@ const BoardsBar = () => {
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
         // setLoading(false);
+        console.log(projects);
     };
 
     useEffect(() => {
@@ -148,7 +159,7 @@ const BoardsBar = () => {
             <span className="sidebar-text" style={{ fontWeight: "bold" }}>
                 Your projects
             </span>
-            {projects.length > 0 && (
+            {projects && projects.length > 0 && (
                 <ul className="list-group list-group-flush">
                     {projects.map((project, index) => (
                         <li

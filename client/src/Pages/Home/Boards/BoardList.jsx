@@ -1,5 +1,5 @@
 import "./board.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import Card from "../Cards";
@@ -18,8 +18,8 @@ const BoardList = () => {
     const projects = useSelector((state) => state.projects);
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
 
-    console.log(projects)
-    
+    console.log(projects);
+
     const selectedProject = useSelector((state) => state.selectedProject);
     const tasks = useSelector((state) => state.tasks);
 
@@ -34,14 +34,17 @@ const BoardList = () => {
         dispatch(setMakeBlur({ makeBlur: true }));
         setShowAddMemberModal(true);
     };
+
     const handleCreateProject = () => {
         setOpenCreateBoardModal(true);
         dispatch(setMakeBlur({ makeBlur: true }));
     };
 
+    // useEffect(() => {}, [selectedProject]);
+
     return (
         <>
-            {tasks.length > 0 && (
+            {projects && projects.length > 0 && (
                 <div className="board-main-content d-flex flex-column">
                     <div
                         className={`board-header-content d-flex ${
@@ -50,11 +53,11 @@ const BoardList = () => {
                     >
                         <div className="board-header-name d-flex">
                             <h1 className="board-name m-0">
-                                {selectedProject.title}
+                                {selectedProject?.title}
                             </h1>
                         </div>
 
-                        {selectedProject.is_owner && (
+                        {selectedProject && selectedProject.is_owner && (
                             <div className="board-header-button">
                                 <button
                                     className={`share-button`}
@@ -76,7 +79,7 @@ const BoardList = () => {
                                 </button>
                             </div>
                         )}
-                        {!selectedProject.is_owner && (
+                        {!(selectedProject?.is_owner) && (
                             <div className="board-header-button">
                                 <button
                                     className={`project-delete-button`}
@@ -109,33 +112,32 @@ const BoardList = () => {
                     <HashLoader color="#36d7b7" />
                 </div>
             )}
-            {!isCardsLoading && tasks.length === 0 && (
+            {!isCardsLoading && tasks && tasks.length === 0 && (
                 <>
-                <div
-                    className={`d-flex flex-column gap-3 justify-content-center align-items-center w-100 h-100 ${
-                        blur ? "is-blur disable-pointer-events" : ""
-                    }`}
-                >
-                    <span style={{fontWeight:600}}> There are no projects to show</span>
-                    <button
-                        type="button"
-                        className="create-project-button"
-                        onClick={handleCreateProject}
+                    <div
+                        className={`d-flex flex-column gap-3 justify-content-center align-items-center w-100 h-100 ${
+                            blur ? "is-blur disable-pointer-events" : ""
+                        }`}
                     >
-                        Create a project
-                    </button>
-                    
-                </div>
-                {openCreateBoardModal && (
-                    <CreateBoardModal
-                        openCreateBoardModal={openCreateBoardModal}
-                        setOpenCreateBoardModal={setOpenCreateBoardModal}
-                    />
-                )}
+                        <span style={{ fontWeight: 600 }}>
+                            There are no projects to show
+                        </span>
+                        <button
+                            type="button"
+                            className="create-project-button"
+                            onClick={handleCreateProject}
+                        >
+                            Create a project
+                        </button>
+                    </div>
+                    {openCreateBoardModal && (
+                        <CreateBoardModal
+                            openCreateBoardModal={openCreateBoardModal}
+                            setOpenCreateBoardModal={setOpenCreateBoardModal}
+                        />
+                    )}
                 </>
             )}
-
-
         </>
     );
 };

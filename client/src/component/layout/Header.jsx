@@ -10,7 +10,7 @@ import { BASE_URL } from "../../config";
 import "./layout.scss";
 
 const Header = () => {
-    const [isSharing, setIsSharing] = useState(false);
+    
     const [activeLink, setActiveLink] = useState("");
 
     const navigate = useNavigate();

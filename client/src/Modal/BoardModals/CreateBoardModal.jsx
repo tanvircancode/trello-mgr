@@ -72,6 +72,10 @@ const CreateBoardModal = ({
                 });
         }
     };
+    
+    useEffect(() => {
+
+    },[selectedProject]);
 
     return (
        
@@ -99,8 +103,8 @@ const CreateBoardModal = ({
                                 className="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
-                                style={{ marginLeft: 0, fontSize: "10px" }}
-                                onClick={cancelModal}
+                                style={{ marginLeft: 0, fontSize: "10px" }} 
+                                onClick={cancelModal} 
                             ></button>
                         </div>
 

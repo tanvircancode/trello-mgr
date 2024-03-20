@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
@@ -90,8 +92,6 @@ class UsersController extends Controller
         } else {
             return response()->json(['status' => false], 404);
         }
-
-        // return redirect('/login');
     }
 
     public function me(Request $request)
@@ -117,7 +117,7 @@ class UsersController extends Controller
         }
 
         $user = User::find($id);
-        
+
         if (!$user) {
             $response = [
                 'status' => false,
@@ -135,4 +135,97 @@ class UsersController extends Controller
         return response()->json($response, 200);
     }
 
+
+    //new
+    public function userProjectDetails($userId)
+    {
+        $user = User::getUserProjects($userId);
+
+        // Access projects and identify owners (manually)
+        // foreach ($user->projects as $project) {
+        //     $isOwner = $project->user_id === $userId; // Check if user_id matches in projects table
+        //     echo "Project: " . $project->title . ", Role: " . ($isOwner ? 'Owner' : 'Member');
+        // }
+        return $user;
+    }
+
+    public function getTaskIds($userId)
+    {
+        $user = User::with('tasks.users')->find($userId);
+
+        $taskIds = $user->tasks->whereIn('user_id', [$userId])->pluck('id'); // Filter and extract IDs
+        $response = [
+            'status' => true,
+            'data' => $taskIds
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    //search users
+    public function searchUsers(Request $request)
+    {
+        $searchTerm = $request->input('searchTerm');
+        $projectId = $request->input('projectId');
+
+        $users = User::where('name', 'like', "%{$searchTerm}%")
+            ->orWhere('email', 'like', "%{$searchTerm}%")
+            ->get();
+
+        // Additional filtering and sorting based on your needs
+
+        $users = $users->map(function ($user) use ($projectId) {
+            $user->isMember = $user->isMemberOfProject($projectId); // Use custom method
+            return $user;
+        });
+
+        return response()->json([
+            'users' => $users,
+        ], 200);
+    }
+
+
+    public function addMember(Request $request)
+    {
+        $projectId = $request->input('project_id');
+        $userId = $request->input('user_id');
+
+        $project = Project::findOrFail($projectId);
+
+        if (!$project) {
+            $response = [
+                'status' => false,
+                'message' => 'Project not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        $user = User::findOrFail($userId);
+
+        if (!$user) {
+            $response = [
+                'status' => false,
+                'message' => 'User not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        if ($project->members()->where('user_id', $userId)->exists()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User is already a member of this project.',
+            ], 422);
+        }
+
+        $memberId = Str::uuid();
+
+        $project->members()->attach($userId, ['id' => $memberId]);
+
+        $response = [
+            'status' => true,
+            'message' => 'Member Added Successfully'
+        ];
+
+        return response()->json($response, 200);
+    }
 }

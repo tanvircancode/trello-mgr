@@ -59,7 +59,22 @@ Route::middleware('auth:sanctum')->group(function () {
    Route::put('/item', [ChecklistItemsController::class, 'update']);
    Route::delete('/deleteitem/{id}', [ChecklistItemsController::class, 'destroy']);
 
+  //new
+  Route::get('/projectdetails/{id}', [UsersController::class, 'userProjectDetails']);  //new
   
+  //lager below
+  Route::get('/fetchtaskids/{id}', [UsersController::class, 'getTaskIds']);
+
+  //search users to show already or add member
+  Route::post('/searchusers', [UsersController::class, 'searchUsers']);
+  // add member from search bar
+  Route::post('/addmember', [UsersController::class, 'addMember']);
+  // assign user to a task
+  Route::post('/addtaskmember', [TasksController::class, 'assignTask']);
+  Route::post('/removetaskmember', [TasksController::class, 'removeTask']);
+
+
+
 
 
 });

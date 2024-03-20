@@ -22,11 +22,12 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
     const labels = useSelector((state) => state.labels);
     console.log(labels);
 
-    const handleCheckboxChange = async (labelId, checked) => {
+    const handleCheckboxChange = async (labelId, taskId, checked) => {
+        console.log(taskId);
         await axios
             .put(
                 `${BASE_URL}/api/label/${labelId}`,
-                { is_active: checked ? 1 : 0, user_id: userId },
+                { is_active: checked ? 1 : 0, task_id:taskId, user_id: userId },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -96,7 +97,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
                                     className="modal-title fs-6 text-center"
                                     style={{ margin: "0 auto" }}
                                 >
-                                    Labelssss
+                                    Label
                                 </h1>
                                 <button
                                     type="button"
@@ -112,7 +113,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
                                 <div className="label-title mb-3">
                                     <label className="form-label">Labels</label>
                                     <div className="d-flex flex-column gap-3">
-                                        {labels.map((label, index) => (
+                                        {labels && labels.map((label, index) => (
                                             <div
                                                 className="d-flex align-items-center gap-3"
                                                 key={index}
@@ -127,6 +128,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
                                                     onChange={(e) =>
                                                         handleCheckboxChange(
                                                             label.id,
+                                                            label.task_id,
                                                             e.target.checked
                                                         )
                                                     }

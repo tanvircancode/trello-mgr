@@ -19,9 +19,14 @@
     display: block;
 }
 
-.member-name {
+.member-name{
     font-weight: 500;
     font-size: 14px;
+}
+.loading-text {
+    font-weight: 500;
+    font-size: 14px;
+    margin-left: 15px;
 }
 .member-email {
     font-weight: 500;
@@ -39,6 +44,13 @@
     border: none;
     color: #262020 !important;
     border-radius: 3px;
+}
+.already-member{
+    font-size: 12px;
+    font-weight: 600;
+    
+    color: #262020 !important;
+    
 }
 .search-member button {
     padding: 10px 15px;

@@ -158,13 +158,13 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                             </div>
 
                             <div className="modal-body">
-                                {priorities.length > 0 && (
+                                {priorities && priorities.length > 0 && (
                                     <div className="label-title mb-3">
                                         <label className="form-label">
                                             Options
                                         </label>
                                         {/* loop-here */}
-                                        {priorities.map((priority, index) => (
+                                        {priorities && priorities.map((priority, index) => (
                                             <div
                                                 className="d-flex align-items-center gap-3 mb-2"
                                                 key={index}

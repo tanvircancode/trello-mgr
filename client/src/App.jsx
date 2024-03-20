@@ -29,6 +29,9 @@ function App() {
 function InitUser() {
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
+    const userId = localStorage.getItem("user_id");
+
+
     // console.log(token);
 
     const init = async () => {
@@ -78,8 +81,23 @@ function InitUser() {
         }
     };
 
+    const xxx = async() => {
+         await axios.get(`${BASE_URL}/api/fetchtaskids/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
     useEffect(() => {
         init();
+        xxx();
     }, []);
 
     return <></>;

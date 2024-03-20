@@ -81,7 +81,7 @@ const PrioritySelection = () => {
             style={{
                 backgroundColor: selectedPriorityId === null ? '#3B444C' : getPriorityColor(),
                 color: "#ffffff",
-                paddingLeft: "12px",
+                paddingLeft: "3px 10px",
                 fontWeight:'600'
             }}
             value={selectedPriorityId}

@@ -25,6 +25,8 @@ const CardModalButton = () => {
 
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
+    const isLoggedUserOwner = useSelector((state) => state.isLoggedUserOwner);
+
 
     var doBlur = blur && cardModalblur;
 
@@ -56,13 +58,13 @@ const CardModalButton = () => {
                 role="group"
                 aria-label="Vertical button group"
             >
-                <button
+              {isLoggedUserOwner &&  <button
                     type="button"
                     className="btn btn-primary card-button d-flex align-items-center"
                     onClick={() => handleModal("member")}
                 >
                     <BsPerson className="card-sm-icon" /> Members
-                </button>
+                </button>} 
                 <button
                     type="button"
                     className="btn btn-primary card-button"

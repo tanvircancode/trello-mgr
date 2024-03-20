@@ -21,7 +21,7 @@ class PrioritiesController extends Controller
         if ($user_id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
-        
+
         $priority = Priority::createPriority($request->all());
 
         if (!$priority) {
@@ -29,7 +29,8 @@ class PrioritiesController extends Controller
         }
 
         $tasks = Task::with('priorities')->find($priority->task_id);
-        $projects = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($project_id);
+        $projects = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($project_id);
 
         $response = [
             'status' => true,
@@ -58,15 +59,15 @@ class PrioritiesController extends Controller
             return response()->json(['status' => false, 'message' => 'Priority not found'], 404);
         }
 
-
         $task = Task::with('priorities')->find($priority->task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,
             'task' => $task,
             'project' => $project,
-            'message' => "Label Updated Successfully"
+            'message' => "Priority Updated Successfully"
         ];
 
 
@@ -83,13 +84,14 @@ class PrioritiesController extends Controller
 
         $priority->delete();
         $task = Task::with('priorities')->find($priority->task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,
             'task' => $task,
             'project' => $project,
-            'message' => "Label Deleted Successfully"
+            'message' => "Priority Deleted Successfully"
         ];
 
 
@@ -108,22 +110,22 @@ class PrioritiesController extends Controller
         $priorityModel = new Priority();
         $priority = $priorityModel->changePriority($request->all());
 
-        if(!$priority) {
+        if (!$priority) {
             return response()->json(['status' => false, 'message' => 'Priority not found'], 404);
         }
 
         $task = Task::with('priorities')->find($task_id);
-        $project = Project::with('tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists')->find($task->project_id);
+        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        ->find($task->project_id);
 
         $response = [
             'status' => true,
             'task' => $task,
             'project' => $project,
-            'message' => "Label Deleted Successfully"
+            'message' => "Priority Updated Successfully"
         ];
 
 
         return response()->json($response, 200);
-       
     }
 }

@@ -6,15 +6,17 @@ const initialState = {
     setDotModal: false,
     makeBlur: false,
     makeCardModalBlur: false,
-    showTextarea: { type: null, value: null }, //confuse
     projects: [],
     tasks: [],
     labels: [],
     priorities: [],
     checklists: [],
+    selectedProjectMembers: [],
+    selectedTaskMembers: [],
     fetchSingleCard: null,
     selectedProject: null,
     isCardsLoading: true,
+    isLoggedUserOwner:false,
 };
 
 export const trelloSlice = createSlice({
@@ -33,19 +35,15 @@ export const trelloSlice = createSlice({
             state.labels = [];
             state.fetchSingleCard = null;
             state.selectedProject = null;
+            state.isLoggedUserOwner = false,
+            state.selectedProjectMembers = [],
+            state.selectedTaskMembers = [],
+            state.priorities = [],
+            state.checklists = [],
+            state.isCardsLoading = true
         },
         //start trello
 
-        setShowTextarea: (state, action) => {
-            if (
-                state.showTextarea === null ||
-                state.showTextarea === undefined
-            ) {
-                state.showTextarea = { type: null, value: null };
-            }
-            state.showTextarea.type = action.payload.type;
-            state.showTextarea.value = action.payload.value;
-        },
         setMakeBlur: (state, action) => {
             state.makeBlur = action.payload.makeBlur;
         },
@@ -105,6 +103,24 @@ export const trelloSlice = createSlice({
                 state.fetchSingleCard = action.payload.fetchSingleCard;
             }
         },
+        setSelectedProjectMembers: (state, action) => {
+            if (action.payload === null) {
+                state.selectedProjectMembers = [];
+            } else {
+                state.selectedProjectMembers = action.payload.selectedProjectMembers;
+            }
+        },
+        
+        setSelectedTaskMembers: (state, action) => {
+            if (action.payload === null) {
+                state.selectedTaskMembers = [];
+            } else {
+                state.selectedTaskMembers = action.payload.selectedTaskMembers;
+            }
+        },
+        setIsLoggedUserOwner: (state, action) => {
+            state.isLoggedUserOwner = action.payload.isLoggedUserOwner;
+        },
         // end trello
     },
 });
@@ -117,13 +133,14 @@ export const {
     setLabels,
     setPriorities,
     setChecklists,
-   
+    setSelectedProjectMembers,
+    setSelectedTaskMembers,
     setSelectedProject,
     setIsCardsLoading,
     setFetchSingleCard,
-    setShowTextarea,
     setMakeBlur,
     setMakeCardModalBlur,
+    setIsLoggedUserOwner
 } = trelloSlice.actions;
 
 export default trelloSlice.reducer;

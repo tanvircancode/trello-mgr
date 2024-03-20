@@ -12,7 +12,7 @@ import EditNameDescModal from "./EditNameDescModal";
 import {
     setMakeBlur,
     setMakeCardModalBlur,
-    setShowTextarea,
+    
 } from "../../store";
 import CardModalButton from "./CardModalButton";
 import EditDescription from "../../component/description/EditDescription";
@@ -218,7 +218,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                     : ""
                                             }`}
                                         >
-                                            {labels.length > 0 && (
+                                            {labels && labels.length > 0 && (
                                                 <div className="card-detail">
                                                     <h3 className="card-detail-header">
                                                         Labels
@@ -357,7 +357,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
 
                                             {/* checklist start */}
 
-                                            {checklists.length > 0 &&
+                                            {checklists && checklists.length > 0 &&
                                                 checklists.map(
                                                     (checklist, index) => {
                                                         const totalItems =

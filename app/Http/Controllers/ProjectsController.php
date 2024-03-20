@@ -18,7 +18,7 @@ class ProjectsController extends Controller
     {
         $input = $request->all();
 
-        if ($input['user_id'] !== Auth::user()->id) {  
+        if ($input['user_id'] !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => "Unauthorized Access"], 403);
         }
 
@@ -43,4 +43,6 @@ class ProjectsController extends Controller
         ];
         return response()->json($response, 404);
     }
+
+    
 }

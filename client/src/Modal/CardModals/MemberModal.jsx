@@ -1,17 +1,134 @@
 import { useState, useEffect } from "react";
 import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeBlur, setMakeCardModalBlur } from "../../store";
+import { setMakeCardModalBlur, setSelectedTaskMembers } from "../../store";
 import { BsPersonAdd, BsPersonDash } from "react-icons/bs";
+import { BASE_URL } from "../../config";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
     const dispatch = useDispatch();
+    const selectedProjectMembers = useSelector(
+        (state) => state.selectedProjectMembers
+    );
+
+    const isLoggedUserOwner = useSelector((state) => state.isLoggedUserOwner);
+    const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    const selectedTaskMembers = useSelector(
+        (state) => state.selectedTaskMembers
+    );
+    const taskId = fetchSingleCard.id;
+    const token = useSelector((state) => state.token);
+    const userId = localStorage.getItem("user_id");
+
+    console.log(selectedProjectMembers);
+    console.log(selectedTaskMembers);
+    console.log(isLoggedUserOwner);
+
+    const filteredProjectMembers = () => {
+        console.log(selectedTaskMembers);
+
+        let newProjectMembers = selectedProjectMembers.filter(
+            (projectMember) => {
+                return !selectedTaskMembers.some(
+                    (taskMember) => taskMember.id === projectMember.id
+                );
+            }
+        );
+        console.log(newProjectMembers);
+        return newProjectMembers;
+    };
+
+    const removeTaskMember = async (memberId) => {
+        console.log(memberId);
+        var formData = new FormData();
+        formData.append("user_id", memberId);
+        formData.append("task_id", taskId);
+        formData.append("owner_id", userId);
+
+        await axios
+            .post(`${BASE_URL}/api/removetaskmember`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                console.log(res);
+                const updatedTaskUsers = res.data.task.users;
+
+                dispatch(
+                    setSelectedTaskMembers({
+                        selectedTaskMembers: updatedTaskUsers,
+                    })
+                );
+                filteredProjectMembers();
+            })
+            .catch((error) => {
+                console.log(error);
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response?.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
+        // setIsLoading(false);
+    };
+
+    const addAsTaskMember = async (memberId) => {
+        console.log(memberId);
+        var formData = new FormData();
+        formData.append("user_id", memberId);
+        formData.append("task_id", taskId);
+        formData.append("owner_id", userId);
+
+        await axios
+            .post(`${BASE_URL}/api/addtaskmember`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                console.log(res);
+                const updatedTaskUsers = res.data.task.users;
+
+                dispatch(
+                    setSelectedTaskMembers({
+                        selectedTaskMembers: updatedTaskUsers,
+                    })
+                );
+                filteredProjectMembers();
+            })
+            .catch((error) => {
+                console.log(error);
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response?.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
+        // setIsLoading(false);
+    };
 
     const cancelModal = () => {
         setOpenMemberModal(false);
 
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
     };
+
+    useEffect(() => {
+        filteredProjectMembers();
+    }, [selectedTaskMembers]);
 
     return (
         <div
@@ -50,24 +167,24 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                                 >
                                     Task members
                                 </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text">
-                                    A list item
-                                    <BsPersonDash
-                                        className="member-list-dash-icon"
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text">
-                                    A second list item
-                                    <BsPersonDash
-                                        className="member-list-dash-icon"
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                </li>
+                                {selectedTaskMembers && selectedTaskMembers.length > 0 &&
+                                    selectedTaskMembers.map((member, index) => (
+                                        <li
+                                            key={index}
+                                            className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
+                                        >
+                                            {member.name}
+                                            <BsPersonDash
+                                                className="member-list-dash-icon"
+                                                style={{
+                                                    cursor: "pointer",
+                                                }}
+                                                onClick={() =>
+                                                    removeTaskMember(member.id)
+                                                }
+                                            />
+                                        </li>
+                                    ))}
                             </div>
 
                             <div className="task-member-list">
@@ -77,24 +194,28 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                                 >
                                     Project members
                                 </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text">
-                                    A list item
-                                    <BsPersonAdd
-                                        className="member-list-plus-icon"
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text">
-                                    A second list item
-                                    <BsPersonAdd
-                                        className="member-list-plus-icon"
-                                        style={{
-                                            cursor: "pointer",
-                                        }}
-                                    />
-                                </li>
+                                {filteredProjectMembers().length > 0 &&
+                                    filteredProjectMembers().map(
+                                        (member, index) => (
+                                            <li
+                                                key={index}
+                                                className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
+                                            >
+                                                {member.name}
+                                                <BsPersonAdd
+                                                    className="member-list-plus-icon"
+                                                    style={{
+                                                        cursor: "pointer",
+                                                    }}
+                                                    onClick={() =>
+                                                        addAsTaskMember(
+                                                            member.id
+                                                        )
+                                                    }
+                                                />
+                                            </li>
+                                        )
+                                    )}
                             </div>
                         </ul>
                     </div>

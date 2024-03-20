@@ -57,6 +57,35 @@ class Task extends Model
         return $this->hasMany(Label::class);
     }
 
+    //after pivot table
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'task_users');
+    }
+    
+    public function assignUser(array $data)
+    {
+        $user_id = $data['user_id'];
+        $user = User::find($user_id);
+        if(!$user) {
+            return null;
+        }
+         $this->users()->attach($user->id , ['id' => Str::uuid()]);
+        return true;
+    }
+
+    public function removeUser(array $data)
+    {
+        $user_id = $data['user_id'];
+        $user = User::find($user_id);
+        if(!$user) {
+            return null;
+        }
+        $this->users()->detach($user->id ,  ['id' => Str::uuid()]);
+        return true;
+    }
+    //after pivot table end
+
 
     //custom methods
     public static function createTask(array $data)

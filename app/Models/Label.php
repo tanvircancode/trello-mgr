@@ -63,4 +63,19 @@ class Label extends Model
  
          return $label;
      }
+
+     public static function updateLabel(array $data , $id)
+    {
+        
+        $label = Label::find($id);
+        if(!$label) {
+            return null;
+        }
+        
+        $data['name'] = $data['name'] ?? "";
+
+        $label->fill($data);
+        $label->save();
+        return $label;
+    }
 }
