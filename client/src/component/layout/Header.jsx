@@ -89,7 +89,7 @@ const Header = () => {
                     className="collapse navbar-collapse position-relative"
                     id="navbarNavDropdown"
                 >
-                    <ul className="navbar-nav">
+                    {/* <ul className="navbar-nav">
                         <li
                             className={`nav-item ${
                                 activeLink === "/" ? "active" : ""
@@ -104,7 +104,7 @@ const Header = () => {
                             </a>
                         </li>
                      
-                    </ul>
+                    </ul> */}
                     <div className="logout-custom d-flex align-items-center gap-2">
                         {token && <button className="circular-button">{initials}</button>} 
                         

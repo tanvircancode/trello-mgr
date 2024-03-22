@@ -48,9 +48,7 @@ const CreatePriority = ({ title, setShowCreatePriority , setPriorityTitle}) => {
                     toast.error("Server is not responding");
                 }
               
-                setShowCreatePriority(false);
-               
-                setPriorityTitle("");
+                
                
             })
             .catch((error) => {
@@ -65,6 +63,10 @@ const CreatePriority = ({ title, setShowCreatePriority , setPriorityTitle}) => {
                     toast.error("Server is not responding");
                 }
             });
+            
+            setShowCreatePriority(false);
+               
+            setPriorityTitle("");
     };
 
     useEffect(() => {

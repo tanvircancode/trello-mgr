@@ -88,7 +88,7 @@ const PrioritySelection = () => {
             onChange={handleChange}
         >
             <option value={null} style={{backgroundColor:'#3B444C', color: "#ffffff"}}>--Select--</option>
-            {priorities.map((priority) => (
+            {priorities && priorities.map((priority) => (
                 <option
                     key={priority.id}
                     value={priority.id}

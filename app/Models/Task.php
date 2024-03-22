@@ -81,14 +81,14 @@ class Task extends Model
         if(!$user) {
             return null;
         }
-        $this->users()->detach($user->id ,  ['id' => Str::uuid()]);
+        $this->users()->detach($user->id);
         return true;
     }
     //after pivot table end
 
 
     //custom methods
-    public static function createTask(array $data)
+    public static function createTask(array $data , $id)
     {
         $project = Project::find($data['project_id']);
 
@@ -99,6 +99,8 @@ class Task extends Model
         $task = new static;
         $task->fill($data);
         $task->save();
+        
+        $task->users()->attach($id , ['id' => Str::uuid()]);
 
         // Create priorities for the task
         $prioritiesData = [

@@ -55,13 +55,18 @@ const BoardsBar = () => {
                     dispatch(setProjects({ projects: allProjects }));
                     console.log(projects);
 
-                    const filteredProject = projects.find(
+                    const filteredProject = allProjects.find(
                         (singleProj) => singleProj.id === project.id
                     );
-                    // console.log(filteredProject)
+                    console.log(filteredProject)
                     dispatch(
                         setSelectedProject({
                             selectedProject: filteredProject,
+                        })
+                    );
+                    dispatch(
+                        setSelectedProjectMembers({
+                            selectedProjectMembers: filteredProject.members,
                         })
                     );
                     dispatch(
@@ -69,6 +74,14 @@ const BoardsBar = () => {
                             tasks: filteredProject.tasks,
                         })
                     );
+
+                    if (filteredProject.user_id === userId) {
+                        dispatch(
+                            setIsLoggedUserOwner({
+                                isLoggedUserOwner: true,
+                            })
+                        );
+                    }
                 }
             })
             .catch((error) => {
@@ -147,7 +160,7 @@ const BoardsBar = () => {
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
         // setLoading(false);
-        console.log(projects);
+        // console.log(projects);
     };
 
     useEffect(() => {
@@ -161,7 +174,7 @@ const BoardsBar = () => {
             </span>
             {projects && projects.length > 0 && (
                 <ul className="list-group list-group-flush">
-                    {projects.map((project, index) => (
+                    {projects && projects.map((project, index) => (
                         <li
                             key={project.id}
                             className="list-group-item d-flex justify-content-between align-items-center no-left-padding no-border"

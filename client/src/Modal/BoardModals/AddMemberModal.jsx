@@ -6,48 +6,51 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import AddMember from "../../component/member/AddMember";
+import RemoveMember from "../../component/member/RemoveMember";
 
 const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
     const dispatch = useDispatch();
-    //new
 
-    // const [onAddMember, setOnAddMember] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [addMemberId, setAddMemberId] = useState(null);
+    const [removeMemberId, setRemoveMemberId] = useState(null);
+
     const token = useSelector((state) => state.token);
 
-
     const selectedProject = useSelector((state) => state.selectedProject);
+
+    const userId = localStorage.getItem("user_id");
     const projectId = selectedProject.id;
+    const ownerId = selectedProject.user_id;
 
     const handleAddMember = (userId) => {
         setIsLoading(true);
         setAddMemberId(userId);
     };
+    const handleRemoveMember = (userId) => {
+        setIsLoading(true);
+        setRemoveMemberId(userId);
+    };
 
     //new end
 
     const cancelModal = () => {
+        setSearchTerm("");
         setShowAddMemberModal(false);
         dispatch(setMakeBlur({ makeBlur: false }));
     };
 
-    const handleSearch = async () => {
+    const fetchMembers = async () => {
         setIsLoading(true);
-        setError(null); // Clear any previous errors
-
-        var formData = new FormData();
-        formData.append("searchTerm", searchTerm);
-        formData.append("projectId", projectId);
+        setError(null);
 
         await axios
-            .post(`${BASE_URL}/api/searchusers`, formData, {
+            .get(`${BASE_URL}/api/projectmembers/${projectId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
                 },
             })
             .then((res) => {
@@ -55,27 +58,80 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                 setUsers(res.data.users);
             })
             .catch((error) => {
-                console.log(error);
                 setError(error);
             });
+
         setIsLoading(false);
     };
 
+    const handleSearch = async (searchTerm) => {
+        if (!searchTerm) {
+            fetchMembers();
+        } else {
+            setIsLoading(true);
+            setError(null);
+
+            var formData = new FormData();
+            formData.append("searchTerm", searchTerm);
+            formData.append("project_id", projectId);
+
+            await axios
+                .post(`${BASE_URL}/api/searchusers`, formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                    },
+                })
+                .then((res) => {
+                    console.log(res);
+                    setUsers(res.data.users);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setError(error);
+                });
+            setIsLoading(false);
+        }
+    };
+
     const handleSearchTermChange = (event) => {
-        setSearchTerm(event.target.value);
-        handleSearch(); // Trigger search on every change
+        const newSearchTerm = event.target.value;
+        setSearchTerm(newSearchTerm);
+        if (newSearchTerm === "") {
+            fetchMembers();
+        } else {
+            handleSearch(searchTerm);
+        }
     };
 
     useEffect(() => {
-
-    },[users])
+        fetchMembers();
+    }, []);
 
     return (
         <div>
-            {addMemberId && <AddMember addMemberId={addMemberId} setAddMemberId={setAddMemberId}
-             users={users} setUsers={setUsers} projectId={projectId} 
-             setIsLoading={setIsLoading} isLoading={isLoading}
-            />}
+            {addMemberId && (
+                <AddMember
+                    addMemberId={addMemberId}
+                    setAddMemberId={setAddMemberId}
+                    users={users}
+                    setUsers={setUsers}
+                    projectId={projectId}
+                    setIsLoading={setIsLoading}
+                    ownerId={ownerId}
+                />
+            )}
+
+            {removeMemberId && (
+                <RemoveMember
+                    removeMemberId={removeMemberId}
+                    setRemoveMemberId={setRemoveMemberId}
+                    users={users}
+                    setUsers={setUsers}
+                    projectId={projectId}
+                    setIsLoading={setIsLoading}
+                />
+            )}
             <div
                 className={`modal fade ${showAddMemberModal ? "show" : ""}`}
                 tabIndex="-1"
@@ -101,40 +157,26 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                                 onClick={cancelModal}
                             ></button>
                         </div>
-                        {/* <SearchMember
-                            searchTerm={searchTerm}
-                            onSearchChange={handleSearchChange}
-                            members={filteredMembers}
-                            onAddMember={handleAddMember}
-                        /> */}
+
                         <div className="search-member d-flex flex-column align-items-flex-start mb-3">
                             <input
                                 type="text"
                                 value={searchTerm}
-                                onChange={handleSearchTermChange}
-                                placeholder="Search users..."
+                                onChange={(e) => handleSearchTermChange(e)}
                             />
-                            {isLoading && <p className="loading-text">Loading...</p>}
-                            {error && <p>Error: {error.message}</p>}
-                            {/* <ul>
-                                {users.map((user) => (
-                                    <li key={user.id}>
-                                        {user.name}
-                                        {user.isMember ? (
-                                            <span>Already a member</span>
-                                        ) : (
-                                            <button
-                                                onClick={() =>
-                                                    handleAddMember(user.id)
-                                                }
-                                            >
-                                                Add Member
-                                            </button>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul> */}
-                            {users &&
+                            {isLoading && (
+                                <p className="loading-text">Loading...</p>
+                            )}
+                            {error && (
+                                <p className="search-error-text">
+                                    An error occurred
+                                </p>
+                            )}
+
+                            {!isLoading &&
+                                !error &&
+                                users &&
+                                users.length > 0 &&
                                 users.map((user, index) => (
                                     <div
                                         className="d-flex align-items-center member-details-row mb-3"
@@ -143,17 +185,43 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                                         <div className="d-flex flex-column flex-grow-1">
                                             <span className="member-name">
                                                 {user.name}
+                                                {user.id === userId && (
+                                                    <span>(you)</span>
+                                                )}
                                             </span>
                                             <span className="member-email">
                                                 {user.email}
                                             </span>
                                         </div>
                                         {user.isMember ? (
-                                            <span className="already-member">Already a member</span>
+                                            <>
+                                                {user.id === ownerId ? (
+                                                    <span className="owner-text">
+                                                        Owner
+                                                    </span>
+                                                ) : (
+                                                    <>
+                                                        <span className="already-member">
+                                                            Already a member
+                                                        </span>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary remove-member-button"
+                                                            onClick={() =>
+                                                                handleRemoveMember(
+                                                                    user.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </>
+                                                )}
+                                            </>
                                         ) : (
                                             <button
                                                 type="button"
-                                                className=" btn btn-primary add-member-button"
+                                                className="btn btn-primary add-member-button"
                                                 onClick={() =>
                                                     handleAddMember(user.id)
                                                 }
@@ -163,24 +231,15 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                                         )}
                                     </div>
                                 ))}
-                            {/* member 1 */}
 
-                            {/* <div className="d-flex align-items-center member-details-row mb-3">
-                                <div className="d-flex flex-column flex-grow-1">
-                                    <span className="member-name">
-                                        Tanvir Ahmed Chowdhury
-                                    </span>
-                                    <span className="member-email">
-                                        tanvir@gmail.com
-                                    </span>
-                                </div>
-                                <button
-                                    type="button"
-                                    className=" btn btn-primary add-member-button"
-                                >
-                                    Add Member
-                                </button>
-                            </div> */}
+                            {!isLoading &&
+                                !error &&
+                                users &&
+                                users.length === 0 && (
+                                    <p className="loading-text">
+                                        No users found!
+                                    </p>
+                                )}
                         </div>
                     </div>
                 </div>

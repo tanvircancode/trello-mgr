@@ -29,7 +29,7 @@ class PrioritiesController extends Controller
         }
 
         $tasks = Task::with('priorities')->find($priority->task_id);
-        $projects = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        $projects = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
             ->find($project_id);
 
         $response = [
@@ -45,7 +45,6 @@ class PrioritiesController extends Controller
 
     public function update(UpdatePriorityRequest $request)
     {
-
         $user_id = $request->input('user_id');
 
         if ($user_id !== Auth::user()->id) {
@@ -60,7 +59,7 @@ class PrioritiesController extends Controller
         }
 
         $task = Task::with('priorities')->find($priority->task_id);
-        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        $project = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
         ->find($task->project_id);
 
         $response = [
@@ -69,7 +68,6 @@ class PrioritiesController extends Controller
             'project' => $project,
             'message' => "Priority Updated Successfully"
         ];
-
 
         return response()->json($response, 200);
     }
@@ -84,7 +82,7 @@ class PrioritiesController extends Controller
 
         $priority->delete();
         $task = Task::with('priorities')->find($priority->task_id);
-        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        $project = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
         ->find($task->project_id);
 
         $response = [
@@ -115,7 +113,7 @@ class PrioritiesController extends Controller
         }
 
         $task = Task::with('priorities')->find($task_id);
-        $project = Project::with('members','tasks', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        $project = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
         ->find($task->project_id);
 
         $response = [

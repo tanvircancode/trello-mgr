@@ -44,5 +44,30 @@ class ProjectsController extends Controller
         return response()->json($response, 404);
     }
 
-    
+    public function showMembers($id)
+    {
+        $project = Project::find($id);
+
+        if (!$project) {
+            $response = [
+                'status' => false,
+                'message' => 'Project not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        if ($project->user_id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $memberArray = $project->getMembers();
+
+        $response = [
+            'status' => true,
+            'users' => $memberArray,
+            'message' => "Member fetched Successfully"
+        ];
+
+        return response()->json($response, 200);
+    }
 }

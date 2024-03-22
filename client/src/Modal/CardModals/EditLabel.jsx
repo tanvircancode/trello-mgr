@@ -23,11 +23,14 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
     console.log(labels);
 
     const handleCheckboxChange = async (labelId, taskId, checked) => {
-        console.log(taskId);
         await axios
             .put(
-                `${BASE_URL}/api/label/${labelId}`,
-                { is_active: checked ? 1 : 0, task_id:taskId, user_id: userId },
+                `${BASE_URL}/api/changelabel/${labelId}`,
+                {
+                    is_active: checked ? 1 : 0,
+                    task_id: taskId,
+                    user_id: userId,
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -113,47 +116,52 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
                                 <div className="label-title mb-3">
                                     <label className="form-label">Labels</label>
                                     <div className="d-flex flex-column gap-3">
-                                        {labels && labels.map((label, index) => (
-                                            <div
-                                                className="d-flex align-items-center gap-3"
-                                                key={index}
-                                            >
-                                                <input
-                                                    className="form-check-input"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    type="checkbox"
-                                                    checked={label.is_active}
-                                                    onChange={(e) =>
-                                                        handleCheckboxChange(
-                                                            label.id,
-                                                            label.task_id,
-                                                            e.target.checked
-                                                        )
-                                                    }
-                                                    id={`flexCheckChecked-${label.id}`}
-                                                />
-                                                <span
-                                                    className="styled-span w-100"
-                                                    htmlFor={`flexCheckChecked-${label.id}`}
-                                                    style={{
-                                                        backgroundColor:
-                                                            label.color
-                                                                ? label.color
-                                                                : "#3B444C",
-                                                    }}
+                                        {labels &&
+                                            labels.map((label, index) => (
+                                                <div
+                                                    className="d-flex align-items-center gap-3"
+                                                    key={index}
                                                 >
-                                                    {label?.name}
-                                                </span>
-                                                <BsPencil
-                                                    className="edit-label-pencil"
-                                                    onClick={() =>
-                                                        handleEditLabel(label)
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
+                                                    <input
+                                                        className="form-check-input"
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        type="checkbox"
+                                                        checked={
+                                                            label.is_active
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleCheckboxChange(
+                                                                label.id,
+                                                                label.task_id,
+                                                                e.target.checked
+                                                            )
+                                                        }
+                                                        id={`flexCheckChecked-${label.id}`}
+                                                    />
+                                                    <span
+                                                        className="styled-span w-100"
+                                                        htmlFor={`flexCheckChecked-${label.id}`}
+                                                        style={{
+                                                            backgroundColor:
+                                                                label.color
+                                                                    ? label.color
+                                                                    : "#3B444C",
+                                                        }}
+                                                    >
+                                                        {label?.name}
+                                                    </span>
+                                                    <BsPencil
+                                                        className="edit-label-pencil"
+                                                        onClick={() =>
+                                                            handleEditLabel(
+                                                                label
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                            ))}
                                     </div>
                                 </div>
 

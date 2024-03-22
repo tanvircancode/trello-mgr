@@ -22,7 +22,7 @@ class UpdateLabelRequest extends FormRequest
     public function rules(): array
     {
         return [
-           
+      
             'color' => 'nullable|string',
             'task_id' => 'required|string',
             'is_active' => 'boolean',
@@ -32,7 +32,9 @@ class UpdateLabelRequest extends FormRequest
     public function messages(): array
     {
         return [
+            
             'task_id.required' => 'Task is required',
+           
         ];
     }
 }

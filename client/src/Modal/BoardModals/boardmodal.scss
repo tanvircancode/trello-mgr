@@ -5,9 +5,6 @@
     border-bottom:none;
 }
 
-
-
-
 .search-member input {
     padding: 5px 8px;
     border: 1px solid #ccc;
@@ -19,11 +16,11 @@
     display: block;
 }
 
-.member-name{
+.member-name , .owner-text{
     font-weight: 500;
     font-size: 14px;
 }
-.loading-text {
+.loading-text,.search-error-text {
     font-weight: 500;
     font-size: 14px;
     margin-left: 15px;
@@ -48,15 +45,24 @@
 .already-member{
     font-size: 12px;
     font-weight: 600;
-    
+    margin-right: 10px;
     color: #262020 !important;
-    
 }
 .search-member button {
     padding: 10px 15px;
     background-color: #007bff;
     color: white;
     border: none;
+}
+.remove-member-button{
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 8px !important;
+    background: #ed730aad !important;
+    border: none;
+    color: #262020 !important;
+    border-radius: 3px;
 }
 
 

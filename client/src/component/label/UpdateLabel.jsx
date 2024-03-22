@@ -20,6 +20,7 @@ const UpdateLabel = ({
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const labelId = editingLabel.id;
+    console.log(labelColor)
 
     const cancelModalAll = () => {
         setOpenLabelModal(false);
@@ -32,6 +33,12 @@ const UpdateLabel = ({
     const dispatch = useDispatch();
 
     const handleUpdateLabel = async () => {
+        if(!labelColor) {
+            labelColor = "";
+        console.log(labelColor)
+
+        }
+        
         var formData = new FormData();
         formData.append("name", title);
         formData.append("color", labelColor);
@@ -70,6 +77,9 @@ const UpdateLabel = ({
                     toast.error("Server is not responding");
                 }
             });
+        setTitle("");
+        setIsEditLabel(false);
+        setShowUpdateLabel(false);
     };
 
     useEffect(() => {

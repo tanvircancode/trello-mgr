@@ -18,7 +18,7 @@ class Priority extends Model
 
 
     protected $fillable = [
-        'task_id', 'name', 'color','is_active'
+        'task_id', 'name', 'color', 'is_active'
     ];
 
     protected static function boot()
@@ -37,7 +37,8 @@ class Priority extends Model
         'is_active' => 'boolean',
     ];
 
-    public function task() {
+    public function task()
+    {
         return $this->belongsTo(Task::class);
     }
 
@@ -46,16 +47,16 @@ class Priority extends Model
     public static function createPriority(array $data)
     {
         $task = Task::find($data['task_id']);
-        
+
         if (!$task) {
-           return null;
-       }
-    
+            return null;
+        }
+
 
         $priority = new static;
         $priority->fill($data);
         $priority->save();
-        
+
         return $priority;
     }
 
@@ -67,7 +68,6 @@ class Priority extends Model
             return null;
         }
 
-       
         if (isset($data['name'])) {
             $priority->name = $data['name'];
         }
@@ -76,9 +76,9 @@ class Priority extends Model
             $priority->color = $data['color'];
         }
 
-      
+
         $priority->save();
-        
+
         return $priority;
     }
 
@@ -89,18 +89,16 @@ class Priority extends Model
         if (!$priority) {
             return null;
         }
-       
+
         $selectedPriorityId = $data['id'];
 
-        $priorities = Task::findOrFail($task_id)->priorities;
+        $priorities = Task::find($task_id)->priorities;
 
         foreach ($priorities as $priority) {
             $priority->is_active = $priority->id === $selectedPriorityId;
             $priority->save();
         }
-        
+
         return true;
     }
-
-   
 }

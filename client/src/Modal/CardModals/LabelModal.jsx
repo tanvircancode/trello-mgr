@@ -29,7 +29,6 @@ const LabelModal = ({
     const [showUpdateLabel, setShowUpdateLabel] = useState(false);
     const [showDeleteLabel, setShowDeleteLabel] = useState(false);
 
-
     const dispatch = useDispatch();
 
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
@@ -56,12 +55,14 @@ const LabelModal = ({
         "#607d8b",
     ];
 
+   
+
     const cancelModal = () => {
         setIsCreateLabel(false);
         setTitle("");
         setEditingLabel(null);
         setOpenLabelModal(false);
-
+        setShowUpdateLabel(false);
         if (isEditLabel) {
             setIsEditLabel(false);
             dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
@@ -72,6 +73,7 @@ const LabelModal = ({
         // console.log(isEditLabel);
         setOpenLabelModal(false);
         setIsEditLabel(false);
+        setShowUpdateLabel(false);
         setOpenEditLabelModal(false);
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
         setIsCreateLabel(false);
@@ -103,9 +105,8 @@ const LabelModal = ({
     };
 
     const handleDeleteLabel = (label) => {
-       console.log(label);
-            setShowDeleteLabel(true);
-        
+        console.log(label);
+        setShowDeleteLabel(true);
     };
 
     useEffect(() => {
@@ -114,8 +115,6 @@ const LabelModal = ({
             setLabelColor(editingLabel.color);
         }
     }, [editingLabel, isEditLabel]);
-
-    
 
     return (
         <>
@@ -154,170 +153,180 @@ const LabelModal = ({
             )}
 
             {showDeleteLabel && (
-                <DeleteLabel 
-                editingLabel={editingLabel} 
-                setShowDeleteLabel={setShowDeleteLabel}
-                setOpenLabelModal={setOpenLabelModal}
-                setIsEditLabel={setIsCreateLabel}
-                setOpenEditLabelModal={setOpenEditLabelModal}
+                <DeleteLabel
+                    editingLabel={editingLabel}
+                    setShowDeleteLabel={setShowDeleteLabel}
+                    setOpenLabelModal={setOpenLabelModal}
+                    setIsEditLabel={setIsCreateLabel}
+                    setOpenEditLabelModal={setOpenEditLabelModal}
                 />
             )}
 
             <div>
-             {!showDeleteLabel && (
-                <div
-                className={`modal fade ${openLabelModal ? "show" : ""}`}
-                tabIndex="-1"
-                role="dialog"
-                style={{
-                    display: openLabelModal ? "block" : "none",
-                    marginTop: "2em",
-                }}
-            >
-                <div className="modal-dialog modal-sm custom-modal-width">
-                    <div className="modal-content">
-                        <div className="modal-header d-flex">
-                            {isEditLabel && (
-                                <BsArrowLeft
-                                    className="edit-label-arrow"
-                                    onClick={cancelModal}
-                                />
-                            )}
-                            <h1
-                                className="modal-title fs-6 text-center"
-                                style={{ margin: "0 auto" }}
-                            >
-                                {isEditLabel &&
-                                editingLabel &&
-                                !isCreateLabel
-                                    ? "Edit label"
-                                    : "Create label "}
-                            </h1>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                                style={{ marginLeft: 0, fontSize: "10px" }}
-                                onClick={cancelModalAll}
-                            ></button>
-                        </div>
-
-                        <div className="modal-body">
-                            {isEditLabel &&
-                            editingLabel &&
-                            !isCreateLabel ? (
-                                <div className="label-title mb-3">
-                                    <label className="form-label">
-                                        Title
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control label-input"
-                                        value={title}
-                                        onChange={(e) => {
-                                            setTitle(e.target.value);
-                                        }}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="label-title mb-3">
-                                    <label className="form-label">
-                                        Title
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control label-input"
-                                        value={title}
-                                        onChange={(e) =>
-                                            setTitle(e.target.value)
-                                        }
-                                    />
-                                </div>
-                            )}
-
-                            {isEditLabel &&
-                                editingLabel &&
-                                !isCreateLabel && (
-                                    <>
-                                        <BlockPicker
-                                            colors={colors}
-                                            color={labelColor || "#000000"}
-                                            onChangeComplete={
-                                                handleChangeCompleteLabel
-                                            }
+                {!showDeleteLabel && (
+                    <div
+                        className={`modal fade ${openLabelModal ? "show" : ""}`}
+                        tabIndex="-1"
+                        role="dialog"
+                        style={{
+                            display: openLabelModal ? "block" : "none",
+                            marginTop: "2em",
+                        }}
+                    >
+                        <div className="modal-dialog modal-sm custom-modal-width">
+                            <div className="modal-content">
+                                <div className="modal-header d-flex">
+                                    {isEditLabel && (
+                                        <BsArrowLeft
+                                            className="edit-label-arrow"
+                                            onClick={cancelModal}
                                         />
+                                    )}
+                                    <h1
+                                        className="modal-title fs-6 text-center"
+                                        style={{ margin: "0 auto" }}
+                                    >
+                                        {isEditLabel &&
+                                        editingLabel &&
+                                        !isCreateLabel
+                                            ? "Edit label"
+                                            : "Create label "}
+                                    </h1>
+                                    <button
+                                        type="button"
+                                        className="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"
+                                        style={{
+                                            marginLeft: 0,
+                                            fontSize: "10px",
+                                        }}
+                                        onClick={cancelModalAll}
+                                    ></button>
+                                </div>
+
+                                <div className="modal-body">
+                                    {isEditLabel &&
+                                    editingLabel &&
+                                    !isCreateLabel ? (
+                                        <div className="label-title mb-3">
+                                            <label className="form-label">
+                                                Title
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="form-control label-input"
+                                                value={title}
+                                                onChange={(e) => {
+                                                    setTitle(e.target.value);
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="label-title mb-3">
+                                            <label className="form-label">
+                                                Title
+                                            </label>
+                                            <input
+                                                type="text"
+                                                className="form-control label-input"
+                                                value={title}
+                                                onChange={(e) =>
+                                                    setTitle(e.target.value)
+                                                }
+                                            />
+                                        </div>
+                                    )}
+
+                                    {isEditLabel &&
+                                        editingLabel &&
+                                        !isCreateLabel && (
+                                            <>
+                                                <BlockPicker
+                                                    colors={colors}
+                                                    color={
+                                                        labelColor || "#000000"
+                                                    }
+                                                    onChangeComplete={
+                                                        handleChangeCompleteLabel
+                                                    }
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary card-button d-flex align-items-center label-color-remove justify-content-center m-0"
+                                                    disabled={!labelColor}
+                                                    onClick={() =>
+                                                        handleRemoveColorLabel()
+                                                    }
+                                                >
+                                                    <span>Remove color</span>
+                                                </button>
+                                            </>
+                                        )}
+
+                                    {openLabelModal && isCreateLabel && (
+                                        <>
+                                            <BlockPicker
+                                                colors={colors}
+                                                color={labelColor || "#000000"}
+                                                onChangeComplete={
+                                                    handleChangeCompleteLabel
+                                                }
+                                            />
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary card-button d-flex align-items-center label-color-remove justify-content-center m-0"
+                                                disabled={!labelColor}
+                                                onClick={() =>
+                                                    handleRemoveColorLabel()
+                                                }
+                                            >
+                                                <span>Remove color</span>
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {isEditLabel &&
+                                    editingLabel &&
+                                    !isCreateLabel ? (
+                                        <div className="d-flex label-edit-button">
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary label-save "
+                                                onClick={() =>
+                                                    handleSaveLabel()
+                                                }
+                                                disabled={!title && !labelColor}
+                                            >
+                                                <span>Savess</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary label-delete"
+                                                onClick={() =>
+                                                    handleDeleteLabel(
+                                                        editingLabel
+                                                    )
+                                                }
+                                            >
+                                                <span>Delete</span>
+                                            </button>
+                                        </div>
+                                    ) : (
                                         <button
                                             type="button"
-                                            className="btn btn-primary card-button d-flex align-items-center label-color-remove justify-content-center m-0"
-                                            disabled={!labelColor}
-                                            onClick={() =>
-                                                handleRemoveColorLabel()
-                                            }
+                                            className="btn btn-primary create-button"
+                                            onClick={() => handleCreateLabel()}
+                                            disabled={!title && !labelColor}
                                         >
-                                            <span>Remove color</span>
+                                            <span>Create label </span>
                                         </button>
-                                    </>
-                                )}
-
-                            {openLabelModal && isCreateLabel && (
-                                <>
-                                    <BlockPicker
-                                        colors={colors}
-                                        color={labelColor || "#000000"}
-                                        onChangeComplete={
-                                            handleChangeCompleteLabel
-                                        }
-                                    />
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary card-button d-flex align-items-center label-color-remove justify-content-center m-0"
-                                        disabled={!labelColor}
-                                        onClick={() =>
-                                            handleRemoveColorLabel()
-                                        }
-                                    >
-                                        <span>Remove color </span>
-                                    </button>
-                                </>
-                            )}
-
-                            {isEditLabel &&
-                            editingLabel &&
-                            !isCreateLabel ? (
-                                <div className="d-flex label-edit-button">
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary label-save "
-                                        onClick={() => handleSaveLabel()}
-                                        disabled={!title && !labelColor}
-                                    >
-                                        <span>Save</span>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-primary label-delete"
-                                        onClick={() => handleDeleteLabel(editingLabel)}
-                                    >
-                                        <span>Delete</span>
-                                    </button>
+                                    )}
                                 </div>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="btn btn-primary create-button"
-                                    onClick={() => handleCreateLabel()}
-                                    disabled={!title && !labelColor}
-                                >
-                                    <span>Create label </span>
-                                </button>
-                            )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-             )}  
-              
+                )}
             </div>
         </>
     );

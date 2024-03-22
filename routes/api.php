@@ -28,10 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::get('/user/{id}', [UsersController::class, 'show']);
   Route::get('/me', [UsersController::class, 'me']);
   Route::get('/logout', [UsersController::class, 'logout']);
+  Route::get('/projects/{id}', [UsersController::class, 'show']);
 
   // project apis
   Route::post('/project', [ProjectsController::class, 'store']);
-  Route::get('/projects/{id}', [UsersController::class, 'show']);
+  Route::get('/projectmembers/{id}', [ProjectsController::class, 'showMembers']);
 
    // task apis
    Route::post('/task/{id}', [TasksController::class, 'store']);
@@ -42,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/label', [LabelsController::class, 'store']);
   Route::put('/label/{id}', [LabelsController::class, 'update']);
   Route::delete('/deletelabel/{id}', [LabelsController::class, 'destroy']);
+  Route::put('/changelabel/{id}', [LabelsController::class, 'updateSelected']);
 
   //priority apis
   Route::post('/priority', [PrioritiesController::class, 'store']);
@@ -69,6 +71,8 @@ Route::middleware('auth:sanctum')->group(function () {
   Route::post('/searchusers', [UsersController::class, 'searchUsers']);
   // add member from search bar
   Route::post('/addmember', [UsersController::class, 'addMember']);
+  // remove member from search bar
+  Route::delete('/removemember/{projectId}/{memberId}', [UsersController::class, 'removeMember']);
   // assign user to a task
   Route::post('/addtaskmember', [TasksController::class, 'assignTask']);
   Route::post('/removetaskmember', [TasksController::class, 'removeTask']);

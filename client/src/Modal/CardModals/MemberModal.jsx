@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeCardModalBlur, setSelectedTaskMembers } from "../../store";
+import {
+    setMakeCardModalBlur,
+    setSelectedTaskMembers,
+    setTasks,
+} from "../../store";
 import { BsPersonAdd, BsPersonDash } from "react-icons/bs";
 import { BASE_URL } from "../../config";
 import axios from "axios";
 import { toast } from "react-toastify";
+import HashLoader from "react-spinners/HashLoader";
 
 const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
     const dispatch = useDispatch();
@@ -15,19 +20,24 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
 
     const isLoggedUserOwner = useSelector((state) => state.isLoggedUserOwner);
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    const selectedProject = useSelector((state) => state.selectedProject);
     const selectedTaskMembers = useSelector(
         (state) => state.selectedTaskMembers
     );
     const taskId = fetchSingleCard.id;
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
+    const [loading, setLoading] = useState(false);
 
+    console.log(selectedProject);
     console.log(selectedProjectMembers);
     console.log(selectedTaskMembers);
     console.log(isLoggedUserOwner);
 
     const filteredProjectMembers = () => {
-        console.log(selectedTaskMembers);
+        if (!selectedTaskMembers) {
+            return [];
+        }
 
         let newProjectMembers = selectedProjectMembers.filter(
             (projectMember) => {
@@ -41,6 +51,7 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
     };
 
     const removeTaskMember = async (memberId) => {
+        setLoading(true);
         console.log(memberId);
         var formData = new FormData();
         formData.append("user_id", memberId);
@@ -57,12 +68,13 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
             .then((res) => {
                 console.log(res);
                 const updatedTaskUsers = res.data.task.users;
-
+                dispatch(setTasks({ tasks: res.data.project.tasks }));
                 dispatch(
                     setSelectedTaskMembers({
                         selectedTaskMembers: updatedTaskUsers,
                     })
                 );
+
                 filteredProjectMembers();
             })
             .catch((error) => {
@@ -77,10 +89,11 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                     toast.error("Server is not responding");
                 }
             });
-        // setIsLoading(false);
+        setLoading(false);
     };
 
     const addAsTaskMember = async (memberId) => {
+        setLoading(true);
         console.log(memberId);
         var formData = new FormData();
         formData.append("user_id", memberId);
@@ -97,7 +110,7 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
             .then((res) => {
                 console.log(res);
                 const updatedTaskUsers = res.data.task.users;
-
+                dispatch(setTasks({ tasks: res.data.project.tasks }));
                 dispatch(
                     setSelectedTaskMembers({
                         selectedTaskMembers: updatedTaskUsers,
@@ -117,7 +130,7 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                     toast.error("Server is not responding");
                 }
             });
-        // setIsLoading(false);
+        setLoading(false);
     };
 
     const cancelModal = () => {
@@ -127,7 +140,9 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
     };
 
     useEffect(() => {
-        filteredProjectMembers();
+        if (selectedTaskMembers) {
+            filteredProjectMembers();
+        }
     }, [selectedTaskMembers]);
 
     return (
@@ -167,24 +182,50 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                                 >
                                     Task members
                                 </li>
-                                {selectedTaskMembers && selectedTaskMembers.length > 0 &&
-                                    selectedTaskMembers.map((member, index) => (
-                                        <li
-                                            key={index}
-                                            className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
-                                        >
-                                            {member.name}
-                                            <BsPersonDash
-                                                className="member-list-dash-icon"
-                                                style={{
-                                                    cursor: "pointer",
-                                                }}
-                                                onClick={() =>
-                                                    removeTaskMember(member.id)
-                                                }
-                                            />
-                                        </li>
-                                    ))}
+                                {loading ? (
+                                    <div className="custom-loader">
+                                        <HashLoader color="#36d7b7" size={25} />
+                                    </div>
+                                ) : (
+                                    <>
+                                        {selectedTaskMembers &&
+                                            selectedTaskMembers.length > 0 &&
+                                            selectedTaskMembers.map(
+                                                (member, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
+                                                    >
+                                                        <div>
+                                                            {member.name}
+                                                            {selectedProject.user_id ===
+                                                                member.id && (
+                                                                <span>
+                                                                    (owner)
+                                                                </span>
+                                                            )}
+                                                            {userId === member.id && (
+                                                                <span>
+                                                                    (you)
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <BsPersonDash
+                                                            className="member-list-dash-icon"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            onClick={() =>
+                                                                removeTaskMember(
+                                                                    member.id
+                                                                )
+                                                            }
+                                                        />
+                                                    </li>
+                                                )
+                                            )}
+                                    </>
+                                )}
                             </div>
 
                             <div className="task-member-list">
@@ -194,28 +235,49 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                                 >
                                     Project members
                                 </li>
-                                {filteredProjectMembers().length > 0 &&
-                                    filteredProjectMembers().map(
-                                        (member, index) => (
-                                            <li
-                                                key={index}
-                                                className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
-                                            >
-                                                {member.name}
-                                                <BsPersonAdd
-                                                    className="member-list-plus-icon"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() =>
-                                                        addAsTaskMember(
-                                                            member.id
-                                                        )
-                                                    }
-                                                />
-                                            </li>
-                                        )
-                                    )}
+                                {loading ? (
+                                    <div className="custom-loader">
+                                        <HashLoader color="#36d7b7" size={25} />
+                                    </div>
+                                ) : (
+                                    <>
+                                        {filteredProjectMembers().length > 0 &&
+                                            filteredProjectMembers().map(
+                                                (member, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="list-group-item d-flex justify-content-between align-items-center no-border no-border-bottom member-list-text"
+                                                    >
+                                                        <div>
+                                                            {member.name}
+                                                            {selectedProject.user_id ===
+                                                                member.id && (
+                                                                <span>
+                                                                    (owner)
+                                                                </span>
+                                                            )}
+                                                            {userId === member.id && (
+                                                                <span>
+                                                                    (you)
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <BsPersonAdd
+                                                            className="member-list-plus-icon"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            onClick={() =>
+                                                                addAsTaskMember(
+                                                                    member.id
+                                                                )
+                                                            }
+                                                        />
+                                                    </li>
+                                                )
+                                            )}
+                                    </>
+                                )}
                             </div>
                         </ul>
                     </div>

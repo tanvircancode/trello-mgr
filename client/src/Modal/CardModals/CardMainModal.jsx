@@ -9,11 +9,7 @@ import {
     BsCheck2Square,
 } from "react-icons/bs";
 import EditNameDescModal from "./EditNameDescModal";
-import {
-    setMakeBlur,
-    setMakeCardModalBlur,
-    
-} from "../../store";
+import { setMakeBlur, setMakeCardModalBlur } from "../../store";
 import CardModalButton from "./CardModalButton";
 import EditDescription from "../../component/description/EditDescription";
 import PrioritySelection from "../../component/priority/PrioritySelection";
@@ -21,7 +17,6 @@ import DeleteChecklist from "../../component/checklist/DeleteChecklist";
 import AddItem from "../../component/checklist/AddItem";
 import SelectionItem from "../../component/checklist/SelectionItem";
 import DeleteItem from "../../component/checklist/DeleteItem";
-
 
 const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const textareaRef = useRef(null);
@@ -42,11 +37,34 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
 
     const [addItem, setAddItem] = useState(false);
 
+    var colors = [
+        "#f44336",
+        "#e91e63",
+        "#9c27b0",
+        "#673ab7",
+        "#3f51b5",
+        "#2196f3",
+        "#03a9f4",
+        "#424242",
+        "#1F2022",
+        "#4b6387",
+        "#C02942",
+        "#007BFF",
+        "#009688",
+        "#795548",
+        "#607d8b",
+    ];
+
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    const selectedTaskMembers = useSelector(
+        (state) => state.selectedTaskMembers
+    );
+    console.log(selectedTaskMembers);
 
     const labels = useSelector((state) => state.labels);
+    const anyLabelActive = labels.find((label) => label.is_active);
 
     const priorities = useSelector((state) => state.priorities);
     // console.log(priorities);
@@ -131,8 +149,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     };
 
     const handleEditItem = (item) => {
-       
-        setSelectItem({...item, modal: true});
+        setSelectItem({ ...item, modal: true });
         dispatch(setMakeBlur({ makeBlur: true }));
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
     };
@@ -179,8 +196,6 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                 />
             )}
 
-           
-
             {fetchSingleCard && (
                 <div
                     className={`modal fade ${openNewCardModal ? "show" : ""} `}
@@ -218,39 +233,106 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                     : ""
                                             }`}
                                         >
-                                            {labels && labels.length > 0 && (
-                                                <div className="card-detail">
-                                                    <h3 className="card-detail-header">
-                                                        Labels
-                                                    </h3>
-                                                    <div className="card-detail-label-list">
-                                                        {labels.map(
-                                                            (label, index) =>
-                                                                label.is_active && (
-                                                                    <span
-                                                                        className="card-detail-label-text"
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        style={{
-                                                                            backgroundColor:
-                                                                                label.color !==
-                                                                                    null &&
-                                                                                label.color !==
-                                                                                    "null"
-                                                                                    ? label.color
-                                                                                    : "#3B444C",
-                                                                        }}
-                                                                    >
-                                                                        {
-                                                                            label?.name
-                                                                        }
-                                                                    </span>
-                                                                )
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
+                                            <>
+                                                {selectedTaskMembers &&
+                                                    selectedTaskMembers.length >
+                                                        0 && (
+                                                        <div className="card-detail">
+                                                            <h3 className="card-detail-header">
+                                                                Members
+                                                            </h3>
+                                                            <div className="card-detail-label-list">
+                                                                {selectedTaskMembers.map(
+                                                                    (
+                                                                        member,
+                                                                        index
+                                                                    ) => {
+                                                                       
+                                                                        const randomIndex =
+                                                                            Math.floor(
+                                                                                Math.random() *
+                                                                                    colors.length
+                                                                            );
+                                                                      
+                                                                        const randomColor =
+                                                                            colors[
+                                                                                randomIndex
+                                                                            ];
+                                                                        const memberName =
+                                                                            member.name
+                                                                                .split(
+                                                                                    " "
+                                                                                )
+                                                                                .map(
+                                                                                    (
+                                                                                        word
+                                                                                    ) =>
+                                                                                        word[0]
+                                                                                )
+                                                                                .join(
+                                                                                    ""
+                                                                                );
+
+                                                                        return (
+                                                                            <button
+                                                                                key={
+                                                                                    index
+                                                                                }
+                                                                                className="circular-button"
+                                                                                style={{
+                                                                                    backgroundColor:
+                                                                                        randomColor,
+                                                                                }}
+                                                                            >
+                                                                                {
+                                                                                    memberName
+                                                                                }
+                                                                            </button>
+                                                                        );
+                                                                    }
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    
+                                                {labels &&  anyLabelActive &&
+                                                    labels.length > 0 && (
+                                                        <div className="card-detail">
+                                                            <h3 className="card-detail-header">
+                                                                Labels
+                                                            </h3>
+                                                            <div className="card-detail-label-list">
+                                                                {labels.map(
+                                                                    (
+                                                                        label,
+                                                                        index
+                                                                    ) =>
+                                                                        label.is_active && (
+                                                                            <span
+                                                                                className="card-detail-label-text"
+                                                                                key={
+                                                                                    index
+                                                                                }
+                                                                                style={{
+                                                                                    backgroundColor:
+                                                                                        label.color !==
+                                                                                            null &&
+                                                                                        label.color !==
+                                                                                            "null"
+                                                                                            ? label.color
+                                                                                            : "#3B444C",
+                                                                                }}
+                                                                            >
+                                                                                {
+                                                                                    label?.name
+                                                                                }
+                                                                            </span>
+                                                                        )
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                            </>
                                             <div className="card-detail">
                                                 <div className="card-detail-description-header d-flex mb-2">
                                                     <div className="d-flex">
@@ -357,14 +439,20 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
 
                                             {/* checklist start */}
 
-                                            {checklists && checklists.length > 0 &&
+                                            {checklists &&
+                                                checklists.length > 0 &&
                                                 checklists.map(
                                                     (checklist, index) => {
                                                         const totalItems =
-                                                        checklist.checklistitems ? checklist.checklistitems.length : 0;
+                                                            checklist.checklistitems
+                                                                ? checklist
+                                                                      .checklistitems
+                                                                      .length
+                                                                : 0;
                                                         // Calculate the number of completed checklist items
-                                                        const completedItems = 
-                                                        checklist.checklistitems && checklist.checklistitems.filter(
+                                                        const completedItems =
+                                                            checklist.checklistitems &&
+                                                            checklist.checklistitems.filter(
                                                                 (item) =>
                                                                     item.is_completed
                                                             ).length;
@@ -433,7 +521,6 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                     </div>
 
                                                                     <div className="d-flex">
-                                                                       
                                                                         {!(
                                                                             editingChecklistId ===
                                                                             checklist.id
@@ -611,7 +698,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                     setEditingChecklistId={setEditingChecklistId}
                 />
             )}
-             {selectItem && (
+            {selectItem && (
                 <SelectionItem
                     selectItem={selectItem}
                     setSelectItem={setSelectItem}

@@ -32,8 +32,7 @@ class StoreLabelRequest extends FormRequest
     public function messages(): array
     {
         return [
-       
-            
+            'task_id.required' => 'Task is required',
         ];
     }
 }

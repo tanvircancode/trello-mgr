@@ -81,7 +81,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Task::class, 'task_users');
     }
 
-    // Custom method to check if a user is a member of a specific project
+    // must ** 
     public function isMemberOfProject($projectId)
     {
         return $this->projects()->where('project_id', $projectId)->exists();
@@ -89,12 +89,12 @@ class User extends Authenticatable
 
 
     //custom methods
-   
+
 
     public function getProjectsWithOwnerAndTasks()
     {
         return $this->projects()
-            ->with(['members','user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
+            ->with(['members', 'user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
             ->get()
             ->map(function ($project) {
                 $project->is_owner = $project->user_id === $this->id;
@@ -119,5 +119,20 @@ class User extends Authenticatable
                 },
             ])
             ->find($userId);
+    }
+
+    //must
+    public function addToProject($projectId)
+    {
+        $project = Project::find($projectId);
+
+        if ($project->members()->where('user_id', $this->id)->exists()) {
+            return false; 
+        }
+
+        $memberId = Str::uuid();
+        $project->members()->attach($this->id, ['id' => $memberId]);
+
+        return true; 
     }
 }

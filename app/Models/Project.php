@@ -40,7 +40,7 @@ class Project extends Model
     }
     public function members()
     {
-        return $this->belongsToMany(User::class , 'project_members', 'project_id', 'user_id');
+        return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id');
     }
     public function tasks()
     {
@@ -48,7 +48,14 @@ class Project extends Model
     }
 
     //new
-   
+    public function getMembers()
+    {
+        $members = $this->members()->get();
 
+        for ($i = 0; $i < count($members); $i++) {
+            $members[$i]->isMember = true;
+        }
 
+        return $members;
+    }
 }

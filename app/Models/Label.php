@@ -72,7 +72,14 @@ class Label extends Model
             return null;
         }
         
+        if (isset($data['is_active'])) {
+            $label->is_active = $data['is_active'];
+        }
+    
+       
         $data['name'] = $data['name'] ?? "";
+    
+     
 
         $label->fill($data);
         $label->save();

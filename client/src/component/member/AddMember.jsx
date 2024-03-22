@@ -1,13 +1,6 @@
 import { useEffect } from "react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import {
-    setMakeCardModalBlur,
-    setLabels,
-    setTasks,
-    setMakeBlur,
-    setPriorities,
-} from "../../store";
+import { useSelector } from "react-redux";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 
@@ -17,20 +10,17 @@ const AddMember = ({
     addMemberId,
     setAddMemberId,
     projectId,
-    isLoading,
     setIsLoading,
+    ownerId,
 }) => {
-    console.log(addMemberId);
-    const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
-
-    const dispatch = useDispatch();
 
     const handleAddMember = async () => {
         var formData = new FormData();
 
         formData.append("user_id", addMemberId);
         formData.append("project_id", projectId);
+        formData.append("owner_id", ownerId);
 
         await axios
             .post(`${BASE_URL}/api/addmember`, formData, {
@@ -45,7 +35,7 @@ const AddMember = ({
                 if (res.data.status) {
                     setUsers(
                         users.map((user) => {
-                            if (user.id === userId) {
+                            if (user.id === addMemberId) {
                                 return { ...user, isMember: true };
                             }
                             return user;
@@ -54,8 +44,8 @@ const AddMember = ({
                 } else {
                     toast.error("Server is not responding");
                 }
-                setAddMemberId(null)
-                setIsLoading(false)
+                setAddMemberId(null);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.log(error);
@@ -68,6 +58,8 @@ const AddMember = ({
                 } else {
                     toast.error("Server is not responding");
                 }
+                setAddMemberId(null);
+                setIsLoading(false);
             });
     };
 

@@ -58,13 +58,15 @@ const CardModalButton = () => {
                 role="group"
                 aria-label="Vertical button group"
             >
-              {isLoggedUserOwner &&  <button
+             
+              <button
                     type="button"
                     className="btn btn-primary card-button d-flex align-items-center"
                     onClick={() => handleModal("member")}
                 >
                     <BsPerson className="card-sm-icon" /> Members
-                </button>} 
+                </button>
+                
                 <button
                     type="button"
                     className="btn btn-primary card-button"

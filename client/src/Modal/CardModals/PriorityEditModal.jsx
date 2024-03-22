@@ -139,7 +139,7 @@ const PriorityEditModal = ({
                         </div>
                         <div className="modal-body">
                             <div className="label-title mb-3">
-                                <label className="form-label">Titless</label>
+                                <label className="form-label">Title</label>
                                 <input
                                     type="text"
                                     className="form-control label-input"

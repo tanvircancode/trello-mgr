@@ -51,6 +51,8 @@ const CreateLabel = ({
         formData.append("task_id", taskId);
         formData.append("is_active", is_active);
         formData.append("project_id", projectId);
+        console.log(labelColor)
+
 
        await axios
             .post(`${BASE_URL}/api/label`, formData, {

@@ -132,7 +132,7 @@
     line-height: 20px;
     font-weight: 500;
     cursor: pointer;
-    padding: 6px 8px;
+    padding: 3px 8px;
     background: #d0e395 !important;
     box-shadow: none;
     border: none;
@@ -325,4 +325,20 @@
 }
 .item-trash {
     margin-right: 0 !important;
+}
+.custom-loader {
+    width: 25px !important;
+    height: 25px !important;
+    margin: 15px auto;
+}
+.circular-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0px;
+    cursor: auto !important;
 }
