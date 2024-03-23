@@ -22,8 +22,7 @@ const Card = () => {
 
     const [openNewCardModal, setOpenNewCardModal] = useState(false);
     const selectedProject = useSelector((state) => state.selectedProject);
-    console.log(selectedProject);
-    const isLoggedUserOwner = useSelector((state) => state.isLoggedUserOwner);
+    
 
     const [cardTitle, setCardTitle] = useState("");
 
@@ -99,7 +98,10 @@ const Card = () => {
     };
 
     useEffect(() => {
+
         dispatch(setMakeBlur({ makeBlur: false }));
+       
+        
     }, []);
 
     return (
@@ -195,34 +197,34 @@ const Card = () => {
                         </div>
                     );
                 })}
-            {/* {isLoggedUserOwner && ( */}
-                <div className="custom-card">
-                    <input
-                        type="text"
-                        className="form-control board-title-input"
-                        value={cardTitle}
-                        placeholder="Add a task"
-                        onChange={(e) => setCardTitle(e.target.value)}
-                    />
-                    {cardTitle && (
-                        <div className="d-flex align-items-center gap-3 mt-2 ">
-                            <button
-                                type="button"
-                                className="btn btn-primary create-card-button"
-                                onClick={handleCreateCard}
-                            >
-                                <span className="add-card-text">Add Task</span>
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                aria-label="Close"
-                                style={{ fontSize: "12px" }}
-                                onClick={cancelAddCard}
-                            ></button>
-                        </div>
-                    )}
-                </div>
+           
+            <div className="custom-card">
+                <input
+                    type="text"
+                    className="form-control board-title-input"
+                    value={cardTitle}
+                    placeholder="Add a task"
+                    onChange={(e) => setCardTitle(e.target.value)}
+                />
+                {cardTitle && (
+                    <div className="d-flex align-items-center gap-3 mt-2 ">
+                        <button
+                            type="button"
+                            className="btn btn-primary create-card-button"
+                            onClick={handleCreateCard}
+                        >
+                            <span className="add-card-text">Add Task</span>
+                        </button>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            aria-label="Close"
+                            style={{ fontSize: "12px" }}
+                            onClick={cancelAddCard}
+                        ></button>
+                    </div>
+                )}
+            </div>
             {/* )} */}
 
             <CardMainModal

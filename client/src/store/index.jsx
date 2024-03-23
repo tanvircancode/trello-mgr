@@ -16,7 +16,7 @@ const initialState = {
     fetchSingleCard: null,
     selectedProject: null,
     isCardsLoading: true,
-    isLoggedUserOwner:false,
+    
 };
 
 export const trelloSlice = createSlice({
@@ -35,7 +35,7 @@ export const trelloSlice = createSlice({
             state.labels = [];
             state.fetchSingleCard = null;
             state.selectedProject = null;
-            state.isLoggedUserOwner = false,
+           
             state.selectedProjectMembers = [],
             state.selectedTaskMembers = [],
             state.priorities = [],
@@ -118,9 +118,7 @@ export const trelloSlice = createSlice({
                 state.selectedTaskMembers = action.payload.selectedTaskMembers;
             }
         },
-        setIsLoggedUserOwner: (state, action) => {
-            state.isLoggedUserOwner = action.payload.isLoggedUserOwner;
-        },
+       
         // end trello
     },
 });
@@ -139,8 +137,7 @@ export const {
     setIsCardsLoading,
     setFetchSingleCard,
     setMakeBlur,
-    setMakeCardModalBlur,
-    setIsLoggedUserOwner
+    setMakeCardModalBlur
 } = trelloSlice.actions;
 
 export default trelloSlice.reducer;

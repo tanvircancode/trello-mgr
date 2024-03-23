@@ -4,7 +4,7 @@ import { useSelector , useDispatch } from "react-redux";
 
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
-import { setTasks } from "../../store";
+import { setTasks,setSelectedProjectMembers } from "../../store";
 
 const RemoveMember = ({
     users,
@@ -38,11 +38,8 @@ const RemoveMember = ({
                         users.filter((user) => user.id !== removeMemberId)
                     );
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    // dispatch(
-                    //     setSelectedTaskMembers({
-                    //         selectedTaskMembers: updatedTaskUsers,
-                    //     })
-                    // );
+                    dispatch(setSelectedProjectMembers({ selectedProjectMembers: res.data.project.members }));
+                    
                 } else {
                     toast.error("Server is not responding");
                 }

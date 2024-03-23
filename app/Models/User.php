@@ -93,33 +93,16 @@ class User extends Authenticatable
 
     public function getProjectsWithOwnerAndTasks()
     {
-        return $this->projects()
+        $projects = $this->projects()
             ->with(['members', 'user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
-            ->get()
-            ->map(function ($project) {
+            ->get();
+
+            foreach($projects as $project) {
                 $project->is_owner = $project->user_id === $this->id;
-                return $project;
-            });
+            }
+            return $projects;
     }
 
-    //new
-    public static function getUserProjects($userId)
-    {
-        return User::whereHas('projects', function ($query) use ($userId) {
-            $query->where('projects.user_id', $userId);  // Specify 'projects' table
-        })
-            ->with([
-                'projects' => function ($query) use ($userId) {
-                    $query->select('projects.*') // Select all project columns
-                        ->withPivot('user_id') // Include pivot table column
-                        ->where('projects.user_id', $userId) // Filter projects for ownership
-                        ->orWhereHas('members', function ($query) use ($userId) {
-                            $query->where('user_id', $userId); // Filter members
-                        });
-                },
-            ])
-            ->find($userId);
-    }
 
     //must
     public function addToProject($projectId)
@@ -127,12 +110,12 @@ class User extends Authenticatable
         $project = Project::find($projectId);
 
         if ($project->members()->where('user_id', $this->id)->exists()) {
-            return false; 
+            return false;
         }
 
         $memberId = Str::uuid();
         $project->members()->attach($this->id, ['id' => $memberId]);
 
-        return true; 
+        return true;
     }
 }

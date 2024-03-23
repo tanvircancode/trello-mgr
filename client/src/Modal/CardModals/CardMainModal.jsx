@@ -61,19 +61,22 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
     const selectedTaskMembers = useSelector(
         (state) => state.selectedTaskMembers
     );
-    console.log(selectedTaskMembers);
+
 
     const labels = useSelector((state) => state.labels);
     const anyLabelActive = labels.find((label) => label.is_active);
 
     const priorities = useSelector((state) => state.priorities);
+    const selectedProjectMembers = useSelector((state) => state.selectedProjectMembers);
+
     // console.log(priorities);
 
     const checklists = useSelector((state) => state.checklists);
     const tasks = useSelector((state) => state.tasks);
 
-    console.log(tasks);
-    console.log(checklists);
+    console.log(selectedProjectMembers);
+    console.log(selectedTaskMembers);
+    
 
     var doBlur = blur && cardModalblur;
 
@@ -247,17 +250,6 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                         member,
                                                                         index
                                                                     ) => {
-                                                                       
-                                                                        const randomIndex =
-                                                                            Math.floor(
-                                                                                Math.random() *
-                                                                                    colors.length
-                                                                            );
-                                                                      
-                                                                        const randomColor =
-                                                                            colors[
-                                                                                randomIndex
-                                                                            ];
                                                                         const memberName =
                                                                             member.name
                                                                                 .split(
@@ -281,7 +273,7 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                                                 className="circular-button"
                                                                                 style={{
                                                                                     backgroundColor:
-                                                                                        randomColor,
+                                                                                        "#56aaed",
                                                                                 }}
                                                                             >
                                                                                 {
@@ -294,8 +286,9 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                             </div>
                                                         </div>
                                                     )}
-                                                    
-                                                {labels &&  anyLabelActive &&
+
+                                                {labels &&
+                                                    anyLabelActive &&
                                                     labels.length > 0 && (
                                                         <div className="card-detail">
                                                             <h3 className="card-detail-header">

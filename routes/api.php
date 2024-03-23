@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
    Route::delete('/deleteitem/{id}', [ChecklistItemsController::class, 'destroy']);
 
   //new
-  Route::get('/projectdetails/{id}', [UsersController::class, 'userProjectDetails']);  //new
+  // Route::get('/projectdetails/{id}', [UsersController::class, 'userProjectDetails']);  //new
   
   //lager below
   Route::get('/fetchtaskids/{id}', [UsersController::class, 'getTaskIds']);

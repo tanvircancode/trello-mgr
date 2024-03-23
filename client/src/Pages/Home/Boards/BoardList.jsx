@@ -39,6 +39,7 @@ const BoardList = () => {
         setOpenCreateBoardModal(true);
         dispatch(setMakeBlur({ makeBlur: true }));
     };
+   
 
     // useEffect(() => {}, [selectedProject]);
 
@@ -112,7 +113,7 @@ const BoardList = () => {
                     <HashLoader color="#36d7b7" />
                 </div>
             )}
-            {!isCardsLoading && tasks && tasks.length === 0 && (
+            {!isCardsLoading && projects && projects.length === 0 && (
                 <>
                     <div
                         className={`d-flex flex-column gap-3 justify-content-center align-items-center w-100 h-100 ${

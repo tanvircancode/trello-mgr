@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
+import { setTasks, setSelectedProjectMembers } from "../../store";
 
 const AddMember = ({
     users,
@@ -14,6 +15,7 @@ const AddMember = ({
     ownerId,
 }) => {
     const token = useSelector((state) => state.token);
+    const dispatch = useDispatch();
 
     const handleAddMember = async () => {
         var formData = new FormData();
@@ -33,6 +35,13 @@ const AddMember = ({
                 console.log(res);
 
                 if (res.data.status) {
+                    dispatch(setTasks({ tasks: res.data.project.tasks }));
+                    dispatch(
+                        setSelectedProjectMembers({
+                            selectedProjectMembers: res.data.project.members,
+                        })
+                    );
+
                     setUsers(
                         users.map((user) => {
                             if (user.id === addMemberId) {

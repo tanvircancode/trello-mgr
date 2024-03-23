@@ -25,7 +25,7 @@ const CardModalButton = () => {
 
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
-    const isLoggedUserOwner = useSelector((state) => state.isLoggedUserOwner);
+    
 
 
     var doBlur = blur && cardModalblur;

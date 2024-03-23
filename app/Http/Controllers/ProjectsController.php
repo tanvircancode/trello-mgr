@@ -25,13 +25,14 @@ class ProjectsController extends Controller
         $project = Project::create($input);
 
         if ($project) {
-            $user = Auth::user();
-            $projects = User::with('project')->find($user->id);
+            $user = User::find($input['user_id']);
+            // $projects = User::with('project')->find($user->id);
+             
             $project->members()->attach($input['user_id'], ['id' => Str::uuid()]);
-
+            $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
             $response = [
                 'status' => true,
-                'data' => $projects,
+                'data' => $projectsWithRelatedData,
                 'message' => "Project created Successfully"
             ];
             return response()->json($response, 200);

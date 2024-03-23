@@ -7,17 +7,20 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import {
     setIsCardsLoading,
-    setIsLoggedUserOwner,
     setProjects,
     setSelectedProject,
     setSelectedProjectMembers,
     setTasks,
 } from "../../../store";
+import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 
 const BoardsBar = () => {
+
+
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const projects = useSelector((state) => state.projects);
+    console.log(projects);
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const dispatch = useDispatch();
@@ -58,7 +61,7 @@ const BoardsBar = () => {
                     const filteredProject = allProjects.find(
                         (singleProj) => singleProj.id === project.id
                     );
-                    console.log(filteredProject)
+                    console.log(filteredProject);
                     dispatch(
                         setSelectedProject({
                             selectedProject: filteredProject,
@@ -74,14 +77,6 @@ const BoardsBar = () => {
                             tasks: filteredProject.tasks,
                         })
                     );
-
-                    if (filteredProject.user_id === userId) {
-                        dispatch(
-                            setIsLoggedUserOwner({
-                                isLoggedUserOwner: true,
-                            })
-                        );
-                    }
                 }
             })
             .catch((error) => {
@@ -113,7 +108,6 @@ const BoardsBar = () => {
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
-
                     if (allProjects.length > 0) {
                         dispatch(setProjects({ projects: allProjects }));
                         dispatch(
@@ -133,13 +127,6 @@ const BoardsBar = () => {
                             })
                         );
 
-                        if (allProjects[0].user_id === userId) {
-                            dispatch(
-                                setIsLoggedUserOwner({
-                                    isLoggedUserOwner: true,
-                                })
-                            );
-                        }
                         console.log(selectedProject);
                     }
                 }
@@ -163,6 +150,8 @@ const BoardsBar = () => {
         // console.log(projects);
     };
 
+   
+
     useEffect(() => {
         getProjectsData();
     }, []);
@@ -174,42 +163,45 @@ const BoardsBar = () => {
             </span>
             {projects && projects.length > 0 && (
                 <ul className="list-group list-group-flush">
-                    {projects && projects.map((project, index) => (
-                        <li
-                            key={project.id}
-                            className="list-group-item d-flex justify-content-between align-items-center no-left-padding no-border"
-                        >
-                            <div
-                                className="d-flex align-items-center"
-                                onClick={() =>
-                                    handleClickSingleProject(project)
-                                }
+                    {projects &&
+                        projects.map((project, index) => (
+                            <li
+                                key={project.id}
+                                className="list-group-item d-flex justify-content-between align-items-center no-left-padding no-border"
                             >
                                 <div
-                                    className="icon-color"
-                                    style={{
-                                        backgroundColor:
-                                            colors[index % colors.length],
-                                    }}
-                                ></div>
-                                <span
-                                    className={`sidebar-text ${
-                                        selectedProject.id === project.id
-                                            ? "active-menu"
-                                            : ""
-                                    }`}
-                                    style={{ cursor: "pointer" }}
+                                    className="d-flex align-items-center"
+                                    onClick={() =>
+                                        handleClickSingleProject(project)
+                                    }
                                 >
-                                    {project.title}
-                                </span>
-                            </div>
-                            {project.is_owner && (
-                                <BsTrash3 className="custom-sm-trash-icon" />
-                            )}
-                        </li>
-                    ))}
+                                    <div
+                                        className="icon-color"
+                                        style={{
+                                            backgroundColor:
+                                                colors[index % colors.length],
+                                        }}
+                                    ></div>
+                                    <span
+                                        className={`sidebar-text ${
+                                            selectedProject.id === project.id
+                                                ? "active-menu"
+                                                : ""
+                                        }`}
+                                        style={{ cursor: "pointer" }}
+                                    >
+                                        {project.title}
+                                    </span>
+                                </div>
+                                {project.is_owner && (
+                                    <BsTrash3 className="custom-sm-trash-icon" />
+                                )}
+                            </li>
+                        ))}
                 </ul>
             )}
+
+           
         </div>
     );
 };

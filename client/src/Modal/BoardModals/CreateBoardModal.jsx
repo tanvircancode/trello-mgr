@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeBlur, setProjects, setSelectedProject } from "../../store";
+import { setMakeBlur, setProjects, setSelectedProject,setTasks, setSelectedProjectMembers } from "../../store";
 import { BASE_URL } from "../../config";
 
 const CreateBoardModal = ({
@@ -24,7 +24,6 @@ const CreateBoardModal = ({
     };
 
     const handleCreateBoard = async () => {
-        
         if (boardTitle.length === 0 || boardTitle.length > 50) {
             toast.error("Invalid Name");
         } else {
@@ -40,17 +39,30 @@ const CreateBoardModal = ({
                     },
                 })
                 .then((res) => {
-                    // console.log(res);
+                    console.log(res);
 
                     if (res.data?.status && res.data?.data) {
-                        const allProjects = res.data.data.project;
-                        dispatch(
-                            setProjects({ projects: allProjects })
-                        );
+                        const allProjects = res.data.data;
+                        dispatch(setProjects({ projects: allProjects }));
                         if (allProjects.length > 0) {
-                        
-                            dispatch(setSelectedProject({selectedProject:allProjects[0]}));
-                            console.log(selectedProject)
+                            dispatch(
+                                setSelectedProject({
+                                    selectedProject: allProjects[0],
+                                })
+                            );
+                            dispatch(
+                                setSelectedProjectMembers({
+                                    selectedProjectMembers:
+                                        allProjects[0].members,
+                                })
+                            );
+
+                            dispatch(
+                                setTasks({
+                                    tasks: allProjects[0].tasks,
+                                })
+                            );
+                            console.log(selectedProject);
                         }
                         toast.success(res.data?.message);
                     } else {
@@ -59,7 +71,7 @@ const CreateBoardModal = ({
                     cancelModal();
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log(error);
                     if (
                         error.response &&
                         error.response?.status &&
@@ -72,70 +84,61 @@ const CreateBoardModal = ({
                 });
         }
     };
-    
-    useEffect(() => {
 
-    },[selectedProject]);
+    useEffect(() => {}, [selectedProject]);
 
     return (
-       
-            
-            <div
-                className={`modal fade ${openCreateBoardModal ? "show" : ""}`}
-                tabIndex="-1"
-                role="dialog"
-                style={{
-                    display: openCreateBoardModal ? "block" : "none",
-                    marginTop: "2em",
-                }}
-            >
-                <div className="modal-dialog modal-sm custom-modal-width">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1
-                                className="modal-title fs-6 text-center"
-                                style={{ margin: "0 auto" }}
-                            >
-                                Create Project
-                            </h1>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                                style={{ marginLeft: 0, fontSize: "10px" }} 
-                                onClick={cancelModal} 
-                            ></button>
+        <div
+            className={`modal fade ${openCreateBoardModal ? "show" : ""}`}
+            tabIndex="-1"
+            role="dialog"
+            style={{
+                display: openCreateBoardModal ? "block" : "none",
+                marginTop: "2em",
+            }}
+        >
+            <div className="modal-dialog modal-sm custom-modal-width">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h1
+                            className="modal-title fs-6 text-center"
+                            style={{ margin: "0 auto" }}
+                        >
+                            Create Project
+                        </h1>
+                        <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            style={{ marginLeft: 0, fontSize: "10px" }}
+                            onClick={cancelModal}
+                        ></button>
+                    </div>
+
+                    <div className="modal-body">
+                        <div className="label-title mb-3">
+                            <label className="form-label">Title</label>
+                            <input
+                                type="text"
+                                className="form-control board-title-input"
+                                value={boardTitle}
+                                onChange={(e) => setBoardTitle(e.target.value)}
+                            />
                         </div>
 
-                        <div className="modal-body">
-                            <div className="label-title mb-3">
-                                <label className="form-label">
-                                    Title
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control board-title-input"
-                                    value={boardTitle}
-                                    onChange={(e) =>
-                                        setBoardTitle(e.target.value)
-                                    }
-                                />
-                            </div>
-
-                            <button
-                                type="button"
-                                className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
-                                onClick={handleCreateBoard}
-                                disabled={!boardTitle}
-                            >
-                                <span>Create</span>
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
+                            onClick={handleCreateBoard}
+                            disabled={!boardTitle}
+                        >
+                            <span>Create</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        
+        </div>
     );
 };
 

@@ -137,14 +137,6 @@ class UsersController extends Controller
     }
 
 
-    //new
-    public function userProjectDetails($userId)
-    {
-        $user = User::getUserProjects($userId);
-
-        return $user;
-    }
-
     public function getTaskIds($userId)
     {
         $user = User::with('tasks.users')->find($userId);
