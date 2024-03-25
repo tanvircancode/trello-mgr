@@ -22,7 +22,7 @@ class StorePriorityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:5|max:255',
+            'name' => 'required|string|min:3|max:255',
             'color' => 'nullable|string',
             'task_id' => 'required|string',
             'is_active' => 'boolean',
@@ -35,6 +35,7 @@ class StorePriorityRequest extends FormRequest
             'name.required' => 'Title is required',
             'name.min' => 'Title is too short',
             'name.max' => 'Please Try To Use Shorter Title',
+            'task_id.required' => 'Task is required',
         ];
     }
 }

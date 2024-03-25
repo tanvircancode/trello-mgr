@@ -11,6 +11,7 @@ const CreateBoardModal = ({
     setOpenCreateBoardModal,
 }) => {
     const [boardTitle, setBoardTitle] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
@@ -24,6 +25,9 @@ const CreateBoardModal = ({
     };
 
     const handleCreateBoard = async () => {
+
+        setIsLoading(true)
+
         if (boardTitle.length === 0 || boardTitle.length > 50) {
             toast.error("Invalid Name");
         } else {
@@ -39,7 +43,7 @@ const CreateBoardModal = ({
                     },
                 })
                 .then((res) => {
-                    console.log(res);
+                  
 
                     if (res.data?.status && res.data?.data) {
                         const allProjects = res.data.data;
@@ -62,7 +66,7 @@ const CreateBoardModal = ({
                                     tasks: allProjects[0].tasks,
                                 })
                             );
-                            console.log(selectedProject);
+                            
                         }
                         toast.success(res.data?.message);
                     } else {
@@ -71,7 +75,7 @@ const CreateBoardModal = ({
                     cancelModal();
                 })
                 .catch((error) => {
-                    console.log(error);
+                    
                     if (
                         error.response &&
                         error.response?.status &&
@@ -83,6 +87,7 @@ const CreateBoardModal = ({
                     }
                 });
         }
+        setIsLoading(false)
     };
 
     useEffect(() => {}, [selectedProject]);
@@ -131,9 +136,9 @@ const CreateBoardModal = ({
                             type="button"
                             className="btn btn-primary card-button d-flex align-items-center create-button justify-content-center"
                             onClick={handleCreateBoard}
-                            disabled={!boardTitle}
+                            disabled={!boardTitle || isLoading}
                         >
-                            <span>Create</span>
+                            <span>{isLoading ? "Loading..." : "Create"}</span>
                         </button>
                     </div>
                 </div>

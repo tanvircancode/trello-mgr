@@ -13,14 +13,15 @@ import {
     setTasks,
 } from "../../../store";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
+import DeleteBoard from "../../../component/board/DeleteBoard";
 
 const BoardsBar = () => {
-
-
+    const [deleteProjectId, setDeleteProjectId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const projects = useSelector((state) => state.projects);
-    console.log(projects);
+    
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const dispatch = useDispatch();
@@ -43,6 +44,11 @@ const BoardsBar = () => {
         "#2196f3",
     ];
 
+    const handleDeleteProject = (projectId) => {
+        setIsLoading(true);
+        setDeleteProjectId(projectId);
+    };
+
     const handleClickSingleProject = async (project) => {
         await axios
             .get(`${BASE_URL}/api/projects/` + userId, {
@@ -51,17 +57,17 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                console.log(res);
+                
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
                     dispatch(setProjects({ projects: allProjects }));
-                    console.log(projects);
+                   
 
                     const filteredProject = allProjects.find(
                         (singleProj) => singleProj.id === project.id
                     );
-                    console.log(filteredProject);
+                   
                     dispatch(
                         setSelectedProject({
                             selectedProject: filteredProject,
@@ -80,7 +86,7 @@ const BoardsBar = () => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+               
 
                 if (
                     error.response &&
@@ -104,7 +110,7 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                console.log(res);
+              
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
@@ -127,12 +133,12 @@ const BoardsBar = () => {
                             })
                         );
 
-                        console.log(selectedProject);
+                      
                     }
                 }
             })
             .catch((error) => {
-                console.log(error);
+                
 
                 if (
                     error.response &&
@@ -146,11 +152,8 @@ const BoardsBar = () => {
             });
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
-        // setLoading(false);
-        // console.log(projects);
+       
     };
-
-   
 
     useEffect(() => {
         getProjectsData();
@@ -158,6 +161,13 @@ const BoardsBar = () => {
 
     return (
         <div>
+            {deleteProjectId && (
+                <DeleteBoard
+                    deleteProjectId={deleteProjectId}
+                    setDeleteProjectId={setDeleteProjectId}
+                    setIsLoading={setIsLoading}
+                />
+            )}
             <span className="sidebar-text" style={{ fontWeight: "bold" }}>
                 Your projects
             </span>
@@ -194,14 +204,18 @@ const BoardsBar = () => {
                                     </span>
                                 </div>
                                 {project.is_owner && (
-                                    <BsTrash3 className="custom-sm-trash-icon" />
+                                    <BsTrash3
+                                        className="custom-sm-trash-icon"
+                                        style={{cursor:'pointer'}}
+                                        onClick={() =>
+                                            handleDeleteProject(project.id)
+                                        }
+                                    />
                                 )}
                             </li>
                         ))}
                 </ul>
             )}
-
-           
         </div>
     );
 };

@@ -23,7 +23,7 @@ const SelectionItem = ({ selectItem, setSelectItem }) => {
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
 
-    console.log(selectItem);
+    
 
     const dispatch = useDispatch();
 

@@ -4,10 +4,11 @@
     max-width: 100%;
 }
 .custom-width {
+    margin-top: 80px;
     max-width: 45%;
     @media (max-width: 580px) {
         margin: 0 auto;
-        margin-top: 15px;
+        margin-top: 85px;
     }
 }
 .modal-header-padding {
@@ -38,6 +39,7 @@
 }
 
 .custom-modal-width {
+    margin-top: 90px;
     @media (max-width: 577px) {
         width: 300px !important;
         margin: 0 auto;

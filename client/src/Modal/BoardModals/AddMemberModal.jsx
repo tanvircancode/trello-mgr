@@ -54,7 +54,6 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                 },
             })
             .then((res) => {
-                console.log(res);
                 setUsers(res.data.users);
             })
             .catch((error) => {
@@ -83,11 +82,9 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                     },
                 })
                 .then((res) => {
-                    console.log(res);
                     setUsers(res.data.users);
                 })
                 .catch((error) => {
-                    console.log(error);
                     setError(error);
                 });
             setIsLoading(false);
@@ -163,6 +160,12 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => handleSearchTermChange(e)}
+                                placeholder={
+                                    searchTerm === ""
+                                        ? "Email address or name"
+                                        : ""
+                                }
+                                style={{ color: "black !important" }}
                             />
                             {isLoading && (
                                 <p className="loading-text">Loading...</p>

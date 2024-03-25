@@ -2,6 +2,9 @@
     max-width: 100%;
     background-color: #f2f7fb;
 }
+.fixed-height{
+    min-height: 80vh;
+}
 .hr-line {
     width: 85%;
     margin: 7px 0px;
@@ -21,7 +24,6 @@
 }
 .disable-pointer-events {
   pointer-events: none !important;
-  
 }
 
 .trello-logo::before,
@@ -90,7 +92,7 @@
 
 .custom-item-list {
     @media (max-width: 768px) {
-        margin-top: 30px !important;
+        margin-top: 12px !important;
     }
 }
 

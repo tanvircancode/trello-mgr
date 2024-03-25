@@ -16,11 +16,9 @@ const UpdateLabel = ({
     setOpenLabelModal,
     setShowUpdateLabel,
 }) => {
-    console.log(editingLabel);
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const labelId = editingLabel.id;
-    console.log(labelColor)
 
     const cancelModalAll = () => {
         setOpenLabelModal(false);
@@ -33,12 +31,10 @@ const UpdateLabel = ({
     const dispatch = useDispatch();
 
     const handleUpdateLabel = async () => {
-        if(!labelColor) {
+        if (!labelColor) {
             labelColor = "";
-        console.log(labelColor)
-
         }
-        
+
         var formData = new FormData();
         formData.append("name", title);
         formData.append("color", labelColor);
@@ -54,8 +50,6 @@ const UpdateLabel = ({
                 },
             })
             .then((res) => {
-                // console.log(res);
-
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(setLabels({ labels: res.data.task.labels }));
@@ -66,7 +60,6 @@ const UpdateLabel = ({
                 cancelModalAll();
             })
             .catch((error) => {
-                // console.log(error)
                 if (
                     error.response &&
                     error.response?.status &&

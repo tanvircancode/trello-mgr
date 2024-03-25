@@ -28,7 +28,7 @@ const Auth = () => {
                         </span>
                     </div>
                 </header>
-                <AuthForm mode={mode} />
+                <AuthForm mode={mode} setMode={setMode}/>
             </section>
         </div>
     );

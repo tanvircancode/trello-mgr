@@ -28,9 +28,9 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
     const userId = localStorage.getItem("user_id");
     const [loading, setLoading] = useState(false);
 
-    console.log(selectedProject);
-    console.log(selectedProjectMembers);
-    console.log(selectedTaskMembers);
+    // console.log(selectedProject);
+    // console.log(selectedProjectMembers);
+    // console.log(selectedTaskMembers);
 
     const filteredProjectMembers = () => {
         if (!selectedTaskMembers) {
@@ -44,7 +44,7 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
                 );
             }
         );
-        console.log(newProjectMembers);
+       
         return newProjectMembers;
     };
 
@@ -146,7 +146,7 @@ const MemberModal = ({ openMemberModal, setOpenMemberModal }) => {
             role="dialog"
             style={{
                 display: openMemberModal ? "block" : "none",
-                marginTop: "5em",
+                marginTop: "2em",
             }}
         >
             <div className="modal-dialog modal-sm custom-modal-width">

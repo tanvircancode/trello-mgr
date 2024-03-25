@@ -30,7 +30,7 @@ class StoreTaskRequest extends FormRequest
     public function messages(): array
     {
         return [
-           
+            'title.required' => 'Title is required',
             'title.min' => 'Title is too short',
             'title.max' => 'Please Try To Use Shorter Title',
         ];

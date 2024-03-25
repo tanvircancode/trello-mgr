@@ -32,8 +32,6 @@ const AddMember = ({
                 },
             })
             .then((res) => {
-                console.log(res);
-
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(
@@ -57,7 +55,6 @@ const AddMember = ({
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.log(error);
                 if (
                     error.response &&
                     error.response?.status &&

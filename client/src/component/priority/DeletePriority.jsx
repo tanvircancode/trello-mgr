@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 export const DeletePriority = ({deletingPriority, setDeletingPriority}) => {
 
-    console.log(deletingPriority);
+    
     const token = useSelector((state) => state.token);
     const priorityId = deletingPriority.id;
 

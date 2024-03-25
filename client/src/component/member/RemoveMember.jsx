@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import axios from "axios";
-import { useSelector , useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
-import { setTasks,setSelectedProjectMembers } from "../../store";
+import { setTasks, setSelectedProjectMembers } from "../../store";
 
 const RemoveMember = ({
     users,
@@ -14,8 +14,6 @@ const RemoveMember = ({
     projectId,
     setIsLoading,
 }) => {
-    console.log(removeMemberId);
-    console.log(projectId);
     const dispatch = useDispatch();
 
     const token = useSelector((state) => state.token);
@@ -31,15 +29,16 @@ const RemoveMember = ({
                 }
             )
             .then((res) => {
-                console.log(res);
-
                 if (res.data.status) {
                     setUsers(
                         users.filter((user) => user.id !== removeMemberId)
                     );
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    dispatch(setSelectedProjectMembers({ selectedProjectMembers: res.data.project.members }));
-                    
+                    dispatch(
+                        setSelectedProjectMembers({
+                            selectedProjectMembers: res.data.project.members,
+                        })
+                    );
                 } else {
                     toast.error("Server is not responding");
                 }
@@ -47,7 +46,6 @@ const RemoveMember = ({
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.log(error);
                 if (
                     error.response &&
                     error.response?.status &&

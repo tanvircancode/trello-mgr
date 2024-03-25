@@ -20,7 +20,7 @@ const EditLabel = ({ openEditLabelModal, setOpenEditLabelModal }) => {
     const dispatch = useDispatch();
 
     const labels = useSelector((state) => state.labels);
-    console.log(labels);
+    
 
     const handleCheckboxChange = async (labelId, taskId, checked) => {
         await axios

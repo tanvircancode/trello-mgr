@@ -71,7 +71,7 @@ const Header = () => {
                     blur ? "is-blur disable-pointer-events" : ""
                 }`}
             >
-                <a className="navbar-brand" href="#">
+                <a className="navbar-brand" href="#" style={{ cursor:'auto'}}>
                     Trello
                 </a>
                 <button

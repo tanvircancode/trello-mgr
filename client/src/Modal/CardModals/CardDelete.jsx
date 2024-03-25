@@ -1,53 +1,72 @@
-import { useEffect } from "react";
-import axios from "axios";
+import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setLabels, setTasks, setMakeCardModalBlur } from "../../store";
-import { BASE_URL } from "../../config";
+import { setMakeCardModalBlur, setProjects, setTasks, setMakeBlur, setSelectedProjectMembers, setSelectedProject } from "../../store";
 import { toast } from "react-toastify";
-import "./label.scss";
+import axios from "axios";
+import { BASE_URL } from "../../config";
 
-const DeleteLabel = ({
-    editingLabel,
-    setShowDeleteLabel,
-    setOpenLabelModal,
-    setIsEditLabel,
-    setOpenEditLabelModal,
-}) => {
+const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCardModal}) => {
+    const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
+    const selectedProject = useSelector((state) => state.selectedProject);
+
     const token = useSelector((state) => state.token);
-    const labelId = editingLabel.id;
+    const cardId = fetchSingleCard.id;
+    const userId = localStorage.getItem("user_id");
+
+   
 
     const dispatch = useDispatch();
 
     const closePopup = () => {
-        setShowDeleteLabel(false);
-    };
-    const cancelModalAll = () => {
-        setShowDeleteLabel(false);
-        setOpenLabelModal(false);
-        setIsEditLabel(false);
-        setOpenEditLabelModal(false);
+        setOpenDeleteCardModal(false);
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+        dispatch(setMakeBlur({ makeBlur: false }));
+        setOpenNewCardModal(false);
     };
 
     const handleDeleteButton = async () => {
         await axios
-            .delete(`${BASE_URL}/api/deletelabel/${labelId}`, {
+            .delete(`${BASE_URL}/api/deletetask/${cardId}/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((res) => {
+                
+
                 if (res.data.status) {
-                    dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    dispatch(setLabels({ labels: res.data.task.labels }));
-                    // toast.success(res.data.message);
+                    const allProjects = res.data.data;
+                    var filteredProject = allProjects.filter((project) => project.id === res.data.project_id);
+                    filteredProject = filteredProject[0];
+                   
+                    dispatch(setProjects({ projects: allProjects }));
+                    if (allProjects.length > 0) {
+                        dispatch(
+                            setSelectedProject({
+                                selectedProject: filteredProject,
+                            })
+                        );
+                        dispatch(
+                            setSelectedProjectMembers({
+                                selectedProjectMembers: filteredProject.members,
+                            })
+                        );
+
+                        dispatch(
+                            setTasks({
+                                tasks: filteredProject.tasks,
+                            })
+                        );
+                    }
+                    
+                    toast.success(res.data?.message);
                 } else {
                     toast.error("Server is not responding");
                 }
-                cancelModalAll();
+                closePopup();
             })
             .catch((error) => {
-                // console.log(error)
+               
                 if (
                     error.response &&
                     error.response?.status &&
@@ -62,17 +81,17 @@ const DeleteLabel = ({
 
     return (
         <div
-            className={`modal fade ${editingLabel ? "show" : ""}`}
+            className={`modal fade ${openDeleteCardModal ? "show" : ""}`}
             tabIndex="-1"
             role="dialog"
             style={{
-                display: editingLabel ? "block" : "none",
+                display: openDeleteCardModal ? "block" : "none",
             }}
         >
             <div className="modal-dialog">
                 <div className="modal-content custom-modal-content">
                     <div className="modal-header custom-modal-bg">
-                        <span style={{ fontWeight: "600" }}>Delete label</span>
+                        <span style={{ fontWeight: "600" }}>Delete card</span>
 
                         <button
                             type="button"
@@ -91,7 +110,7 @@ const DeleteLabel = ({
                             className="modal-title mb-2"
                             style={{ fontSize: "16px" }}
                         >
-                            Do you want to Delete this label?
+                            Do you want to Delete this task?
                         </h5>
                         <button
                             type="button"
@@ -115,4 +134,4 @@ const DeleteLabel = ({
     );
 };
 
-export default DeleteLabel;
+export default CardDelete;

@@ -7,23 +7,28 @@ import AddMemberModal from "../../../Modal/BoardModals/AddMemberModal";
 import { setMakeBlur, setSelectedProject } from "../../../store";
 import HashLoader from "react-spinners/HashLoader";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
+import DeleteBoard from "../../../component/board/DeleteBoard";
+import LeaveBoard from "../../../component/board/LeaveBoard";
 
 const BoardList = () => {
     const dispatch = useDispatch();
 
     const [showAddMemberModal, setShowAddMemberModal] = useState(false);
     const [openCreateBoardModal, setOpenCreateBoardModal] = useState(false);
+    const [deleteProjectId, setDeleteProjectId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [leaveProjectId, setLeaveProjectId] = useState(null);
 
     const blur = useSelector((state) => state.makeBlur);
     const projects = useSelector((state) => state.projects);
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
 
-    console.log(projects);
+    // console.log(projects);
 
     const selectedProject = useSelector((state) => state.selectedProject);
     const tasks = useSelector((state) => state.tasks);
 
-    console.log(selectedProject);
+    // console.log(selectedProject);
 
     const handleShare = () => {
         dispatch(setMakeBlur({ makeBlur: true }));
@@ -39,12 +44,34 @@ const BoardList = () => {
         setOpenCreateBoardModal(true);
         dispatch(setMakeBlur({ makeBlur: true }));
     };
-   
 
-    // useEffect(() => {}, [selectedProject]);
+    const handleDeleteProject = (projectId) => {
+        setIsLoading(true);
+        setDeleteProjectId(projectId);
+    };
+
+    const handleLeaveProject = (projectId) => {
+        setIsLoading(true);
+        setLeaveProjectId(projectId);
+    };
 
     return (
         <>
+            {deleteProjectId && (
+                <DeleteBoard
+                    deleteProjectId={deleteProjectId}
+                    setDeleteProjectId={setDeleteProjectId}
+                    setIsLoading={setIsLoading}
+                />
+            )}
+
+            {leaveProjectId && (
+                <LeaveBoard
+                    leaveProjectId={leaveProjectId}
+                    setLeaveProjectId={setLeaveProjectId}
+                    setIsLoading={setIsLoading}
+                />
+            )}
             {projects && projects.length > 0 && (
                 <div className="board-main-content d-flex flex-column">
                     <div
@@ -62,7 +89,6 @@ const BoardList = () => {
                             <div className="board-header-button">
                                 <button
                                     className={`share-button`}
-                                    // className={`share-button ${showAddMemberModal ? "active" : ""}`}
                                     onClick={() => handleShare()}
                                 >
                                     <BsPersonPlus className="share-icon" />{" "}
@@ -71,23 +97,25 @@ const BoardList = () => {
 
                                 <button
                                     className={`project-delete-button`}
-                                    // className={`share-button ${showAddMemberModal ? "active" : ""}`}
-                                    onClick={() => handleDelete()}
+                                    onClick={() =>
+                                        handleDeleteProject(selectedProject.id)
+                                    }
                                 >
-                                    {/* make a condition for Leave project */}
-                                    <BsTrash3 className="project-delete-icon" />{" "}
+                                    <BsTrash3 className="project-delete-icon" />
                                     Delete project
                                 </button>
                             </div>
                         )}
-                        {!(selectedProject?.is_owner) && (
+
+                        {!selectedProject?.is_owner && (
                             <div className="board-header-button">
                                 <button
                                     className={`project-delete-button`}
-                                    // className={`share-button ${showAddMemberModal ? "active" : ""}`}
-                                    onClick={() => handleDelete()}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                        handleLeaveProject(selectedProject.id)
+                                    }
                                 >
-                                    {/* make a condition for Leave project */}
                                     <BsTrash3 className="project-delete-icon" />{" "}
                                     Leave project
                                 </button>
@@ -108,11 +136,11 @@ const BoardList = () => {
                     )}
                 </div>
             )}
-            {isCardsLoading && (
+            {/* {isLoading && (
                 <div style={{ width: "100px", margin: "50px auto auto" }}>
                     <HashLoader color="#36d7b7" />
                 </div>
-            )}
+            )} */}
             {!isCardsLoading && projects && projects.length === 0 && (
                 <>
                     <div

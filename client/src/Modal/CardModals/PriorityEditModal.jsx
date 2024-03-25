@@ -13,7 +13,7 @@ const PriorityEditModal = ({
     setEditingPriority,
     editingPriority,
 }) => {
-    console.log(editingPriority);
+    
 
     const [labelColor, setLabelColor] = useState("#f44336");
     const [title, setTitle] = useState("");

@@ -22,7 +22,7 @@ class UpdatePriorityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:5|max:255',
+            'name' => 'required|string|min:3|max:255',
             'color' => 'nullable|string',
             'task_id' => 'required|string',
             'is_active' => 'boolean',

@@ -33,6 +33,7 @@ class StoreChecklistRequest extends FormRequest
            'name.required' => 'Title is required',
             'name.min' => 'Title is too short',
             'name.max' => 'Please Try To Use Shorter Title',
+            'task_id.required' => 'Task is required',
         ];
     }
 }

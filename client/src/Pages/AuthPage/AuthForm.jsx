@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import "./auth.scss";
 import { setLogin } from "../../store";
 
-const AuthForm = ({ mode }) => {
+const AuthForm = ({ mode , setMode}) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -102,6 +102,7 @@ const AuthForm = ({ mode }) => {
                         setName("");
                         setPassword("");
                         setPasswordHint("");
+                        setMode("login");
                     })
                     .catch((error) => {
                         if (
@@ -114,7 +115,7 @@ const AuthForm = ({ mode }) => {
                             toast.error("Server is not responding");
                         }
                     });
-                // navigate("/signin");
+                    
             }
         }
         setLoading(false);

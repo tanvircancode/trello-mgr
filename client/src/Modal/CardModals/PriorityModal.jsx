@@ -16,16 +16,12 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
 
     const [deletingPriority, setDeletingPriority] = useState(null);
     const [editingPriority, setEditingPriority] = useState(null);
-    const [selectedPriorityId, setSelectedPriorityId] = useState(null);
 
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
 
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
     const priorities = useSelector((state) => state.priorities);
-
-    console.log(fetchSingleCard);
-    console.log(priorities);
 
     //main states
     const [showCreatePriority, setShowCreatePriority] = useState(false);
@@ -38,7 +34,6 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
     };
 
     const handleEditPriority = (priority) => {
-        console.log(priority);
         setOpenEditPriorityModal(true);
         setEditingPriority(priority);
     };
@@ -58,22 +53,15 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
     };
 
     const handleCheckboxChange = async (e, priority) => {
-        console.log(priority);
         const priorityId = priority.id;
         const taskId = priority.task_id;
-
-
         const isChecked = e.target.checked;
-        if (isChecked) {
-            setSelectedPriorityId(priority.id);
-        } else if (selectedPriorityId === priority.id) {
-            setSelectedPriorityId(null);
-        }
 
         var formData = new FormData();
         formData.append("id", priorityId);
         formData.append("user_id", userId);
         formData.append("task_id", taskId);
+        formData.append("is_active", isChecked ? 1 : 0);
 
         await axios
             .put(`${BASE_URL}/api/changepriority`, formData, {
@@ -83,8 +71,6 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                 },
             })
             .then((res) => {
-                // console.log(res);
-
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(
@@ -94,11 +80,8 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                 } else {
                     toast.error("Server is not responding");
                 }
-
-           
             })
             .catch((error) => {
-                // console.log(error)
                 if (
                     error.response &&
                     error.response?.status &&
@@ -163,61 +146,66 @@ const Prioritymodal = ({ openPriorityModal, setOpenPriorityModal }) => {
                                         <label className="form-label">
                                             Options
                                         </label>
-                                        {/* loop-here */}
-                                        {priorities && priorities.map((priority, index) => (
-                                            <div
-                                                className="d-flex align-items-center gap-3 mb-2"
-                                                key={index}
-                                            >
-                                                <input
-                                                    className="form-check-input"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    type="checkbox"
-                                                    checked={priority.is_active}
-                                                    onChange={(e) =>
-                                                        handleCheckboxChange(
-                                                            e,
-                                                            priority
-                                                        )
-                                                    }
-                                                    id={`flexCheckChecked-${priority.id}`}
-                                                />
-                                                
-                                                <span
-                                                    className="styled-span w-100"
-                                                    htmlFor={`flexCheckChecked-${priority.id}`}
-                                                    style={{
-                                                        backgroundColor:
-                                                            priority.color
-                                                                ? priority.color
-                                                                : "#3B444C",
-                                                    }}
-                                                >
-                                                    {priority.name}
-                                                </span>
-                                                <BsPencil
-                                                    className="edit-priority-pencil"
-                                                    onClick={() =>
-                                                        handleEditPriority(
-                                                            priority
-                                                        )
-                                                    }
-                                                />
-                                                <BsTrash
-                                                    className="delete-priority-trash"
-                                                    style={{
-                                                        cursor: "pointer",
-                                                    }}
-                                                    onClick={() =>
-                                                        handleDeletePriority(
-                                                            priority
-                                                        )
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
+
+                                        {priorities &&
+                                            priorities.map(
+                                                (priority, index) => (
+                                                    <div
+                                                        className="d-flex align-items-center gap-3 mb-2"
+                                                        key={index}
+                                                    >
+                                                        <input
+                                                            className="form-check-input"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            type="checkbox"
+                                                            checked={
+                                                                priority.is_active
+                                                            }
+                                                            onChange={(e) =>
+                                                                handleCheckboxChange(
+                                                                    e,
+                                                                    priority
+                                                                )
+                                                            }
+                                                            id={`flexCheckChecked-${priority.id}`}
+                                                        />
+
+                                                        <span
+                                                            className="styled-span w-100"
+                                                            htmlFor={`flexCheckChecked-${priority.id}`}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    priority.color
+                                                                        ? priority.color
+                                                                        : "#3B444C",
+                                                            }}
+                                                        >
+                                                            {priority.name}
+                                                        </span>
+                                                        <BsPencil
+                                                            className="edit-priority-pencil"
+                                                            onClick={() =>
+                                                                handleEditPriority(
+                                                                    priority
+                                                                )
+                                                            }
+                                                        />
+                                                        <BsTrash
+                                                            className="delete-priority-trash"
+                                                            style={{
+                                                                cursor: "pointer",
+                                                            }}
+                                                            onClick={() =>
+                                                                handleDeletePriority(
+                                                                    priority
+                                                                )
+                                                            }
+                                                        />
+                                                    </div>
+                                                )
+                                            )}
                                     </div>
                                 )}
                                 <div className="d-flex align-items-center">

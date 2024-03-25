@@ -14,7 +14,6 @@ const Home = () => {
 
     const token = useSelector((state) => state.token);
     const blur = useSelector((state) => state.makeBlur);
-    console.log(blur)
 
     const dispatch = useDispatch();
 
@@ -24,9 +23,8 @@ const Home = () => {
     };
 
     return (
-        <div className="container maxWidthContainer" >
-          
-            <div className={`row d-flex`}>
+        <div className="container maxWidthContainer">
+            <div className={`row d-flex fixed-height`}>
                 <div
                     className={`col-xs-12 col-sm-4 col-md-4 col-lg-3 p-0  ${
                         blur ? "is-blur disable-pointer-events" : ""
@@ -41,7 +39,7 @@ const Home = () => {
                             <span className="trello-logo"></span>
                             <span
                                 className="sidebar-text"
-                                style={{ fontWeight: "bold" }}
+                                style={{ fontWeight: "bold", cursor: "auto" }}
                             >
                                 Trello Workspace
                             </span>
@@ -56,11 +54,7 @@ const Home = () => {
                                     Create Project
                                 </span>
                             </li>
-                            <li className="list-group-item no-border list-cursor-pointer">
-                                <BsFillPersonPlusFill className="custom-sm-icon" />
 
-                                <span className="sidebar-text">Requests</span>
-                            </li>
                             <li className="list-group-item">
                                 <BoardsBar />
                             </li>

@@ -34,8 +34,7 @@ const PrioritySelection = () => {
                 },
             })
             .then((res) => {
-                // console.log(res);
-
+                
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(
@@ -79,28 +78,37 @@ const PrioritySelection = () => {
         <select
             className="form-select priority-dropdown"
             style={{
-                backgroundColor: selectedPriorityId === null ? '#3B444C' : getPriorityColor(),
+                backgroundColor:
+                    selectedPriorityId === null
+                        ? "#3B444C"
+                        : getPriorityColor(),
                 color: "#ffffff",
                 paddingLeft: "3px 10px",
-                fontWeight:'600'
+                fontWeight: "600",
             }}
             value={selectedPriorityId}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
         >
-            <option value={null} style={{backgroundColor:'#3B444C', color: "#ffffff"}}>--Select--</option>
-            {priorities && priorities.map((priority) => (
-                <option
-                    key={priority.id}
-                    value={priority.id}
-                    style={{
-                        backgroundColor: "#3B444C",
-                        color: "#ffffff",
-                        fontWeight:'600'
-                    }}
-                >
-                    {priority.name}
-                </option>
-            ))}
+            <option
+                value="null"
+                style={{ backgroundColor: "#3B444C", color: "#ffffff" }}
+            >
+                --Select--
+            </option>
+            {priorities &&
+                priorities.map((priority) => (
+                    <option
+                        key={priority.id}
+                        value={priority.id}
+                        style={{
+                            backgroundColor: "#3B444C",
+                            color: "#ffffff",
+                            fontWeight: "600",
+                        }}
+                    >
+                        {priority.name}
+                    </option>
+                ))}
         </select>
     );
 };

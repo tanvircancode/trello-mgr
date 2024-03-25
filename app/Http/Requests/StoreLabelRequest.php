@@ -22,7 +22,7 @@ class StoreLabelRequest extends FormRequest
     public function rules(): array
     {
         return [
-          
+            'name' => 'required|string|min:3|max:255',
             'color' => 'nullable|string',
             'task_id' => 'required|string',
             'is_active' => 'boolean',
@@ -32,6 +32,9 @@ class StoreLabelRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'name.required' => 'Title is required',
+            'name.min' => 'Title is too short',
+            'name.max' => 'Please try to use shorter title',
             'task_id.required' => 'Task is required',
         ];
     }

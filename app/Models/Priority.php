@@ -76,28 +76,50 @@ class Priority extends Model
             $priority->color = $data['color'];
         }
 
-
         $priority->save();
-
         return $priority;
     }
 
     public static function changePriority(array $data)
     {
+        $selectedPriorityId = $data['id'];
         $task_id = $data['task_id'];
-        $priority = Priority::find($data['id']);
+
+        $priorities = Task::find($task_id)->priorities;
+
+        if ($selectedPriorityId === 'null') {
+            foreach ($priorities as $priority) {
+                $priority->is_active = 0;
+                $priority->save();
+            }
+            return true;
+        }
+
+        $priority = Priority::find($selectedPriorityId);
+
         if (!$priority) {
             return null;
         }
 
-        $selectedPriorityId = $data['id'];
+        $prevSelectedPriority = null;
+        foreach ($priorities as $prior) {
+            if ($prior->is_active) {
+                $prevSelectedPriority = $prior;
+                break;
+            }
+        }
 
-        $priorities = Task::find($task_id)->priorities;
+        if ($prevSelectedPriority !== null  && $prevSelectedPriority->id === $selectedPriorityId) {
+            $priority->is_active = 0;
+            $priority->save();
+            return true;
+        }
 
         foreach ($priorities as $priority) {
             $priority->is_active = $priority->id === $selectedPriorityId;
             $priority->save();
         }
+
 
         return true;
     }

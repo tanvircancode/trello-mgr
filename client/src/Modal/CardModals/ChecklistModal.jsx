@@ -11,7 +11,7 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
-    console.log(fetchSingleCard);
+    // console.log(fetchSingleCard);
 
     const dispatch = useDispatch();
 
@@ -35,7 +35,7 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                 },
             })
             .then((res) => {
-                console.log(res);
+            
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(setChecklists({ checklists: res.data.task.checklists }));
@@ -45,7 +45,7 @@ const ChecklistModal = ({ openChecklistModal, setOpenChecklistModal }) => {
                 }
             })
             .catch((error) => {
-                // console.log(error)
+               
                 if (
                     error.response &&
                     error.response?.status &&

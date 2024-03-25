@@ -11,7 +11,7 @@ const AddItem = ({
     editingChecklistId,
     setEditingChecklistId,
 }) => {
-    console.log(editingChecklistId);
+   
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const checklistId = editingChecklistId.id;
@@ -20,7 +20,7 @@ const AddItem = ({
     const [title, setTitle] = useState("");
 
     const dispatch = useDispatch();
-    // console.log(editingChecklistId);
+    
 
     const cancelCreateItem = () => {
         setTitle("");

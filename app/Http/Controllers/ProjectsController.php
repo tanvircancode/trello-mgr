@@ -27,9 +27,10 @@ class ProjectsController extends Controller
         if ($project) {
             $user = User::find($input['user_id']);
             // $projects = User::with('project')->find($user->id);
-             
+
             $project->members()->attach($input['user_id'], ['id' => Str::uuid()]);
             $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
             $response = [
                 'status' => true,
                 'data' => $projectsWithRelatedData,
@@ -68,6 +69,89 @@ class ProjectsController extends Controller
             'users' => $memberArray,
             'message' => "Member fetched Successfully"
         ];
+
+        return response()->json($response, 200);
+    }
+
+    public function destroy($id)
+    {
+        $project = Project::find($id);
+        $user_id = $project->user_id;
+
+        if (!$project) {
+            $response = [
+                'status' => false,
+                'message' => 'Project not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        if ($user_id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $tasksUnderProject = $project->tasks()->get();
+
+        foreach ($tasksUnderProject as $task) {
+
+            $task->users()->detach();
+        }
+
+        $project->tasks()->delete();
+
+        $project->members()->detach(); 
+
+        $project->delete();
+
+        $user = User::find($user_id);
+        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
+        $response = [
+            'status' => true,
+            'data' => $projectsWithRelatedData,
+            'message' => "Project Deleted Successfully"
+        ];
+
+
+        return response()->json($response, 200);
+    }
+
+    public function leaveProject($id, $userId)
+    {
+
+        $project = Project::find($id);
+
+        if (!$project) {
+            $response = [
+                'status' => false,
+                'message' => 'Project not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        if ($userId !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $tasksUnderProject = $project->tasks()->get();
+
+        foreach ($tasksUnderProject as $task) {
+            if ($task->users->contains($userId)) {
+                $task->users()->detach($userId);
+            }
+        }
+
+        $project->members()->detach($userId); 
+
+        $user = User::find($userId);
+        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
+        $response = [
+            'status' => true,
+            'data' => $projectsWithRelatedData,
+            'message' => "Left Project Successfully"
+        ];
+
 
         return response()->json($response, 200);
     }

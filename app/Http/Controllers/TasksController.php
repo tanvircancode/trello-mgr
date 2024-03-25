@@ -147,4 +147,48 @@ class TasksController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function destroy($id, $userId)
+    {
+        if ($userId !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
+
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        }
+
+        $projectId = $task->project_id;
+
+        $project = Project::find($projectId);
+
+        if (!$project) {
+            $response = [
+                'status' => false,
+                'message' => 'Project not found'
+            ];
+            return response()->json($response, 404);
+        }
+
+        $membersUnderTask = $task->users()->get();
+        foreach($membersUnderTask as $member) {
+            $task->users()->detach($member->id);
+        }
+        $task->delete();
+
+        $user = User::find($userId);
+        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
+        $response = [
+            'status' => true,
+            'data' => $projectsWithRelatedData,
+            'project_id' => $projectId,
+            'message' => "Task deleted Successfully"
+        ];
+
+
+        return response()->json($response, 200);
+    }
 }

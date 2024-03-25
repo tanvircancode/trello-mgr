@@ -19,7 +19,7 @@ const DeleteChecklist = ({ deletingChecklist, setDeletingChecklist }) => {
                 },
             })
             .then((res) => {
-                console.log(res);
+            
 
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));

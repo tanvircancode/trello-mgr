@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {
     BsPerson,
     BsSticky,
+    BsTrash3,
     BsCheck2Square,
     BsMegaphoneFill,
 } from "react-icons/bs";
@@ -14,19 +15,19 @@ import PriorityModal from "./PriorityModal";
 import { useDispatch, useSelector } from "react-redux";
 import { setMakeBlur, setMakeCardModalBlur } from "../../store";
 import EditLabel from "./EditLabel";
+import CardDelete from "./CardDelete";
 
-const CardModalButton = () => {
+const CardModalButton = ({setOpenNewCardModal}) => {
     const [openMemberModal, setOpenMemberModal] = useState(false);
     const [openLabelModal, setOpenLabelModal] = useState(false);
     const [openEditLabelModal, setOpenEditLabelModal] = useState(false);
     const [isEditLabel, setIsEditLabel] = useState(false);
     const [openChecklistModal, setOpenChecklistModal] = useState(false);
     const [openPriorityModal, setOpenPriorityModal] = useState(false);
+    const [openDeleteCardModal, setOpenDeleteCardModal] = useState(false);
 
     const blur = useSelector((state) => state.makeBlur);
     const cardModalblur = useSelector((state) => state.makeCardModalBlur);
-    
-
 
     var doBlur = blur && cardModalblur;
 
@@ -35,7 +36,7 @@ const CardModalButton = () => {
     const handleModal = (value) => {
         dispatch(setMakeBlur({ makeBlur: true }));
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: true }));
-        
+
         if (value === "member") {
             setOpenMemberModal(true);
         } else if (value === "label") {
@@ -45,6 +46,8 @@ const CardModalButton = () => {
             setOpenChecklistModal(true);
         } else if (value === "priority") {
             setOpenPriorityModal(true);
+        } else if (value === "delete") {
+            setOpenDeleteCardModal(true);
         }
     };
 
@@ -58,15 +61,14 @@ const CardModalButton = () => {
                 role="group"
                 aria-label="Vertical button group"
             >
-             
-              <button
+                <button
                     type="button"
                     className="btn btn-primary card-button d-flex align-items-center"
                     onClick={() => handleModal("member")}
                 >
                     <BsPerson className="card-sm-icon" /> Members
                 </button>
-                
+
                 <button
                     type="button"
                     className="btn btn-primary card-button"
@@ -87,6 +89,14 @@ const CardModalButton = () => {
                     onClick={() => handleModal("priority")}
                 >
                     <BsMegaphoneFill className="card-sm-icon" /> Priority
+                </button>
+                {/* new */}
+                <button
+                    type="button"
+                    className="btn btn-primary card-button"
+                    onClick={() => handleModal("delete")}
+                >
+                    <BsTrash3 className="card-sm-icon" /> Delete
                 </button>
             </div>
 
@@ -126,6 +136,14 @@ const CardModalButton = () => {
                 <PriorityModal
                     openPriorityModal={openPriorityModal}
                     setOpenPriorityModal={setOpenPriorityModal}
+                />
+            )}
+
+            {openDeleteCardModal && (
+                <CardDelete 
+                openDeleteCardModal={openDeleteCardModal}
+                setOpenDeleteCardModal={setOpenDeleteCardModal}
+                setOpenNewCardModal={setOpenNewCardModal}
                 />
             )}
         </div>

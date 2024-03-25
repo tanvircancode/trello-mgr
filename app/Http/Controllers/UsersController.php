@@ -136,20 +136,6 @@ class UsersController extends Controller
         return response()->json($response, 200);
     }
 
-
-    public function getTaskIds($userId)
-    {
-        $user = User::with('tasks.users')->find($userId);
-
-        $taskIds = $user->tasks->whereIn('user_id', [$userId])->pluck('id');
-        $response = [
-            'status' => true,
-            'data' => $taskIds
-        ];
-
-        return response()->json($response, 200);
-    }
-
     //search users
     public function searchUsers(Request $request)
     {

@@ -12,8 +12,7 @@ const EditDescription = ({
     setShowEditDesc,
     fetchSingleCard,
 }) => {
-    console.log(descValue);
-    console.log(fetchSingleCard);
+  
 
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
@@ -45,7 +44,7 @@ const EditDescription = ({
                 },
             })
             .then((res) => {
-                console.log(res);
+                
 
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
@@ -58,7 +57,7 @@ const EditDescription = ({
                 clearAllState();
             })
             .catch((error) => {
-                console.log(error);
+                
                 if (
                     error.response &&
                     error.response?.status &&

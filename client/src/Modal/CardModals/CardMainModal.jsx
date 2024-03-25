@@ -62,21 +62,17 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
         (state) => state.selectedTaskMembers
     );
 
-
     const labels = useSelector((state) => state.labels);
     const anyLabelActive = labels.find((label) => label.is_active);
 
     const priorities = useSelector((state) => state.priorities);
-    const selectedProjectMembers = useSelector((state) => state.selectedProjectMembers);
+    const selectedProjectMembers = useSelector(
+        (state) => state.selectedProjectMembers
+    );
 
-    // console.log(priorities);
 
     const checklists = useSelector((state) => state.checklists);
     const tasks = useSelector((state) => state.tasks);
-
-    console.log(selectedProjectMembers);
-    console.log(selectedTaskMembers);
-    
 
     var doBlur = blur && cardModalblur;
 
@@ -416,19 +412,23 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="card-detail">
-                                                <div className="d-flex mb-2">
-                                                    <BsMegaphoneFill className="card-sm-icon" />
+                                            {priorities.some(
+                                                (priority) => priority.is_active
+                                            ) && (
+                                                <div className="card-detail">
+                                                    <div className="d-flex mb-2">
+                                                        <BsMegaphoneFill className="card-sm-icon" />
 
-                                                    <h3 className="card-detail-header m-0">
-                                                        Priority
-                                                    </h3>
+                                                        <h3 className="card-detail-header m-0">
+                                                            Priority
+                                                        </h3>
+                                                    </div>
+
+                                                    <PrioritySelection
+                                                        priorities={priorities}
+                                                    />
                                                 </div>
-
-                                                <PrioritySelection
-                                                    priorities={priorities}
-                                                />
-                                            </div>
+                                            )}
 
                                             {/* checklist start */}
 
@@ -674,7 +674,11 @@ const CardMainModal = ({ openNewCardModal, setOpenNewCardModal }) => {
                                         {/* checklist end */}
 
                                         <div className="col-md-12 col-sm-12 col-lg-3 mt-3">
-                                            <CardModalButton />
+                                            <CardModalButton
+                                                setOpenNewCardModal={
+                                                    setOpenNewCardModal
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 </div>

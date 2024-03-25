@@ -1,8 +1,5 @@
-
-
-
-.member-modal-header{
-    border-bottom:none;
+.member-modal-header {
+    border-bottom: none;
 }
 
 .search-member input {
@@ -16,11 +13,18 @@
     display: block;
 }
 
-.member-name , .owner-text{
+input[type="text"]::placeholder {
+    color: #3f2e2e !important;
+    font-weight: 500;
+}
+
+.member-name,
+.owner-text {
     font-weight: 500;
     font-size: 14px;
 }
-.loading-text,.search-error-text {
+.loading-text,
+.search-error-text {
     font-weight: 500;
     font-size: 14px;
     margin-left: 15px;
@@ -29,10 +33,10 @@
     font-weight: 500;
     font-size: 11px;
 }
-.member-details-row{
+.member-details-row {
     padding: 0 16px;
 }
-.add-member-button{
+.add-member-button {
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -42,7 +46,7 @@
     color: #262020 !important;
     border-radius: 3px;
 }
-.already-member{
+.already-member {
     font-size: 12px;
     font-weight: 600;
     margin-right: 10px;
@@ -54,7 +58,7 @@
     color: white;
     border: none;
 }
-.remove-member-button{
+.remove-member-button {
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -64,5 +68,3 @@
     color: #262020 !important;
     border-radius: 3px;
 }
-
-

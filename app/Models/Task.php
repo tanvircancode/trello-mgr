@@ -57,7 +57,7 @@ class Task extends Model
         return $this->hasMany(Label::class);
     }
 
-    //after pivot table
+    // pivot table
     public function users()
     {
         return $this->belongsToMany(User::class, 'task_users');
@@ -84,7 +84,7 @@ class Task extends Model
         $this->users()->detach($user->id);
         return true;
     }
-    //after pivot table end
+   
 
 
     //custom methods

@@ -22,8 +22,8 @@ use App\Models\ChecklistItem;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function () {
-    
+  Route::middleware('auth:sanctum')->group(function () {
+  
   // user apis
   Route::get('/user/{id}', [UsersController::class, 'show']);
   Route::get('/me', [UsersController::class, 'me']);
@@ -33,11 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
   // project apis
   Route::post('/project', [ProjectsController::class, 'store']);
   Route::get('/projectmembers/{id}', [ProjectsController::class, 'showMembers']);
+  Route::delete('/deleteproject/{id}', [ProjectsController::class, 'destroy']);
+  Route::delete('/leaveproject/{id}/{memberId}', [ProjectsController::class, 'leaveProject']);
 
-   // task apis
-   Route::post('/task/{id}', [TasksController::class, 'store']);
-   Route::put('/task', [TasksController::class, 'update']);
-
+  // task apis
+  Route::post('/task/{id}', [TasksController::class, 'store']);
+  Route::put('/task', [TasksController::class, 'update']);
+  Route::delete('/deletetask/{id}/{memberId}', [TasksController::class, 'destroy']);
 
   //label apis
   Route::post('/label', [LabelsController::class, 'store']);
@@ -61,12 +63,6 @@ Route::middleware('auth:sanctum')->group(function () {
    Route::put('/item', [ChecklistItemsController::class, 'update']);
    Route::delete('/deleteitem/{id}', [ChecklistItemsController::class, 'destroy']);
 
-  //new
-  // Route::get('/projectdetails/{id}', [UsersController::class, 'userProjectDetails']);  //new
-  
-  //lager below
-  Route::get('/fetchtaskids/{id}', [UsersController::class, 'getTaskIds']);
-
   //search users to show already or add member
   Route::post('/searchusers', [UsersController::class, 'searchUsers']);
   // add member from search bar
@@ -76,8 +72,6 @@ Route::middleware('auth:sanctum')->group(function () {
   // assign user to a task
   Route::post('/addtaskmember', [TasksController::class, 'assignTask']);
   Route::post('/removetaskmember', [TasksController::class, 'removeTask']);
-
-
 
 
 

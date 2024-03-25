@@ -10,7 +10,6 @@ import {
 import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 
-
 const CreateLabel = ({
     title,
     setTitle,
@@ -26,7 +25,7 @@ const CreateLabel = ({
     setOpenEditLabelModal,
     editingLabel,
     setEditingLabel,
-    setShowCreateLabel
+    setShowCreateLabel,
 }) => {
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
@@ -34,16 +33,13 @@ const CreateLabel = ({
     const dispatch = useDispatch();
 
     const cancelModalAll = () => {
-        console.log(isEditLabel);
         setOpenLabelModal(false);
         setIsEditLabel(false);
         setOpenEditLabelModal(false);
         dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
     };
 
-
     const handleCreateLabel = async () => {
-
         var formData = new FormData();
         formData.append("name", title);
         formData.append("color", labelColor);
@@ -51,10 +47,8 @@ const CreateLabel = ({
         formData.append("task_id", taskId);
         formData.append("is_active", is_active);
         formData.append("project_id", projectId);
-        console.log(labelColor)
 
-
-       await axios
+        await axios
             .post(`${BASE_URL}/api/label`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -62,8 +56,6 @@ const CreateLabel = ({
                 },
             })
             .then((res) => {
-                console.log(res);
-
                 if (res.data.status && res.status === 200) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(setLabels({ labels: res.data.task.labels }));
@@ -72,8 +64,7 @@ const CreateLabel = ({
                     toast.error("Server is not responding");
                 }
                 cancelModalAll();
-                // setOpenLabelModal(false);
-                // dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
+                
                 setTitle("");
                 setShowCreateLabel(false);
             })

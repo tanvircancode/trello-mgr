@@ -90,7 +90,6 @@ class User extends Authenticatable
 
     //custom methods
 
-
     public function getProjectsWithOwnerAndTasks()
     {
         $projects = $this->projects()

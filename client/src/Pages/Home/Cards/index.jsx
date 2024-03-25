@@ -19,17 +19,17 @@ import { BASE_URL } from "../../../config";
 
 const Card = () => {
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [openNewCardModal, setOpenNewCardModal] = useState(false);
     const selectedProject = useSelector((state) => state.selectedProject);
-    
 
     const [cardTitle, setCardTitle] = useState("");
 
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const tasks = useSelector((state) => state.tasks);
-    console.log(tasks);
+    // console.log(tasks);
 
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
@@ -37,7 +37,7 @@ const Card = () => {
     //store single task's labels, priorities,checklists here
     const handleOpenPopup = (task) => {
         dispatch(setMakeBlur({ makeBlur: true }));
-        console.log(task);
+        // console.log(task);
         setOpenNewCardModal(true);
         dispatch(setFetchSingleCard({ fetchSingleCard: task }));
         dispatch(setLabels({ labels: task.labels }));
@@ -51,6 +51,7 @@ const Card = () => {
     };
 
     const handleCreateCard = async () => {
+        setIsLoading(true);
         if (cardTitle.length === 0 || cardTitle.length > 50) {
             toast.error("Invalid Title");
         } else {
@@ -67,8 +68,6 @@ const Card = () => {
                     },
                 })
                 .then((res) => {
-                    console.log(res);
-
                     if (res.data?.status && res.data?.data) {
                         dispatch(
                             setTasks({
@@ -83,7 +82,6 @@ const Card = () => {
                     setCardTitle("");
                 })
                 .catch((error) => {
-                    console.log(error);
                     if (
                         error.response &&
                         error.response?.status &&
@@ -95,13 +93,11 @@ const Card = () => {
                     }
                 });
         }
+        setIsLoading(false);
     };
 
     useEffect(() => {
-
         dispatch(setMakeBlur({ makeBlur: false }));
-       
-        
     }, []);
 
     return (
@@ -143,62 +139,103 @@ const Card = () => {
                             }`}
                             onClick={() => handleOpenPopup(task)}
                         >
-                            <div className="card-body d-flex flex-column gap-2">
+                            <div
+                                className="card-body d-flex flex-column"
+                                style={{ padding: "10px" }}
+                            >
                                 <h5 className="card-title custom-card-title">
                                     {task && task.title}
                                 </h5>
-                                {task?.labels.length > 0 && (
-                                    <div className="d-flex flex-wrap gap-1">
-                                        {task.labels.map(
-                                            (label, index) =>
-                                                label.is_active && (
-                                                    <span
-                                                        className="label-color-small"
-                                                        key={index}
-                                                        style={{
-                                                            backgroundColor:
-                                                                label.color !==
-                                                                    null &&
-                                                                label.color !==
-                                                                    "null"
-                                                                    ? label.color
-                                                                    : "#3B444C",
-                                                        }}
-                                                    ></span>
-                                                )
+                                {task?.labels.some(
+                                    (label) => label.is_active
+                                ) &&
+                                    task?.labels.length > 0 && (
+                                        <div className="d-flex flex-wrap gap-1 custom-card-label">
+                                            {task.labels.map(
+                                                (label, index) =>
+                                                    label.is_active && (
+                                                        <span
+                                                            className="label-color-small"
+                                                            key={index}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    label.color !==
+                                                                        null &&
+                                                                    label.color !==
+                                                                        "null"
+                                                                        ? label.color
+                                                                        : "#3B444C",
+                                                            }}
+                                                        ></span>
+                                                    )
+                                            )}
+                                        </div>
+                                    )}
+                                {(task?.description ||
+                                    totalChecklistItems > 0) && (
+                                    <div
+                                        className=" d-flex align-items-center"
+                                        style={{ marginBottom: "10px" }}
+                                    >
+                                        {task?.description && (
+                                            <BsBarChartSteps className="card-sm-icon" />
+                                        )}
+                                        {totalChecklistItems > 0 && (
+                                            <div className="d-flex align-items-center">
+                                                <BsCheck2Square className="card-sm-icon" />
+                                                <span className="checked-items-count">
+                                                    {totalCheckedItems}/
+                                                    {totalChecklistItems}
+                                                </span>
+                                            </div>
                                         )}
                                     </div>
                                 )}
 
-                                <div className="desc-label d-flex align-items-center">
-                                    {task?.description && (
-                                        <BsBarChartSteps className="card-sm-icon" />
-                                    )}
-                                    {totalChecklistItems > 0 && (
-                                        <div className="d-flex align-items-center">
-                                            <BsCheck2Square className="card-sm-icon" />
-                                            <span className="checked-items-count">
-                                                {totalCheckedItems}/
-                                                {totalChecklistItems}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
+                                {activePriority && (
+                                    <span
+                                        className="label-color-small small-card-priority"
+                                        style={{
+                                            backgroundColor:
+                                                activePriority?.color,
+                                        }}
+                                    >
+                                        {activePriority?.name}
+                                    </span>
+                                )}
+                                {task?.users && task.users.length > 0 && (
+                                    <span style={{ marginLeft: "auto" }}>
+                                        {task.users.map((member, index) => {
+                                            const memberName = member.name
+                                                .split(" ")
+                                                .map((word) => word[0])
+                                                .join("");
 
-                                <span
-                                    className="label-color-small small-card-priority"
-                                    style={{
-                                        backgroundColor: activePriority?.color,
-                                    }}
-                                >
-                                    {activePriority?.name}
-                                </span>
+                                            return (
+                                                <button
+                                                    key={index}
+                                                    className="circular-button-all-tasks"
+                                                    style={{
+                                                        backgroundColor:
+                                                            "#56aaed",
+                                                    }}
+                                                >
+                                                    {memberName}
+                                                </button>
+                                            );
+                                        })}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     );
                 })}
-           
-            <div className="custom-card">
+
+            <div
+                className={`custom-card-add ${
+                    blur ? "is-blur disable-pointer-events" : ""
+                }`}
+            >
                 <input
                     type="text"
                     className="form-control board-title-input"
@@ -211,14 +248,18 @@ const Card = () => {
                         <button
                             type="button"
                             className="btn btn-primary create-card-button"
+                            disabled={isLoading}
                             onClick={handleCreateCard}
                         >
-                            <span className="add-card-text">Add Task</span>
+                            <span className="add-card-text">
+                                {isLoading ? "Loading..." : "Add Task"}
+                            </span>
                         </button>
                         <button
                             type="button"
                             className="btn-close"
                             aria-label="Close"
+                            disabled={isLoading}
                             style={{ fontSize: "12px" }}
                             onClick={cancelAddCard}
                         ></button>

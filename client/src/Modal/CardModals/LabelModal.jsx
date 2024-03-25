@@ -55,8 +55,6 @@ const LabelModal = ({
         "#607d8b",
     ];
 
-   
-
     const cancelModal = () => {
         setIsCreateLabel(false);
         setTitle("");
@@ -89,7 +87,7 @@ const LabelModal = ({
     };
 
     const handleCreateLabel = () => {
-        if (title.length > 50) {
+        if (title.length === 0 || title.length > 50) {
             toast.error("Invalid title");
         } else {
             setShowCreateLabel(true);
@@ -97,7 +95,7 @@ const LabelModal = ({
     };
 
     const handleSaveLabel = () => {
-        if (title.length > 50) {
+        if (title.length === 0 || title.length > 50) {
             toast.error("Invalid title");
         } else {
             setShowUpdateLabel(true);
@@ -105,7 +103,6 @@ const LabelModal = ({
     };
 
     const handleDeleteLabel = (label) => {
-        console.log(label);
         setShowDeleteLabel(true);
     };
 
@@ -190,7 +187,7 @@ const LabelModal = ({
                                         editingLabel &&
                                         !isCreateLabel
                                             ? "Edit label"
-                                            : "Create label "}
+                                            : "Create label"}
                                     </h1>
                                     <button
                                         type="button"
@@ -298,7 +295,7 @@ const LabelModal = ({
                                                 }
                                                 disabled={!title && !labelColor}
                                             >
-                                                <span>Savess</span>
+                                                <span>Save</span>
                                             </button>
                                             <button
                                                 type="button"

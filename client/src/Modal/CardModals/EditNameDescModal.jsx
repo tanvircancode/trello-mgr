@@ -16,8 +16,6 @@ const EditNameDescModal = ({
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
 
-    console.log(editingChecklistId);
-
     const dispatch = useDispatch();
 
     const cancelEditing = () => {
@@ -57,7 +55,7 @@ const EditNameDescModal = ({
                 cancelEditing();
             })
             .catch((error) => {
-                console.log(error);
+               
                 if (
                     error.response &&
                     error.response?.status &&
