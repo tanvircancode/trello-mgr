@@ -9,7 +9,7 @@
 
 ## Local Setup
 
-1. Clone the repository from GitHub - git clone https://github.com/rm-marzan/pm-vault-api.git](https://github.com/tanvircancode/trello-mgr.git
+1. Clone the repository from GitHub - git clone https://github.com/tanvircancode/trello-mgr.git
 2. 
 
 
