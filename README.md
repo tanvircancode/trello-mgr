@@ -9,10 +9,22 @@
 
 ## Local Setup
 
+### Laravel Server
 1. Clone the repository from GitHub - git clone https://github.com/tanvircancode/trello-mgr.git
-2. 
+2. Use the Default Branch master
+3. Navigate to the root directory of trello-mgr
+4. Run "composer install" to install PHP dependencies defined in composer.json
+5. Create a database with your preferred name in MySQL
+6. Rename .env.example file to .env. Edit DB_DATABASE with your database name and add REGISTER_TOKEN variable in this file
+7. Run "php artisan migrate" - for database migrations
+8. Lastly, run "php artisan serve" to start the Laravel development server
+9. Your Laravel project should be accessible at http://127.0.0.1:8000 by default. 
 
-
+### ReactJS Server
+1. Navigate to the client directory where ReactJS frontend code resides
+2. Run "npm install" to install the Node.js dependencies defined in package.json
+3. Run "npm start" to start the ReactJS development server.
+4. Your ReactJS frontend will typically be served at http://localhost:5173
 
 ## About Laravel
 
