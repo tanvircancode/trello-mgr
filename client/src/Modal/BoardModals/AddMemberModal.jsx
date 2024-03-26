@@ -165,7 +165,7 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                                         ? "Email address or name"
                                         : ""
                                 }
-                                style={{ color: "black !important" }}
+                                className="custom-placeholder"
                             />
                             {isLoading && (
                                 <p className="loading-text">Loading...</p>

@@ -13,7 +13,7 @@
     display: block;
 }
 
-input[type="text"]::placeholder {
+.custom-placeholder::placeholder {
     color: #3f2e2e !important;
     font-weight: 500;
 }
