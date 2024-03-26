@@ -175,7 +175,7 @@ const Card = () => {
                                     totalChecklistItems > 0) && (
                                     <div
                                         className=" d-flex align-items-center"
-                                        style={{ marginBottom: "10px" }}
+                                        style={{ marginBottom: "7px" }}
                                     >
                                         {task?.description && (
                                             <BsBarChartSteps className="card-sm-icon" />

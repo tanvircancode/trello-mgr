@@ -32,7 +32,7 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'title.required' => 'Title is required',
-            'title.min' => 'Title is too short',
+            'title.min' => 'Please write at least five characters',
             'title.max' => 'Please Try To Use Shorter Title',
         ];
     }

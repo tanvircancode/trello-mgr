@@ -46,7 +46,6 @@ class LabelsController extends Controller
 
     public function update(UpdateLabelRequest $request, $id)
     {
-
         $user_id = $request->input('user_id');
         $task_id = $request->input('task_id');
 
@@ -75,7 +74,6 @@ class LabelsController extends Controller
             'project' => $project,
             'message' => "Label Updated Successfully"
         ];
-
 
         return response()->json($response, 200);
     }

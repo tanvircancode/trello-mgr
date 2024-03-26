@@ -56,6 +56,8 @@ const CreateLabel = ({
                 },
             })
             .then((res) => {
+
+             
                 if (res.data.status && res.status === 200) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(setLabels({ labels: res.data.task.labels }));

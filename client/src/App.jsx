@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Auth from "./Pages/AuthPage/Auth";
+import Auth from "./Pages/AuthPage/auth";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Layout from "./Pages/Layout";
@@ -65,6 +65,8 @@ function InitUser() {
                 dispatch(setTasks(null));
                 dispatch(setSelectedProject(null));
                 dispatch(setFetchSingleCard(null));
+                dispatch(setMakeBlur({ makeBlur: false }));
+                dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
                 localStorage.removeItem("token");
                 localStorage.removeItem("user_id");
             }
@@ -79,6 +81,8 @@ function InitUser() {
             dispatch(setTasks(null));
             dispatch(setSelectedProject(null));
             dispatch(setFetchSingleCard(null));
+            dispatch(setMakeBlur({ makeBlur: false }));
+            dispatch(setMakeCardModalBlur({ makeCardModalBlur: false }));
             localStorage.removeItem("token");
             localStorage.removeItem("user_id");
         }
