@@ -199,7 +199,7 @@ const AuthForm = ({ mode , setMode}) => {
                     mode === "login" ? "mt-2" : "mt-4"
                 } ${loading ? "disabled" : ""}`}
                 disabled={loading}
-                style={{ opacity: loading ? 0.5 : 1 }}
+                style={{ opacity: loading ? 0.5 : 1 , cursor: loading ? 'wait' :  'pointer'}}
             >
                 {loading
                     ? "Loading..."

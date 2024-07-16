@@ -73,7 +73,7 @@ class User extends Authenticatable
     //A User can be a member of many Projects through the project_members table
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');
+        return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');  
     }
 
     public function tasks()

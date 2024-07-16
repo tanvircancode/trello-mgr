@@ -69,6 +69,7 @@ const Card = () => {
                 })
                 .then((res) => {
                     if (res.data?.status && res.data?.data) {
+                        console.log(res.data);
                         dispatch(
                             setTasks({
                                 tasks: res.data.data.tasks,

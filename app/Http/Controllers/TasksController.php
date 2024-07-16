@@ -16,7 +16,7 @@ class TasksController extends Controller
     //
     public function store(StoreTaskRequest $request, $id)
     {
-        if ($id !== Auth::user()->id) {
+        if ($id !== Auth::user()->id) { 
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
@@ -25,8 +25,17 @@ class TasksController extends Controller
             return response()->json(['status' => false, 'message' => 'Project not found'], 404);
         }
 
-        $tasks = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
-            ->find($task->project_id);
+        $tasks = Project::with([
+            'members', 
+            'tasks' => function($query) {
+                $query->orderBy('created_at', 'asc');
+            }, 
+            'tasks.users', 
+            'tasks.labels', 
+            'tasks.priorities', 
+            'tasks.checklists', 
+            'tasks.checklists.checklistitems'
+        ])->find($task->project_id);
 
         $response = [
             'status' => true,

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Auth from "./Pages/AuthPage/auth";
+import Auth from "./Pages/AuthPage/Auth";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Layout from "./Pages/Layout";
