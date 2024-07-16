@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_labels', function (Blueprint $table) {
+        Schema::create('lists', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('task_id');
-            $table->uuid('label_id');
+            $table->uuid('project_id');
+            $table->string('title');
             $table->timestamps();
 
-            $table->foreign('task_id')
-            ->references('id')->on('tasks')
-            ->onDelete('cascade');
-
-            $table->foreign('label_id')
-            ->references('id')->on('labels')
+            $table->foreign('project_id')
+            ->references('id')->on('projects')
             ->onDelete('cascade');
         });
     }
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_labels');
+        Schema::dropIfExists('lists');
     }
 };
