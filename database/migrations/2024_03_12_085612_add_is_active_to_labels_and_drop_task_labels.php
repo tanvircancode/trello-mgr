@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::table('labels', function (Blueprint $table) {
             $table->uuid('task_id');
             $table->boolean('is_active')->default(false);
-           
+
             $table->foreign('task_id')
-            ->references('id')->on('tasks')
-            ->onDelete('cascade');
+                ->references('id')->on('tasks')
+                ->onDelete('cascade');
         });
 
         // Dropping task_labels table
@@ -29,6 +29,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-       
     }
 };

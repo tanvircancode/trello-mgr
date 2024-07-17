@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
-        Schema::dropIfExists('invitations');
+        Schema::table('tasks', function (Blueprint $table) {
+           
+            $table->dropForeign(['project_id']);
+            $table->dropColumn('project_id');
+
+        });
+
     }
 
     /**

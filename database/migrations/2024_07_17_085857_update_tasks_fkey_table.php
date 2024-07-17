@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
-        
+        Schema::table('tasks', function (Blueprint $table) {
+           
+
+            $table->uuid('list_id');
+           
+            $table->foreign('list_id')
+            ->references('id')->on('lists')
+            ->onDelete('cascade');
+        });
     }
 
     /**
