@@ -33,6 +33,7 @@ class UsersController extends Controller
         if (empty($input['token']) || $input['token'] != env('REGISTER_TOKEN')) {
             $response = [
                 'status' => false,
+                'env'=> env('REGISTER_TOKEN'),
                 'message' => 'You are not authorized'
             ];
             return response()->json($response, 404);
