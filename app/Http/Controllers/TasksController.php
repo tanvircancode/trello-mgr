@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class TasksController extends Controller
 {
     //
@@ -26,15 +25,16 @@ class TasksController extends Controller
         }
 
         $tasks = Project::with([
-            'members', 
-            'tasks' => function($query) {
+            'members',
+            'stages',
+            'stages.tasks' => function($query) {
                 $query->orderBy('created_at', 'asc');
             }, 
-            'tasks.users', 
-            'tasks.labels', 
-            'tasks.priorities', 
-            'tasks.checklists', 
-            'tasks.checklists.checklistitems'
+            'stages.tasks.users', 
+            'stages.tasks.labels', 
+            'stages.tasks.priorities', 
+            'stages.tasks.checklists', 
+            'stages.tasks.checklists.checklistitems'
         ])->find($task->project_id);
 
         $response = [

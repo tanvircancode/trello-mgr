@@ -90,16 +90,19 @@ class ProjectsController extends Controller
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
-        $tasksUnderProject = $project->tasks()->get();
+        // $tasksUnderProject = $project->tasks()->get();
+        $stagesUnderProject = $project->stages()->get();
 
-        foreach ($tasksUnderProject as $task) {
-
-            $task->users()->detach();
+        foreach ($stagesUnderProject as $stage) {
+            $tasksUnderStage = $stage->tasks()->get();
+            foreach ($tasksUnderStage as $task) {
+                $task->users()->detach();
+            }
         }
 
-        $project->tasks()->delete();
+        $project->stages()->delete();
 
-        $project->members()->detach(); 
+        $project->members()->detach();
 
         $project->delete();
 
@@ -133,15 +136,20 @@ class ProjectsController extends Controller
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
-        $tasksUnderProject = $project->tasks()->get();
+      
 
-        foreach ($tasksUnderProject as $task) {
-            if ($task->users->contains($userId)) {
-                $task->users()->detach($userId);
+        $stagesUnderProject = $project->stages()->get();
+
+        foreach ($stagesUnderProject as $stage) {
+            $tasksUnderStage = $stage->tasks()->get();
+            foreach ($tasksUnderStage as $task) {
+                if ($task->users->contains($userId)) {
+                    $task->users()->detach($userId);
+                }
             }
         }
 
-        $project->members()->detach($userId); 
+        $project->members()->detach($userId);
 
         $user = User::find($userId);
         $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();

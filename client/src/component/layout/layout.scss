@@ -2,11 +2,7 @@
     --nav-container-width: 42vw;
 }
 
-// @media (max-width: 768px) {
-//     :root {
-//         --nav-container-width: 60vw;
-//     }
-// }
+
 @media (min-width: 1650px) {
     :root {
         --nav-container-width: 25vw;
@@ -41,6 +37,9 @@
     padding: 0.2rem calc(-500px + var(--nav-container-width)) !important;
     margin-top: 5px;
     background-color: #f2f7fb !important;
+    @media (min-width: 2000px) {
+        padding: 0px !important;
+    }
 }
 
 .custom-navbar-toggler {

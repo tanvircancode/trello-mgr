@@ -5,6 +5,7 @@ use App\Http\Controllers\ChecklistsController;
 use App\Http\Controllers\LabelsController;
 use App\Http\Controllers\PrioritiesController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\StagesController;
 use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,12 +30,16 @@ use App\Models\ChecklistItem;
   Route::get('/me', [UsersController::class, 'me']);
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/projects/{id}', [UsersController::class, 'show']);
+  
 
   // project apis
   Route::post('/project', [ProjectsController::class, 'store']);
   Route::get('/projectmembers/{id}', [ProjectsController::class, 'showMembers']);
   Route::delete('/deleteproject/{id}', [ProjectsController::class, 'destroy']);
   Route::delete('/leaveproject/{id}/{memberId}', [ProjectsController::class, 'leaveProject']);
+
+  // list apis
+  Route::post('/list/{id}', [StagesController::class, 'store']);
 
   // task apis
   Route::post('/task/{id}', [TasksController::class, 'store']);

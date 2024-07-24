@@ -101,16 +101,17 @@ const Card = () => {
         dispatch(setMakeBlur({ makeBlur: false }));
     }, []);
 
-    return (
-        <div className="card-list d-flex flex-wrap gap-3">
-            {isCardsLoading && (
-                <div style={{ width: "100px", margin: "50px auto auto" }}>
+    return ( 
+        <div className="card-list d-flex flex-wrap gap-3"> 
+            {isCardsLoading && (                 
+                <div style={{ width: "100px", margin: "50px auto auto" }}> 
                     <HashLoader color="#36d7b7" />
                 </div>
             )}
-            {!isCardsLoading &&
-                tasks &&
-                tasks.length > 0 &&
+
+            {!isCardsLoading &&  
+                tasks && 
+                tasks.length > 0 && 
                 tasks.map((task, index) => {
                     const activePriority = task.priorities.find(
                         (priority) => priority.is_active
@@ -144,7 +145,7 @@ const Card = () => {
                                 className="card-body d-flex flex-column"
                                 style={{ padding: "10px" }}
                             >
-                                <h5 className="card-title custom-card-title">
+                                <h5 className="card-title custom-card-title">    
                                     {task && task.title}
                                 </h5>
                                 {task?.labels.some(
@@ -243,7 +244,7 @@ const Card = () => {
                     value={cardTitle}
                     placeholder="Add a task"
                     onChange={(e) => setCardTitle(e.target.value)}
-                />
+                />        
                 {cardTitle && (
                     <div className="d-flex align-items-center gap-3 mt-2 ">
                         <button
@@ -265,9 +266,9 @@ const Card = () => {
                             onClick={cancelAddCard}
                         ></button>
                     </div>
-                )}
-            </div>
-            {/* )} */}
+                )}    
+            </div>  
+                {/* )} */}
 
             <CardMainModal
                 openNewCardModal={openNewCardModal}

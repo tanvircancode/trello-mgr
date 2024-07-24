@@ -9,6 +9,7 @@ import HashLoader from "react-spinners/HashLoader";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 import DeleteBoard from "../../../component/board/DeleteBoard";
 import LeaveBoard from "../../../component/board/LeaveBoard";
+import List from "../Lists";
 
 const BoardList = () => {
     const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const BoardList = () => {
     return (
         <>
             {deleteProjectId && (
-                <DeleteBoard
+                <DeleteBoard 
                     deleteProjectId={deleteProjectId}
                     setDeleteProjectId={setDeleteProjectId}
                     setIsLoading={setIsLoading}
@@ -79,8 +80,8 @@ const BoardList = () => {
                             blur ? "is-blur disable-pointer-events" : ""
                         }`}
                     >
-                        <div className="board-header-name d-flex">
-                            <h1 className="board-name m-0">
+                        <div className="board-header-name d-flex"> 
+                            <h1 className="board-name m-0"> 
                                 {selectedProject?.title}
                             </h1>
                         </div>
@@ -101,7 +102,7 @@ const BoardList = () => {
                                         handleDeleteProject(selectedProject.id)
                                     }
                                 >
-                                    <BsTrash3 className="project-delete-icon" />
+                                    <BsTrash3 className="project-delete-icon" /> 
                                     Delete project
                                 </button>
                             </div>
@@ -124,8 +125,9 @@ const BoardList = () => {
                     </div>
 
                     <div>
-                        {/* make a loop */}
-                        <Card />
+                    <List />
+
+                        {/* <Card /> */}
                     </div>
 
                     {showAddMemberModal && (
@@ -136,11 +138,7 @@ const BoardList = () => {
                     )}
                 </div>
             )}
-            {/* {isLoading && (
-                <div style={{ width: "100px", margin: "50px auto auto" }}>
-                    <HashLoader color="#36d7b7" />
-                </div>
-            )} */}
+           
             {!isCardsLoading && projects && projects.length === 0 && (
                 <>
                     <div

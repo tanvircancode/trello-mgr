@@ -110,6 +110,7 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
+                console.log(res.data)
               
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;

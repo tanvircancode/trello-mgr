@@ -64,7 +64,6 @@ class User extends Authenticatable
         'password_hint' => 'string',
     ];
 
-
     public function project()
     {
         return $this->hasMany(Project::class);
@@ -77,7 +76,7 @@ class User extends Authenticatable
     }
 
     public function tasks()
-    {
+    {  
         return $this->belongsToMany(Task::class, 'task_users');
     }
 
@@ -87,13 +86,14 @@ class User extends Authenticatable
         return $this->projects()->where('project_id', $projectId)->exists();
     }
 
-
     //custom methods
 
     public function getProjectsWithOwnerAndTasks()
     {
-        $projects = $this->projects()
-            ->with(['members', 'user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
+        $projects = $this->projects()  
+            // ->with(['members', 'user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
+            // ->with(['members', 'user', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems'])
+            ->with(['members', 'user', 'stages', 'stages.tasks'])
             ->get();
 
             foreach($projects as $project) {
@@ -101,7 +101,6 @@ class User extends Authenticatable
             }
             return $projects;
     }
-
 
     //must
     public function addToProject($projectId)

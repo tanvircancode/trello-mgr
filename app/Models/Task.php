@@ -37,9 +37,9 @@ class Task extends Model
         'description' => 'string',
     ];
 
-    public function project()
+    public function stage()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Stage::class, 'list_id');
     }
 
     public function checklists()

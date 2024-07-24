@@ -33,7 +33,6 @@ class UsersController extends Controller
         if (empty($input['token']) || $input['token'] != env('REGISTER_TOKEN')) {
             $response = [
                 'status' => false,
-                'env'=> env('REGISTER_TOKEN'),
                 'message' => 'You are not authorized'
             ];
             return response()->json($response, 404);
@@ -95,6 +94,8 @@ class UsersController extends Controller
             return response()->json(['status' => false], 404);
         }
     }
+
+   
 
     public function me(Request $request)
     {
@@ -204,7 +205,7 @@ class UsersController extends Controller
             ];
             return response()->json($response, 400);
         }
-        $project = Project::with('members','tasks', 'tasks.users','tasks.labels' , 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        $project = Project::with('members','stages', 'stages.tasks', 'stages.tasks.users','stages.tasks.labels' , 'stages.tasks.priorities', 'stages.tasks.checklists','stages.tasks.checklists.checklistitems')
         ->find($projectId);
 
         $response = [
@@ -216,7 +217,7 @@ class UsersController extends Controller
         return response()->json($response, 200);
     }
 
-    public function removeMember( $projectId, $userId)
+    public function removeMember($projectId, $userId)
     {
         $project = Project::find($projectId);
 
@@ -242,15 +243,19 @@ class UsersController extends Controller
         }
 
         $project->members()->detach($userId);
-        $tasksUnderProject = $project->tasks()->get();
+        
+        $stagesUnderProject = $project->stages()->get();
 
-        foreach($tasksUnderProject as $task) {
-            if ($task->users->contains($userId)) {
-                $task->users()->detach($userId);
+        foreach ($stagesUnderProject as $stage) {
+            $tasksUnderStage = $stage->tasks()->get();
+            foreach ($tasksUnderStage as $task) {
+                if ($task->users->contains($userId)) {
+                    $task->users()->detach($userId);
+                }
             }
         }
 
-        $project = Project::with('members','tasks', 'tasks.users','tasks.labels' , 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
+        $project = Project::with('members','stages', 'stages.tasks', 'stages.tasks.users','stages.tasks.labels' , 'stages.tasks.priorities', 'stages.tasks.checklists','stages.tasks.checklists.checklistitems')
         ->find($projectId);
 
         $response = [

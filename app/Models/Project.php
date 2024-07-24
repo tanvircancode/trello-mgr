@@ -37,14 +37,14 @@ class Project extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
+    } 
     public function members()
     {
         return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id');
     }
-    public function tasks()
+    public function stages()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Stage::class);
     }
 
     //new
