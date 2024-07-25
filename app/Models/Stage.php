@@ -35,14 +35,15 @@ class Stage extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'list_id');
     }
     public function tasks()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class, 'list_id');
     }
 
     public static function createStage(array $data , $id) {
+        
         $project = Project::find($data['project_id']);
 
         if (!$project) {

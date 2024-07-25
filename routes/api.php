@@ -78,8 +78,6 @@ use App\Models\ChecklistItem;
   Route::post('/addtaskmember', [TasksController::class, 'assignTask']);
   Route::post('/removetaskmember', [TasksController::class, 'removeTask']);
 
-
-
 });
 // Login and Register
 Route::post('/register', [UsersController::class, 'store']);

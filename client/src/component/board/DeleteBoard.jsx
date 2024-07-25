@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { setMakeBlur, setProjects, setSelectedProject,setTasks, setSelectedProjectMembers } from "../../store";
 
 
-
 const DeleteBoard = ({
     deleteProjectId,
     setDeleteProjectId,

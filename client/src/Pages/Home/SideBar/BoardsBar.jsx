@@ -11,6 +11,7 @@ import {
     setSelectedProject,
     setSelectedProjectMembers,
     setTasks,
+    setStages
 } from "../../../store";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 import DeleteBoard from "../../../component/board/DeleteBoard";
@@ -59,14 +60,18 @@ const BoardsBar = () => {
             .then((res) => {
                 
                 if (res.data?.status && res.status === 200) {
+                    // console.log(res.data)
                     const allProjects = res.data.data;
+                    
 
                     dispatch(setProjects({ projects: allProjects }));
+                    console.log(allProjects)
                    
-
                     const filteredProject = allProjects.find(
                         (singleProj) => singleProj.id === project.id
                     );
+
+                    console.log(filteredProject)
                    
                     dispatch(
                         setSelectedProject({
@@ -81,6 +86,11 @@ const BoardsBar = () => {
                     dispatch(
                         setTasks({
                             tasks: filteredProject.tasks,
+                        })
+                    );
+                    dispatch(
+                        setStages({
+                            stages: filteredProject.stages,
                         })
                     );
                 }

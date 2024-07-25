@@ -12,7 +12,11 @@ const List = () => {
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const userId = localStorage.getItem("user_id");
+    
+    const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
+    const stages = useSelector((state) => state.stages);
+    console.log(stages)
     const dispatch = useDispatch();
 
     const cancelAddList = () => {
@@ -68,6 +72,19 @@ const List = () => {
 
     return (
         <div className="card-list">
+            {stages &&             
+                stages.length > 0 &&   
+                stages.map((stage, index) => {
+                    return (
+                        <div key={index} className={`card custom-card`}>
+                            <div className="card-body"> 
+                                <h5 className="card-title custom-card-title">
+                                    {stage && stage.title} 
+                                </h5>
+                            </div>
+                        </div>
+                    );
+                })}
             <div className="custom-card-add">
                 <input
                     type="text"

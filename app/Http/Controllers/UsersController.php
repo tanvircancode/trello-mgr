@@ -132,7 +132,8 @@ class UsersController extends Controller
 
         $response = [
             'status' => true,
-            'data' => $projectsWithRelatedData
+            'data' => $projectsWithRelatedData,
+            // 'checking' => "got it?"
         ];
 
         return response()->json($response, 200);

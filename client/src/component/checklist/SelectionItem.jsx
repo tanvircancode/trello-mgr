@@ -5,6 +5,7 @@ import {
     setChecklists,
     setLabels,
     setTasks,
+    setStages,
     setMakeCardModalBlur,
 } from "../../store";
 import { BASE_URL } from "../../config";

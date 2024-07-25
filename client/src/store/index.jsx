@@ -8,6 +8,7 @@ const initialState = {
     makeCardModalBlur: false,
     projects: [],
     tasks: [],
+    stages:[],
     labels: [],
     priorities: [],
     checklists: [],
@@ -32,6 +33,7 @@ export const trelloSlice = createSlice({
             state.token = null;
             state.projects = [];
             state.tasks = [];
+            state.stages = [];
             state.labels = [];
             state.fetchSingleCard = null;
             state.selectedProject = null;
@@ -55,6 +57,13 @@ export const trelloSlice = createSlice({
                 state.projects = [];
             } else {
                 state.projects = action.payload.projects;
+            }
+        },
+        setStages: (state, action) => {   
+            if (action.payload === null) {   
+                state.stages = [];
+            } else {
+                state.stages = action.payload.stages;
             }
         },
         setTasks: (state, action) => {
@@ -127,6 +136,7 @@ export const {
     setLogin,
     setLogout,
     setProjects,
+    setStages,
     setTasks,
     setLabels,
     setPriorities,

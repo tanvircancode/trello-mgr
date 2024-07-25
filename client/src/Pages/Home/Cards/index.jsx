@@ -138,7 +138,7 @@ const Card = () => {
                             key={index}
                             className={`card custom-card ${
                                 blur ? "is-blur disable-pointer-events" : ""
-                            }`}
+                            }`} 
                             onClick={() => handleOpenPopup(task)}
                         >
                             <div
