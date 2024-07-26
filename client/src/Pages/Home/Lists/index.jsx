@@ -5,6 +5,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
+import "./lists.scss";
+
+
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -71,26 +74,29 @@ const List = () => {
     };
 
     return (
-        <div className="card-list">
+        <div className="card-list d-flex gap-2">
+            <div>
             {stages &&             
                 stages.length > 0 &&   
                 stages.map((stage, index) => {
                     return (
                         <div key={index} className={`card custom-card`}>
-                            <div className="card-body"> 
-                                <h5 className="card-title custom-card-title">
+                            <div className="card-body custom-stage-body"> 
+                                <span className="card-title custom-stage-title">
                                     {stage && stage.title} 
-                                </h5>
+                                </span>
                             </div>
                         </div>
                     );
                 })}
+            </div>
+            
             <div className="custom-card-add">
                 <input
                     type="text"
-                    className="form-control board-title-input"
+                    className="form-control stage-title-input"
                     value={listTitle}
-                    placeholder="Add a list"
+                    placeholder={stages.length > 0 ? "+ Add another list" : "+ Add a list"}
                     onChange={(e) => setListTitle(e.target.value)}
                 />
                 {listTitle && (
@@ -102,7 +108,7 @@ const List = () => {
                             onClick={handleCreateList}
                         >
                             <span className="add-card-text">
-                                {isLoading ? "Loading..." : "Add a List"}
+                                {isLoading ? "Loading..." : "Add List"}
                             </span>
                         </button>
                         <button
