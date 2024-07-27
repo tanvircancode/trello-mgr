@@ -1,5 +1,6 @@
 .custom-stage-body {
-    padding: 0.3rem 0.6rem;
+    padding: 0.4rem 0.6rem;
+    justify-content: space-between;
 }
 
 .custom-stage-title {
@@ -7,14 +8,14 @@
     font-size: 16px;
 }
 .stage-title-input {
-    padding: 0.29rem 0.6rem;
+    padding: 0.45rem 0.6rem;
 }
 .stage-title-input::-webkit-input-placeholder {
     color: #000000;
     font-size: 17px;
     font-weight: 700;
 }
-.add-stage-text {
-
+.stage-horizontal-dots {
+    font-weight: 700;
 }
 

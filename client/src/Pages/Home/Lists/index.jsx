@@ -7,23 +7,26 @@ import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
 
-
-
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
+    const [showStageAction, setShowStageAction] = useState(false);
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const userId = localStorage.getItem("user_id");
-    
+
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    console.log(stages)
+    console.log(stages);
     const dispatch = useDispatch();
 
     const cancelAddList = () => {
         setListTitle("");
+    };
+
+    const handleStageAction = () => {
+        setShowStageAction(true);
     };
 
     const handleCreateList = async () => {
@@ -74,29 +77,54 @@ const List = () => {
     };
 
     return (
-        <div className="card-list d-flex gap-2">
-            <div>
-            {stages &&             
-                stages.length > 0 &&   
-                stages.map((stage, index) => {
-                    return (
-                        <div key={index} className={`card custom-card`}>
-                            <div className="card-body custom-stage-body"> 
-                                <span className="card-title custom-stage-title">
-                                    {stage && stage.title} 
-                                </span>
+        <div className="card-list d-flex flex-wrap gap-2">
+            <div className="d-flex gap-2">
+                {stages &&
+                    stages.length > 0 &&
+                    stages.map((stage, index) => {
+                        return (
+                            <div key={index} className={`card custom-card`}>
+                                <div className="card-body custom-stage-body  d-flex align-items-center">
+                                    <span className="card-title custom-stage-title m-0">
+                                        {stage && stage.title}
+                                    </span>
+                                    <span
+                                        className="stage-horizontal-dots mb-1"
+                                        onClick={handleStageAction}
+                                    >
+                                        ...
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
             </div>
-            
+
+            {handleStageAction && (
+                // <div>
+                <div className="card" style={{ width: "18rem" }}>
+                    <div className="d-flex cursor-pointer">
+                        <div className="card-header">Featured</div> <div>X</div>
+                    </div>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item">An item</li>
+                        <li className="list-group-item">A second item</li>
+                        <li className="list-group-item">A third item</li>
+                    </ul>
+                </div>
+                // </div>
+            )}
+
             <div className="custom-card-add">
                 <input
                     type="text"
                     className="form-control stage-title-input"
                     value={listTitle}
-                    placeholder={stages.length > 0 ? "+ Add another list" : "+ Add a list"}
+                    placeholder={
+                        stages.length > 0
+                            ? "+ Add another list"
+                            : "+ Add a list"
+                    }
                     onChange={(e) => setListTitle(e.target.value)}
                 />
                 {listTitle && (

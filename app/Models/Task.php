@@ -40,6 +40,7 @@ class Task extends Model
     public function stage()
     {
         return $this->belongsTo(Stage::class, 'list_id');
+            
     }
 
     public function checklists()

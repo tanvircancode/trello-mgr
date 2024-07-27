@@ -31,7 +31,6 @@ use App\Models\ChecklistItem;
   Route::get('/logout', [UsersController::class, 'logout']);
   Route::get('/projects/{id}', [UsersController::class, 'show']);
   
-
   // project apis
   Route::post('/project', [ProjectsController::class, 'store']);
   Route::get('/projectmembers/{id}', [ProjectsController::class, 'showMembers']);
