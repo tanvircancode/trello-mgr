@@ -19,7 +19,7 @@ class Task extends Model
 
 
     protected $fillable = [
-        'project_id', 'title', 'description'
+        'list_id', 'title', 'description'
     ];
 
     protected static function boot()
@@ -91,9 +91,9 @@ class Task extends Model
     //custom methods
     public static function createTask(array $data , $id)
     {
-        $project = Project::find($data['project_id']);
+        $stage = Stage::find($data['list_id']);
 
-        if (!$project) {
+        if (!$stage) {
             return false;
         }
 

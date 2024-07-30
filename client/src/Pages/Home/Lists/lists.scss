@@ -20,4 +20,11 @@
 .stage-li-item {
     font-size: 15px;
 }
+.stage-list {
+    padding: 0.4em 0.5em;
+
+    @media (max-width: 870px) {
+        justify-content: center;
+    }
+}
 

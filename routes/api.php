@@ -38,7 +38,7 @@ use App\Models\ChecklistItem;
   Route::delete('/leaveproject/{id}/{memberId}', [ProjectsController::class, 'leaveProject']);
 
   // list apis
-  Route::post('/list/{id}', [StagesController::class, 'store']);
+  Route::post('/stage/{id}', [StagesController::class, 'store']);
 
   // task apis
   Route::post('/task/{id}', [TasksController::class, 'store']);

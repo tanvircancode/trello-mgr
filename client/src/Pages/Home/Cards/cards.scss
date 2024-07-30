@@ -27,7 +27,7 @@
     margin: 7px 0px;;
 }
 .card-list {
-    padding: 12px 26px;
+    padding: 0.4em 0.5em;
 
     @media (max-width: 870px) {
         justify-content: center;
@@ -88,4 +88,9 @@
     padding: 0px;
     cursor: auto !important;
     margin-right: 3px;
+}
+.custom-task-placeholder::placeholder {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 600;
 }

@@ -17,7 +17,8 @@ import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { BASE_URL } from "../../../config";
 
-const Card = () => {
+const Card = ({stageId}) => {
+    // console.log(stageId);
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,7 +30,7 @@ const Card = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const tasks = useSelector((state) => state.tasks);
-    // console.log(tasks);
+    // console.log(selectedProject);
 
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
@@ -57,8 +58,9 @@ const Card = () => {
         } else {
             var formData = new FormData();
             formData.append("title", cardTitle);
-            formData.append("project_id", selectedProject.id);
-
+            formData.append("list_id", stageId);
+            // formData.append("project_id", selectedProject.id);
+            
             //api
             await axios
                 .post(`${BASE_URL}/api/task/${userId}`, formData, {
@@ -68,11 +70,12 @@ const Card = () => {
                     },
                 })
                 .then((res) => {
+                  
                     if (res.data?.status && res.data?.data) {
                         console.log(res.data);
                         dispatch(
                             setTasks({
-                                tasks: res.data.data.tasks,
+                                tasks: res.data.data,
                             })
                         );
 
@@ -102,7 +105,7 @@ const Card = () => {
     }, []);
 
     return ( 
-        <div className="card-list d-flex flex-wrap gap-3"> 
+        <div className="card-list d-flex flex-wrap gap-1"> 
             {isCardsLoading && (                 
                 <div style={{ width: "100px", margin: "50px auto auto" }}> 
                     <HashLoader color="#36d7b7" />
@@ -152,7 +155,7 @@ const Card = () => {
                                     (label) => label.is_active
                                 ) &&
                                     task?.labels.length > 0 && (
-                                        <div className="d-flex flex-wrap gap-1 custom-card-label">
+                                        <div className="d-flex flex-wrap gap-2 custom-card-label">
                                             {task.labels.map(
                                                 (label, index) =>
                                                     label.is_active && (
@@ -240,13 +243,13 @@ const Card = () => {
             >
                 <input
                     type="text"
-                    className="form-control board-title-input"
+                    className="form-control board-title-input custom-task-placeholder"
                     value={cardTitle}
-                    placeholder="Add a task"
+                    placeholder="+ Add a task"
                     onChange={(e) => setCardTitle(e.target.value)}
                 />        
                 {cardTitle && (
-                    <div className="d-flex align-items-center gap-3 mt-2 ">
+                    <div className="d-flex align-items-center gap-1 mt-2 ">
                         <button
                             type="button"
                             className="btn btn-primary create-card-button"
@@ -254,7 +257,7 @@ const Card = () => {
                             onClick={handleCreateCard}
                         >
                             <span className="add-card-text">
-                                {isLoading ? "Loading..." : "Add Task"}
+                                {isLoading ? "Loading..." : "Add task"}
                             </span>
                         </button>
                         <button

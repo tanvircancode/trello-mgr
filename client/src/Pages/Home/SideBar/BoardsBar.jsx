@@ -139,8 +139,8 @@ const BoardsBar = () => {
                         );
 
                         dispatch(
-                            setTasks({
-                                tasks: allProjects[0].tasks,
+                            setStages({
+                                stages: allProjects[0].stages,
                             })
                         );
 

@@ -127,7 +127,7 @@ const BoardList = () => {
                     <div>
                     <List />
 
-                        {/* <Card /> */}
+                        
                     </div>
 
                     {showAddMemberModal && (

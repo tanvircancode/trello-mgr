@@ -6,22 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\Stage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
-    //
+    
     public function store(StoreTaskRequest $request, $id)
     {
+        
         if ($id !== Auth::user()->id) { 
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
+        
+        $list_id = $request->input('list_id');
+        $stage = Stage::find($list_id);
+        $project_id = $stage->project_id;
+       
 
         $task = Task::createTask($request->all(), $id);
-        if (!$task) {
-            return response()->json(['status' => false, 'message' => 'Project not found'], 404);
+        if (!$task) {  
+            return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
         }
 
         $tasks = Project::with([
@@ -29,13 +36,20 @@ class TasksController extends Controller
             'stages',
             'stages.tasks' => function($query) {
                 $query->orderBy('created_at', 'asc');
-            }, 
+            },   
             'stages.tasks.users', 
             'stages.tasks.labels', 
             'stages.tasks.priorities', 
             'stages.tasks.checklists', 
-            'stages.tasks.checklists.checklistitems'
-        ])->find($task->project_id);
+            'stages.tasks.checklists.checklistitems' 
+        ])->whereHas('stages.tasks', function($query) use ($list_id) {
+            $query->where('list_id', $list_id);
+        })->first();
+
+if ($tasks) {
+    $tasks = $tasks->stages->flatMap->tasks;
+}
+        // ->find($project_id);
 
         $response = [
             'status' => true,

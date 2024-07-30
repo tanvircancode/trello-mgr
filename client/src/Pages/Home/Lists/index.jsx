@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
+import Card from "../Cards";
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +23,7 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
+    console.log(stages)
 
     const dispatch = useDispatch();
 
@@ -50,13 +52,14 @@ const List = () => {
 
             //api
             await axios
-                .post(`${BASE_URL}/api/list/${userId}`, formData, {
+                .post(`${BASE_URL}/api/stage/${userId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-type": "application/json",
                     },
                 })
                 .then((res) => {
+                    console.log(res.data)
                     if (res.data?.status && res.data?.data) {
                         console.log(res.data);
                         // dispatch(
@@ -88,7 +91,7 @@ const List = () => {
 
     return (
         <div className="d-flex">
-            <div className="card-list d-flex gap-2">
+            <div className="stage-list d-flex gap-2">
                 <div className="d-flex gap-2">
                     {stages &&
                         stages.length > 0 &&
@@ -106,6 +109,7 @@ const List = () => {
                                             ...
                                         </span>
                                     </div>
+                                    <Card stageId={stage.id}/>
                                 </div>
                             );
                         })}
