@@ -11,7 +11,7 @@ import {
     setSelectedProject,
     setSelectedProjectMembers,
     setTasks,
-    setStages
+    setStages,
 } from "../../../store";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 import DeleteBoard from "../../../component/board/DeleteBoard";
@@ -22,7 +22,7 @@ const BoardsBar = () => {
     const userId = localStorage.getItem("user_id");
     const token = useSelector((state) => state.token);
     const projects = useSelector((state) => state.projects);
-    
+
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const dispatch = useDispatch();
@@ -58,21 +58,19 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                
                 if (res.data?.status && res.status === 200) {
-                    // console.log(res.data)
+                    console.log(res.data);
                     const allProjects = res.data.data;
-                    
 
                     dispatch(setProjects({ projects: allProjects }));
-                    console.log(allProjects)
-                   
+                    // console.log(allProjects)
+
                     const filteredProject = allProjects.find(
                         (singleProj) => singleProj.id === project.id
                     );
 
-                    console.log(filteredProject)
-                   
+                    console.log(filteredProject);
+
                     dispatch(
                         setSelectedProject({
                             selectedProject: filteredProject,
@@ -83,21 +81,20 @@ const BoardsBar = () => {
                             selectedProjectMembers: filteredProject.members,
                         })
                     );
-                    dispatch(
-                        setTasks({
-                            tasks: filteredProject.tasks,
-                        })
-                    );
+
                     dispatch(
                         setStages({
                             stages: filteredProject.stages,
                         })
                     );
+                    // dispatch(
+                    //     setTasks({
+                    //         tasks: filteredProject.stages.tasks,
+                    //     })
+                    // );
                 }
             })
             .catch((error) => {
-               
-
                 if (
                     error.response &&
                     error.response?.data?.status &&
@@ -120,8 +117,8 @@ const BoardsBar = () => {
                 },
             })
             .then((res) => {
-                console.log(res.data)
-              
+                console.log(res.data);
+
                 if (res.data?.status && res.status === 200) {
                     const allProjects = res.data.data;
 
@@ -143,14 +140,15 @@ const BoardsBar = () => {
                                 stages: allProjects[0].stages,
                             })
                         );
-
-                      
+                        // dispatch(
+                        //     setTasks({
+                        //         tasks: allProjects[0].stages.tasks,
+                        //     })
+                        // );
                     }
                 }
             })
             .catch((error) => {
-                
-
                 if (
                     error.response &&
                     error.response?.data?.status &&
@@ -163,7 +161,6 @@ const BoardsBar = () => {
             });
 
         dispatch(setIsCardsLoading({ isCardsLoading: false }));
-       
     };
 
     useEffect(() => {
@@ -217,7 +214,7 @@ const BoardsBar = () => {
                                 {project.is_owner && (
                                     <BsTrash3
                                         className="custom-sm-trash-icon"
-                                        style={{cursor:'pointer'}}
+                                        style={{ cursor: "pointer" }}
                                         onClick={() =>
                                             handleDeleteProject(project.id)
                                         }

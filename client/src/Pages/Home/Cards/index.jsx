@@ -17,8 +17,9 @@ import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { BASE_URL } from "../../../config";
 
-const Card = ({stageId}) => {
-    // console.log(stageId);
+const Card = ({stage}) => {
+    console.log(stage);
+    const tasks = stage.tasks;
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,8 +30,8 @@ const Card = ({stageId}) => {
 
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
-    const tasks = useSelector((state) => state.tasks);
-    // console.log(selectedProject);
+    const stages = useSelector((state) => state.stages);
+    console.log(stages);
 
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();
@@ -58,7 +59,7 @@ const Card = ({stageId}) => {
         } else {
             var formData = new FormData();
             formData.append("title", cardTitle);
-            formData.append("list_id", stageId);
+            formData.append("list_id", stage.id);
             // formData.append("project_id", selectedProject.id);
             
             //api
@@ -108,8 +109,8 @@ const Card = ({stageId}) => {
         <div className="card-list d-flex flex-wrap gap-1"> 
             {isCardsLoading && (                 
                 <div style={{ width: "100px", margin: "50px auto auto" }}> 
-                    <HashLoader color="#36d7b7" />
-                </div>
+                    <HashLoader color="#36d7b7" /> 
+                </div> 
             )}
 
             {!isCardsLoading &&  

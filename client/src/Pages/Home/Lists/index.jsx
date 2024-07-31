@@ -97,7 +97,7 @@ const List = () => {
                         stages.length > 0 &&
                         stages.map((stage, index) => {
                             return (
-                                <div key={index} className={`card custom-card`}>
+                                <div key={index} className={`card custom-card custom-stage`}>
                                     <div className="card-body custom-stage-body d-flex justify-content-between align-items-center">
                                         <span className="card-title custom-stage-title m-0">
                                             {stage && stage.title}
@@ -108,8 +108,8 @@ const List = () => {
                                         >
                                             ...
                                         </span>
-                                    </div>
-                                    <Card stageId={stage.id}/>
+                                    </div> 
+                                    <Card stage={stage}/> 
                                 </div>
                             );
                         })}

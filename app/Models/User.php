@@ -87,13 +87,10 @@ class User extends Authenticatable
     }
 
     //custom methods
-
     public function getProjectsWithOwnerAndTasks()
     {
         $projects = $this->projects()  
-            // ->with(['members', 'user', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems'])
-            // ->with(['members', 'user', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems'])
-            ->with(['members', 'user', 'stages', 'stages.tasks'])    
+            ->with(['members', 'user', 'stages', 'stages.tasks','stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems'])    
             ->get();
 
             foreach($projects as $project) {
