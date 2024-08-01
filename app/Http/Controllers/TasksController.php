@@ -37,7 +37,7 @@ class TasksController extends Controller
             'stages.tasks' => function($query) {
                 $query->orderBy('created_at', 'asc');
             },   
-            'stages.tasks.users', 
+            // 'stages.tasks.users', 
             'stages.tasks.labels', 
             'stages.tasks.priorities', 
             'stages.tasks.checklists', 
@@ -46,9 +46,9 @@ class TasksController extends Controller
             $query->where('list_id', $list_id);
         })->first();
 
-if ($tasks) {
-    $tasks = $tasks->stages->flatMap->tasks;
-}
+// if ($tasks) {
+//     $tasks = $tasks->stages->flatMap->tasks;
+// }
         // ->find($project_id);
 
         $response = [

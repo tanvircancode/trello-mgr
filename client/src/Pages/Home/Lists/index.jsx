@@ -6,6 +6,7 @@ import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
 import Card from "../Cards";
+import { setStages } from "../../../store";
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +24,7 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    console.log(stages)
+    console.log(stages);
 
     const dispatch = useDispatch();
 
@@ -59,14 +60,14 @@ const List = () => {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data)
+                    console.log(res.data);
                     if (res.data?.status && res.data?.data) {
                         console.log(res.data);
-                        // dispatch(
-                        //     setTasks({
-                        //         tasks: res.data.data.tasks,
-                        //     })
-                        // );
+                        dispatch(
+                            setStages({
+                                stages: res.data.data.stages,
+                            })
+                        );
 
                         toast.success(res.data?.message);
                     } else {
@@ -97,8 +98,14 @@ const List = () => {
                         stages.length > 0 &&
                         stages.map((stage, index) => {
                             return (
-                                <div key={index} className={`card custom-card custom-stage`}>
-                                    <div className="card-body custom-stage-body d-flex justify-content-between align-items-center">
+                                <div key={index} className={`card custom-card`}>
+                                    <div
+                                        className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                            blur
+                                                ? "is-blur disable-pointer-events"
+                                                : ""
+                                        }`}
+                                    >
                                         <span className="card-title custom-stage-title m-0">
                                             {stage && stage.title}
                                         </span>
@@ -108,8 +115,8 @@ const List = () => {
                                         >
                                             ...
                                         </span>
-                                    </div> 
-                                    <Card stage={stage}/> 
+                                    </div>
+                                    <Card stage={stage} />
                                 </div>
                             );
                         })}
@@ -187,8 +194,7 @@ const List = () => {
                     )}
                 </div>
             </div>
-            
-         </div>
+        </div>
     );
 };
 

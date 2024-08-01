@@ -10,6 +10,7 @@ import {
     setMakeBlur,
     setPriorities,
     setSelectedTaskMembers,
+    setStages,
     setTasks,
 } from "../../../store";
 import { toast } from "react-toastify";
@@ -71,12 +72,12 @@ const Card = ({stage}) => {
                     },
                 })
                 .then((res) => {
-                  
+                 
                     if (res.data?.status && res.data?.data) {
                         console.log(res.data);
                         dispatch(
-                            setTasks({
-                                tasks: res.data.data,
+                            setStages({
+                                stages: res.data.data.stages,
                             })
                         );
 
@@ -106,7 +107,7 @@ const Card = ({stage}) => {
     }, []);
 
     return ( 
-        <div className="card-list d-flex flex-wrap gap-1"> 
+        <div className="card-list d-flex flex-wrap gap-2"> 
             {isCardsLoading && (                 
                 <div style={{ width: "100px", margin: "50px auto auto" }}> 
                     <HashLoader color="#36d7b7" /> 
@@ -146,7 +147,7 @@ const Card = ({stage}) => {
                             onClick={() => handleOpenPopup(task)}
                         >
                             <div
-                                className="card-body d-flex flex-column"
+                                className="card-body d-flex flex-column "
                                 style={{ padding: "10px" }}
                             >
                                 <h5 className="card-title custom-card-title">    
