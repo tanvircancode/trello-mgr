@@ -262,14 +262,14 @@ const Card = ({stage}) => {
                                 {isLoading ? "Loading..." : "Add task"}
                             </span>
                         </button>
-                        <button
+                     {!isLoading && <button
                             type="button"
                             className="btn-close"
                             aria-label="Close"
                             disabled={isLoading}
                             style={{ fontSize: "12px" }}
                             onClick={cancelAddCard}
-                        ></button>
+                        ></button>}   
                     </div>
                 )}    
             </div>  

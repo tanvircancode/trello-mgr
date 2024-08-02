@@ -13,42 +13,41 @@ use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
-    
+
     public function store(StoreTaskRequest $request, $id)
     {
-        
-        if ($id !== Auth::user()->id) { 
+
+        if ($id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
-        
+
         $list_id = $request->input('list_id');
-        $stage = Stage::find($list_id);
-        $project_id = $stage->project_id;
-       
 
         $task = Task::createTask($request->all(), $id);
-        if (!$task) {  
+        if (!$task) {
             return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
         }
 
         $tasks = Project::with([
             'members',
-            'stages',
-            'stages.tasks' => function($query) {
+            'stages' => function ($query) {
+                $query->orderBy('created_at', 'asc'); // Order stages by created_at in ascending order
+            },
+            'stages.tasks' => function ($query) {
                 $query->orderBy('created_at', 'asc');
-            },   
+            },
             // 'stages.tasks.users', 
-            'stages.tasks.labels', 
-            'stages.tasks.priorities', 
-            'stages.tasks.checklists', 
-            'stages.tasks.checklists.checklistitems' 
-        ])->whereHas('stages.tasks', function($query) use ($list_id) {
-            $query->where('list_id', $list_id);
+            'stages.tasks.labels',
+            'stages.tasks.priorities',
+            'stages.tasks.checklists',
+            'stages.tasks.checklists.checklistitems'
+        ])->whereHas('stages', function ($query) use ($list_id) {
+            $query->where('id', $list_id);
         })->first();
 
-// if ($tasks) {
-//     $tasks = $tasks->stages->flatMap->tasks;
-// }
+        // if ($tasks) {
+        //     $tasks = $tasks->stages->flatMap->tasks;
+        // }
         // ->find($project_id);
 
         $response = [
@@ -196,7 +195,7 @@ class TasksController extends Controller
         }
 
         $membersUnderTask = $task->users()->get();
-        foreach($membersUnderTask as $member) {
+        foreach ($membersUnderTask as $member) {
             $task->users()->detach($member->id);
         }
         $task->delete();

@@ -25,23 +25,24 @@ class StagesController extends Controller
 
         $stages = Project::with([
             'members',
-            'stages',
+            'stages' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
             // For now below line are commented, will be change next
             // 'stages.tasks' => function($query) {
             //     $query->orderBy('created_at', 'asc');
             // },
-
+            'stages.tasks',
             // 'stages.tasks.users',
-            // 'stages.tasks.labels', 
-            // 'stages.tasks.priorities', 
-            // 'stages.tasks.checklists', 
-            // 'stages.tasks.checklists.checklistitems'
+            'stages.tasks.labels',
+            'stages.tasks.priorities',
+            'stages.tasks.checklists',
+            'stages.tasks.checklists.checklistitems'
         ])->find($stage->project_id);
 
         $response = [
             'status' => true,
             'data' => $stages,
-            'chk' => "is checking",
             'message' => "List Created Successfully"
         ];
 
