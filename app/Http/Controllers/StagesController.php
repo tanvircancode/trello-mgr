@@ -32,7 +32,9 @@ class StagesController extends Controller
             // 'stages.tasks' => function($query) {
             //     $query->orderBy('created_at', 'asc');
             // },
-            'stages.tasks',
+            'stages.tasks' => function ($query) {  
+                $query->orderBy('created_at', 'asc');
+            },
             // 'stages.tasks.users',
             'stages.tasks.labels',
             'stages.tasks.priorities',

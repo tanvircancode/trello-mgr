@@ -72,11 +72,11 @@ class User extends Authenticatable
     //A User can be a member of many Projects through the project_members table
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');  
+        return $this->belongsToMany(Project::class, 'project_members', 'user_id', 'project_id');
     }
 
     public function tasks()
-    {  
+    {
         return $this->belongsToMany(Task::class, 'task_users');
     }
 
@@ -89,14 +89,28 @@ class User extends Authenticatable
     //custom methods
     public function getProjectsWithOwnerAndTasks()
     {
-        $projects = $this->projects()  
-            ->with(['members', 'user', 'stages', 'stages.tasks','stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems'])    
+        $projects = $this->projects()
+            ->with([
+                'members',
+                'user',
+                'stages' => function ($query) {
+                    $query->orderBy('created_at', 'asc'); 
+                },
+                'stages.tasks' => function ($query) {
+                    $query->orderBy('created_at', 'asc'); 
+                },
+                'stages.tasks.labels',
+                'stages.tasks.priorities',
+                'stages.tasks.checklists',
+                'stages.tasks.checklists.checklistitems'
+            ])
             ->get();
 
-            foreach($projects as $project) {
-                $project->is_owner = $project->user_id === $this->id;
-            }
-            return $projects;
+        foreach ($projects as $project) {
+            $project->is_owner = $project->user_id === $this->id;
+        }
+
+        return $projects;
     }
 
     //must

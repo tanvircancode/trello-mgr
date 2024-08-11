@@ -24,13 +24,14 @@ class TasksController extends Controller
         $list_id = $request->input('list_id');
 
         $task = Task::createTask($request->all(), $id);
+
         if (!$task) {
             return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
         }
 
         $tasks = Project::with([
-            'members',
-            'stages' => function ($query) {
+            'members',  
+            'stages' => function ($query) { 
                 $query->orderBy('created_at', 'asc'); // Order stages by created_at in ascending order
             },
             'stages.tasks' => function ($query) {
@@ -41,7 +42,7 @@ class TasksController extends Controller
             'stages.tasks.priorities',
             'stages.tasks.checklists',
             'stages.tasks.checklists.checklistitems'
-        ])->whereHas('stages', function ($query) use ($list_id) {
+        ])->whereHas('stages', function ($query) use ($list_id) {    
             $query->where('id', $list_id);
         })->first();
 

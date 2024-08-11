@@ -137,7 +137,7 @@ const List = () => {
                             <span style={{ fontWeight: "600" }}>
                                 List Actions
                             </span>
-                            <div
+                            <div 
                                 style={{ cursor: "pointer" }}
                                 onClick={handleCloseStageAction}
                             >
