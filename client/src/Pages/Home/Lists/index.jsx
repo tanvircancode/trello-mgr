@@ -6,12 +6,14 @@ import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
 import Card from "../Cards";
-import { setStages } from "../../../store";
+import { setStages,setShowStageAction, setShowMoveStage} from "../../../store";
+import MoveStage from "../../../component/stage/MoveStage";
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
-    const [showStageAction, setShowStageAction] = useState(false);
+    // const [showStageAction, setShowStageAction] = useState(false);
+    // const [showMoveStage, setShowMoveStage] = useState(false);
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
@@ -90,6 +92,13 @@ const List = () => {
         setIsLoading(false);
     };
 
+    const handleMoveListClick = () => {
+        setShowMoveStage(!showMoveStage);
+        setShowStageAction(!showStageAction);
+        dispatch(setShowMoveStage());
+        dispatch(setShowStageAction());
+    };
+
     return (
         <div className="d-flex">
             <div className="stage-list d-flex gap-2">
@@ -115,8 +124,8 @@ const List = () => {
                                         >
                                             ...
                                         </span>
-                                    </div>
-                                    <Card stage={stage} />
+                                    </div> 
+                                    <Card stage={stage} /> 
                                 </div>
                             );
                         })}
@@ -137,7 +146,7 @@ const List = () => {
                             <span style={{ fontWeight: "600" }}>
                                 List Actions
                             </span>
-                            <div 
+                            <div
                                 style={{ cursor: "pointer" }}
                                 onClick={handleCloseStageAction}
                             >
@@ -152,12 +161,17 @@ const List = () => {
                             <li className="list-group-item stage-li-item">
                                 Copy list
                             </li>
-                            <li className="list-group-item stage-li-item">
+                            <li    
+                                className="list-group-item stage-li-item"
+                                onClick={handleMoveListClick}
+                            >
                                 Move list
                             </li>
                         </ul>
                     </div>
                 )}
+
+                {showMoveList && <MoveStage />}
                 <div className="custom-card-add">
                     <input
                         type="text"

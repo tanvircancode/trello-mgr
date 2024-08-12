@@ -1,10 +1,12 @@
 .board-main-content {
     height: 100%;
-    // background-color: #bed5e3;
+    overflow: auto;
 }
 .board-header-content {
     height: auto;
-    position: relative;
+    position: sticky;
+    left: 0;
+    width: 100%;
     display: inline-flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -25,8 +27,7 @@
 
     padding: 0 10px;
 }
-.create-project-button{
-   
+.create-project-button {
     font-size: 12px;
     line-height: 20px;
     font-weight: 500;
@@ -47,7 +48,8 @@
     gap: 10px;
     margin-left: auto;
 }
-.share-button , .project-delete-button {
+.share-button,
+.project-delete-button {
     display: flex;
     border-radius: 0.3em;
     border: none;
@@ -59,7 +61,8 @@
     background-color: #dfe1e6;
     color: #172b4d;
 }
-.share-icon , .project-delete-icon {
+.share-icon,
+.project-delete-icon {
     position: relative;
     top: 1px;
     margin-right: 4px;
