@@ -1,21 +1,29 @@
 import React from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-
+import { setShowMoveStage, setShowStageAction } from "../../store";
 const MoveStage = () => {
+    const dispatch = useDispatch();
 
     const showStageAction = useSelector((state) => state.showStageAction);
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
+    const handleMoveStageClick = (showMoveStage, showStageAction) => {
+        dispatch(setShowMoveStage({ showMoveStage }));
+        dispatch(setShowStageAction({ showStageAction }));
+    };
+
     return (
-        <div className="card" style={{width: '18rem'}}>
+        <div className="card" style={{ width: "18rem" }}>
             <div className="card-header d-flex justify-content-between align-items-center">
-                <BsArrowLeftShort />
+                <BsArrowLeftShort
+                    onClick={() => handleMoveStageClick(false, true)}
+                />
 
                 <span>Featured</span>
                 <div
                     style={{ cursor: "pointer" }}
-                    // onClick={handleCloseStageAction}
+                    onClick={() => handleMoveStageClick(false, false)}
                 >
                     x
                 </div>

@@ -24,6 +24,7 @@ class StoreStageRequest extends FormRequest
         return [
             'project_id' => 'required|string',
             'title' => 'required|string|min:5|max:255',
+            'position' => 'nullable|integer',
         ];
     }
 

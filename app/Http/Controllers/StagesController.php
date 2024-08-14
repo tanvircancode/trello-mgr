@@ -12,13 +12,24 @@ use Illuminate\Support\Facades\Auth;
 class StagesController extends Controller
 {
     //
-    public function store(StoreStageRequest $request, $id)
+      public function store(StoreStageRequest $request, $id)
     {
         if ($id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
-        $stage = Stage::createStage($request->all(), $id);
+        // new code
+        $project_id = $request->input('project_id');
+        $maxPosition = Stage::where('project_id', $project_id)
+                        ->max('position');
+
+        $newPosition = $maxPosition ? $maxPosition + 1 : 1;
+
+        $requestData = $request->all();
+        $requestData['position'] = $newPosition;
+
+        $stage = Stage::createStage($requestData, $id);
+        
         if (!$stage) {
             return response()->json(['status' => false, 'message' => 'Project not found'], 404);
         }

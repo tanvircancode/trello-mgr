@@ -16,7 +16,7 @@ class Stage extends Model
     protected $table = 'lists';
 
     protected $fillable = [
-        'project_id', 'title'
+        'project_id', 'title','position'
     ];
 
     protected static function boot()

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useCallback} from "react";
 import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
@@ -26,7 +26,9 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    console.log(stages);
+    // console.log(stages);
+    const showStageAction = useSelector((state) => state.showStageAction);
+    const showMoveStage = useSelector((state) => state.showMoveStage);
 
     const dispatch = useDispatch();
 
@@ -34,14 +36,14 @@ const List = () => {
         setListTitle("");
     };
 
-    const handleStageAction = (event) => {
+    const handleStageAction = (event) => {  
         const rect = event.target.getBoundingClientRect();
         setStageActionPosition({ top: rect.bottom + 10, left: rect.left });
-        setShowStageAction(true);
-    };
-
+        dispatch(setShowStageAction({ showStageAction : true }));
+    };  
+      
     const handleCloseStageAction = () => {
-        setShowStageAction(false);
+        dispatch(setShowStageAction({ showStageAction : false }));
     };
 
     const handleCreateList = async () => {
@@ -92,11 +94,10 @@ const List = () => {
         setIsLoading(false);
     };
 
-    const handleMoveListClick = () => {
-        setShowMoveStage(!showMoveStage);
-        setShowStageAction(!showStageAction);
-        dispatch(setShowMoveStage());
-        dispatch(setShowStageAction());
+    const handleMoveStageClick = (showMoveStage, showStageAction) => {
+       
+        dispatch(setShowMoveStage({ showMoveStage }));
+        dispatch(setShowStageAction({ showStageAction }));
     };
 
     return (
@@ -163,7 +164,7 @@ const List = () => {
                             </li>
                             <li    
                                 className="list-group-item stage-li-item"
-                                onClick={handleMoveListClick}
+                                onClick={() => handleMoveStageClick(true, false)}
                             >
                                 Move list
                             </li>
@@ -171,7 +172,7 @@ const List = () => {
                     </div>
                 )}
 
-                {showMoveList && <MoveStage />}
+                {showMoveStage && <MoveStage />}
                 <div className="custom-card-add">
                     <input
                         type="text"
