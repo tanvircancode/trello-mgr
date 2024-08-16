@@ -1,19 +1,23 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import React, { useEffect, useState , useCallback} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { BASE_URL } from "../../../config";
 import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
 import Card from "../Cards";
-import { setStages,setShowStageAction, setShowMoveStage} from "../../../store";
+import {
+    setStages,
+    setShowStageAction,
+    setShowMoveStage,
+} from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
-    // const [showStageAction, setShowStageAction] = useState(false);
-    // const [showMoveStage, setShowMoveStage] = useState(false);
+    const [showRect, setShowRect] = useState(null);
+    
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
@@ -26,7 +30,7 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    // console.log(stages);
+    console.log(selectedProject.stages);
     const showStageAction = useSelector((state) => state.showStageAction);
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
@@ -36,14 +40,15 @@ const List = () => {
         setListTitle("");
     };
 
-    const handleStageAction = (event) => {  
+    const handleStageAction = (event) => {
         const rect = event.target.getBoundingClientRect();
+        setShowRect(rect);
         setStageActionPosition({ top: rect.bottom + 10, left: rect.left });
-        dispatch(setShowStageAction({ showStageAction : true }));
-    };  
-      
+        dispatch(setShowStageAction({ showStageAction: true }));
+    };
+
     const handleCloseStageAction = () => {
-        dispatch(setShowStageAction({ showStageAction : false }));
+        dispatch(setShowStageAction({ showStageAction: false }));
     };
 
     const handleCreateList = async () => {
@@ -95,14 +100,13 @@ const List = () => {
     };
 
     const handleMoveStageClick = (showMoveStage, showStageAction) => {
-       
         dispatch(setShowMoveStage({ showMoveStage }));
         dispatch(setShowStageAction({ showStageAction }));
     };
 
     return (
-        <div className="d-flex">
-            <div className="stage-list d-flex gap-2">
+        <div className="d-flex">  
+            <div className="stage-list d-flex gap-2">  
                 <div className="d-flex gap-2">
                     {stages &&
                         stages.length > 0 &&
@@ -125,15 +129,15 @@ const List = () => {
                                         >
                                             ...
                                         </span>
-                                    </div> 
-                                    <Card stage={stage} /> 
+                                    </div>
+                                    <Card stage={stage} />
                                 </div>
                             );
                         })}
                 </div>
 
                 {showStageAction && (
-                    <div
+                    <div  
                         className="card"
                         style={{
                             width: "18rem",
@@ -147,7 +151,7 @@ const List = () => {
                             <span style={{ fontWeight: "600" }}>
                                 List Actions
                             </span>
-                            <div
+                            <div  
                                 style={{ cursor: "pointer" }}
                                 onClick={handleCloseStageAction}
                             >
@@ -162,9 +166,11 @@ const List = () => {
                             <li className="list-group-item stage-li-item">
                                 Copy list
                             </li>
-                            <li    
+                            <li
                                 className="list-group-item stage-li-item"
-                                onClick={() => handleMoveStageClick(true, false)}
+                                onClick={() =>
+                                    handleMoveStageClick(true, false)
+                                }
                             >
                                 Move list
                             </li>
@@ -172,7 +178,7 @@ const List = () => {
                     </div>
                 )}
 
-                {showMoveStage && <MoveStage />}
+                {showMoveStage && <MoveStage showRect={showRect} /> }  
                 <div className="custom-card-add">
                     <input
                         type="text"

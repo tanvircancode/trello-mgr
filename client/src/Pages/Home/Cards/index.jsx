@@ -19,7 +19,7 @@ import HashLoader from "react-spinners/HashLoader";
 import { BASE_URL } from "../../../config";
 
 const Card = ({stage}) => {
-    console.log(stage);
+    // console.log(stage);
     const tasks = stage.tasks;
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
     const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,7 @@ const Card = ({stage}) => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    console.log(stages);
+    // console.log(stages);
 
     const userId = localStorage.getItem("user_id");
     const dispatch = useDispatch();

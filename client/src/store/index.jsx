@@ -19,6 +19,7 @@ const initialState = {
     isCardsLoading: true,
     showStageAction: false,
     showMoveStage: false,
+    selectedStage:null,
 };
 
 export const trelloSlice = createSlice({
