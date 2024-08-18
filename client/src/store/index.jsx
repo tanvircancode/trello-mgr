@@ -45,7 +45,8 @@ export const trelloSlice = createSlice({
             state.selectedTaskMembers = [],
             state.priorities = [],
             state.checklists = [],
-            state.isCardsLoading = true
+            state.isCardsLoading = true,
+            state.selectedStage = null
         },
         //start trello
 
@@ -111,6 +112,13 @@ export const trelloSlice = createSlice({
                 state.selectedProject = action.payload.selectedProject;
             }
         },
+        setSelectedStage: (state, action) => {
+            if (action.payload === null) {
+                state.selectedStage = null;
+            } else {
+                state.selectedStage = action.payload.selectedStage;
+            }
+        },
         setIsCardsLoading: (state, action) => {
             state.isCardsLoading = action.payload.isCardsLoading;
         },
@@ -159,6 +167,7 @@ export const {
     setMakeCardModalBlur,
     setShowStageAction,
     setShowMoveStage,
+    setSelectedStage,
 } = trelloSlice.actions;
 
 export default trelloSlice.reducer;

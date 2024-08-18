@@ -10,6 +10,7 @@ import {
     setStages,
     setShowStageAction,
     setShowMoveStage,
+    setSelectedStage
 } from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
 
@@ -30,7 +31,7 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    console.log(selectedProject.stages);
+    // console.log(selectedProject.stages);
     const showStageAction = useSelector((state) => state.showStageAction);
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
@@ -40,7 +41,8 @@ const List = () => {
         setListTitle("");
     };
 
-    const handleStageAction = (event) => {
+    const handleStageAction = (event, stage) => {
+        console.log(stage);
         const rect = event.target.getBoundingClientRect();
         setShowRect(rect);
         setStageActionPosition({ top: rect.bottom + 10, left: rect.left });
@@ -125,7 +127,7 @@ const List = () => {
                                         </span>
                                         <span
                                             className="stage-horizontal-dots mb-1"
-                                            onClick={handleStageAction}
+                                            onClick={(event) => handleStageAction(event, stage)}
                                         >
                                             ...
                                         </span>

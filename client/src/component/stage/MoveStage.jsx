@@ -8,6 +8,7 @@ const MoveStage = ({ showRect }) => {
         left: 0,
     });
     const dispatch = useDispatch();
+    var stagePos = 0;
 
     const showStageAction = useSelector((state) => state.showStageAction);
     const showMoveStage = useSelector((state) => state.showMoveStage);
@@ -17,7 +18,6 @@ const MoveStage = ({ showRect }) => {
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
         useState(null);
-    const [positions, setPositions] = useState([]);
     const [selectedPosition, setSelectedPosition] = useState("");
 
     const handleMoveStageClick = (showMoveStage, showStageAction) => {
@@ -52,14 +52,17 @@ const MoveStage = ({ showRect }) => {
             className="card"
             style={{
                 width: "18rem",
-                padding: '0 15px 10px',
+                padding: "0 15px 10px",
                 position: "absolute",
                 top: stageActionPosition.top,
                 left: stageActionPosition.left,
                 zIndex: 1000,
             }}
         >
-            <div className="card-header d-flex justify-content-between align-items-center">
+            <div
+                className="card-header d-flex justify-content-between align-items-center"
+                style={{ cursor: "pointer" }}
+            >
                 <BsArrowLeftShort
                     onClick={() => handleMoveStageClick(false, true)}
                 />
@@ -76,7 +79,7 @@ const MoveStage = ({ showRect }) => {
             <select className="form-select" onChange={handleProjectSelection}>
                 {projects.map((project) => {
                     return (
-                        <option
+                        <option     
                             selected={selectedProject.id == project.id}
                             key={project.id}
                             value={project.id}
@@ -95,16 +98,27 @@ const MoveStage = ({ showRect }) => {
 
             <select
                 class="form-select"
-                // onChange={(e) => setSelectedProjectFromOption(e.target.value)}
+                onChange={(e) =>
+                    setSelectedProjectFromOptionPosition(e.target.value)
+                }
             >
                 {selectedProjectFromOption &&
                     selectedProjectFromOption.stages.map((stage) => {
+                        stagePos = stage.position;
                         return (
-                            <option selected={stage.position} key={stage.id} value={stage.id}>
-                                {stage.position} 
+                            <option
+                                selected={stage.position}
+                                key={stage.id}
+                                value={stage.id}
+                            >
+                                {stagePos}
                             </option>
                         );
                     })}
+                {selectedProjectFromOption &&
+                    selectedProjectFromOption.id != selectedProject.id && (
+                        <option value={stagePos + 1}>{stagePos + 1}</option>
+                    )}
             </select>
         </div>
     );
