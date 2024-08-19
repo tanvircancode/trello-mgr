@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { setShowMoveStage, setShowStageAction } from "../../store";
+import {
+    setSelectedStage,
+    setShowMoveStage,
+    setShowStageAction,
+} from "../../store";
+import "./moveStage.scss";
 const MoveStage = ({ showRect }) => {
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
@@ -14,6 +19,7 @@ const MoveStage = ({ showRect }) => {
     const showMoveStage = useSelector((state) => state.showMoveStage);
     const projects = useSelector((state) => state.projects);
     const selectedProject = useSelector((state) => state.selectedProject);
+    const selectedStage = useSelector((state) => state.selectedStage);
     console.log(projects);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
@@ -76,18 +82,24 @@ const MoveStage = ({ showRect }) => {
                 </div>
             </div>
             <label htmlFor="board">Board</label>
-            <select className="form-select" onChange={handleProjectSelection}>
+            <select
+                value={
+                    selectedProjectFromOption
+                        ? selectedProjectFromOption.id
+                        : ""
+                }
+                className="form-select"
+                onChange={handleProjectSelection}
+            >
                 {projects.map((project) => {
                     return (
-                        <option     
-                            selected={selectedProject.id == project.id}
+                        <option
+                            // selected={selectedProject.id == project.id}
                             key={project.id}
                             value={project.id}
                         >
                             {project.title}
-                            {selectedProject.id == project.id && (
-                                <span>(current)</span>
-                            )}
+                            {selectedProject.id == project.id && " (current)"}
                         </option>
                     );
                 })}
@@ -97,21 +109,24 @@ const MoveStage = ({ showRect }) => {
             <label htmlFor="board">Position</label>
 
             <select
-                class="form-select"
-                onChange={(e) =>
-                    setSelectedProjectFromOptionPosition(e.target.value)
-                }
+                className="form-select"
+                onChange={(e) => setSelectedPosition(e.target.value)}
             >
                 {selectedProjectFromOption &&
                     selectedProjectFromOption.stages.map((stage) => {
                         stagePos = stage.position;
                         return (
                             <option
-                                selected={stage.position}
+                                selected={
+                                    stage.id == selectedStage.id &&
+                                    stage.position == selectedStage.position
+                                }
                                 key={stage.id}
                                 value={stage.id}
                             >
                                 {stagePos}
+                                {selectedStage.position == stagePos &&
+                                    " (current)"}
                             </option>
                         );
                     })}
@@ -120,6 +135,10 @@ const MoveStage = ({ showRect }) => {
                         <option value={stagePos + 1}>{stagePos + 1}</option>
                     )}
             </select>
+
+            <button type="button" className="move-button">
+                Primary
+            </button>
         </div>
     );
 };

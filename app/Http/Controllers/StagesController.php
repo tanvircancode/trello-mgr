@@ -37,7 +37,7 @@ class StagesController extends Controller
         $stages = Project::with([
             'members',
             'stages' => function ($query) {
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('position', 'asc');
             },
             // For now below line are commented, will be change next
             // 'stages.tasks' => function($query) {

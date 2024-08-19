@@ -12,7 +12,9 @@ import {
     setProjects,
     setSelectedProject,
     setTasks,
-    setStages
+    setStages,
+    setShowMoveStage,
+    setShowStageAction
 } from "./store";
 
 function App() {
@@ -65,6 +67,8 @@ function InitUser() {
                 dispatch(setProjects(null));
                 dispatch(setTasks(null));
                 dispatch(setStages(null));
+                dispatch(setShowStageAction({ showStageAction: false }));
+                dispatch(setShowMoveStage({ showMoveStage: false }));
                 dispatch(setSelectedProject(null));
                 dispatch(setFetchSingleCard(null));
                 dispatch(setMakeBlur({ makeBlur: false }));
@@ -82,6 +86,8 @@ function InitUser() {
             dispatch(setProjects(null));
             dispatch(setTasks(null));
             dispatch(setStages(null));
+            dispatch(setShowStageAction({ showStageAction: false }));
+                dispatch(setShowMoveStage({ showMoveStage: false }));
             dispatch(setSelectedProject(null));
             dispatch(setFetchSingleCard(null));
             dispatch(setMakeBlur({ makeBlur: false }));

@@ -43,6 +43,7 @@ const List = () => {
 
     const handleStageAction = (event, stage) => {
         console.log(stage);
+        dispatch(setSelectedStage({ selectedStage: stage }));
         const rect = event.target.getBoundingClientRect();
         setShowRect(rect);
         setStageActionPosition({ top: rect.bottom + 10, left: rect.left });

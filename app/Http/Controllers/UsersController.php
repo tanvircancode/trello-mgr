@@ -214,7 +214,6 @@ class UsersController extends Controller
             'project' => $project,
             'message' => "Member Added Successfully"
         ];
-
         return response()->json($response, 200);
     }
 

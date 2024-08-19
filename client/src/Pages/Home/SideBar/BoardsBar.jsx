@@ -12,6 +12,8 @@ import {
     setSelectedProjectMembers,
     setTasks,
     setStages,
+    setShowMoveStage,
+    setShowStageAction
 } from "../../../store";
 import CreateBoardModal from "../../../Modal/BoardModals/CreateBoardModal";
 import DeleteBoard from "../../../component/board/DeleteBoard";
@@ -51,6 +53,8 @@ const BoardsBar = () => {
     };
 
     const handleClickSingleProject = async (project) => {
+        dispatch(setShowStageAction({ showStageAction: false }));
+        dispatch(setShowMoveStage({ showMoveStage: false }));
         await axios
             .get(`${BASE_URL}/api/projects/` + userId, {
                 headers: {
@@ -140,11 +144,6 @@ const BoardsBar = () => {
                                 stages: allProjects[0].stages,
                             })
                         );
-                        // dispatch(
-                        //     setTasks({
-                        //         tasks: allProjects[0].stages.tasks,
-                        //     })
-                        // );
                     }
                 }
             })

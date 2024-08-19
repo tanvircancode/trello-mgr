@@ -94,7 +94,7 @@ class User extends Authenticatable
                 'members',
                 'user',
                 'stages' => function ($query) {
-                    $query->orderBy('created_at', 'asc'); 
+                    $query->orderBy('position', 'asc'); 
                 },
                 'stages.tasks' => function ($query) {
                     $query->orderBy('created_at', 'asc'); 
