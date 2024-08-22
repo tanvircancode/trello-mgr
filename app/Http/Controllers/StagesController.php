@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStageRequest;
+use App\Http\Requests\MoveStageRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Stage;
 use App\Models\Project;
@@ -60,5 +61,16 @@ class StagesController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function moveStage(MoveStageRequest $request) {
+       
+        $project_id = $request->input('project_id');
+        $position = $request->input('position');
+        $user_id = $request->input('user_id');
+
+        if ($user_id !== Auth::user()->id) {
+            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        }
     }
 }

@@ -24,12 +24,8 @@ const BoardList = () => {
     const projects = useSelector((state) => state.projects);
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
 
-    // console.log(projects);
-
     const selectedProject = useSelector((state) => state.selectedProject);
     const tasks = useSelector((state) => state.tasks);
-
-    // console.log(selectedProject);
 
     const handleShare = () => {
         dispatch(setMakeBlur({ makeBlur: true }));

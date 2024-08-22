@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import {
     setSelectedStage,
     setShowMoveStage,
@@ -20,6 +21,8 @@ const MoveStage = ({ showRect }) => {
     const projects = useSelector((state) => state.projects);
     const selectedProject = useSelector((state) => state.selectedProject);
     const selectedStage = useSelector((state) => state.selectedStage);
+    const token = useSelector((state) => state.token);
+    const userId = localStorage.getItem("user_id");
     console.log(projects);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
@@ -31,15 +34,65 @@ const MoveStage = ({ showRect }) => {
         dispatch(setShowStageAction({ showStageAction }));
     };
 
-    const handleProjectSelection = (e) => {
+    const handleProjectSelection = async(e) => {
         const selectedProjectId = e.target.value;
         const selectedProject = projects.find(
             (project) => project.id == selectedProjectId
         );
 
         setSelectedProjectFromOption(selectedProject);
-        console.log(selectedProjectFromOption);
+        
     };
+
+    const handleMoveButtonClick = async () => {
+        // console.log(selectedStage);
+        // console.log(selectedProjectFromOption);
+        // console.log(selectedPosition);
+        const projectId = selectedProjectFromOption.id;
+        const stagePosition = selectedPosition;
+
+        const payload = {
+            project_id: projectId,
+            position: stagePosition,
+            user_id: userId,
+        };
+
+        await axios
+            .put(`${BASE_URL}/api/movestage`, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => { 
+                
+                if (res.data.status) {
+                    dispatch(setTasks({ tasks: res.data.project.tasks }));
+                    dispatch(
+                        setPriorities({ priorities: res.data.task.priorities })
+                    );
+                    // toast.success(res.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            })
+            .catch((error) => {
+                // console.log(error)
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
+
+
+    
+
+    }
 
     useEffect(() => {
         // const selectedProjectId = selectedProject.id;
@@ -122,7 +175,7 @@ const MoveStage = ({ showRect }) => {
                                     stage.position == selectedStage.position
                                 }
                                 key={stage.id}
-                                value={stage.id}
+                                value={stage.position}
                             >
                                 {stagePos}
                                 {selectedStage.position == stagePos &&
@@ -136,8 +189,8 @@ const MoveStage = ({ showRect }) => {
                     )}
             </select>
 
-            <button type="button" className="move-button">
-                Primary
+            <button onClick={handleMoveButtonClick} type="button" className="move-button">
+                Move
             </button>
         </div>
     );

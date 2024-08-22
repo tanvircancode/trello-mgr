@@ -39,6 +39,8 @@ use App\Models\ChecklistItem;
 
   // list apis
   Route::post('/stage/{id}', [StagesController::class, 'store']);
+  Route::put('/movestage', [StagesController::class, 'moveStage']);
+
 
   // task apis
   Route::post('/task/{id}', [TasksController::class, 'store']);
