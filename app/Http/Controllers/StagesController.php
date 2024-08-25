@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Requests\StoreStageRequest;
 use App\Http\Requests\MoveStageRequest;
 use App\Http\Controllers\Controller;
@@ -12,8 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StagesController extends Controller
 {
-    //
-      public function store(StoreStageRequest $request, $id)
+    public function store(StoreStageRequest $request, $id)
     {
         if ($id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
@@ -22,7 +20,7 @@ class StagesController extends Controller
         // new code
         $project_id = $request->input('project_id');
         $maxPosition = Stage::where('project_id', $project_id)
-                        ->max('position');
+            ->max('position');
 
         $newPosition = $maxPosition ? $maxPosition + 1 : 1;
 
@@ -30,7 +28,7 @@ class StagesController extends Controller
         $requestData['position'] = $newPosition;
 
         $stage = Stage::createStage($requestData, $id);
-        
+
         if (!$stage) {
             return response()->json(['status' => false, 'message' => 'Project not found'], 404);
         }
@@ -40,11 +38,7 @@ class StagesController extends Controller
             'stages' => function ($query) {
                 $query->orderBy('position', 'asc');
             },
-            // For now below line are commented, will be change next
-            // 'stages.tasks' => function($query) {
-            //     $query->orderBy('created_at', 'asc');
-            // },
-            'stages.tasks' => function ($query) {  
+            'stages.tasks' => function ($query) {
                 $query->orderBy('created_at', 'asc');
             },
             // 'stages.tasks.users',
@@ -63,8 +57,9 @@ class StagesController extends Controller
         return response()->json($response, 200);
     }
 
-    public function moveStage(MoveStageRequest $request) {
-       
+    public function moveStage(MoveStageRequest $request)
+    {
+
         $project_id = $request->input('project_id');
         $position = $request->input('position');
         $user_id = $request->input('user_id');
@@ -72,5 +67,36 @@ class StagesController extends Controller
         if ($user_id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
+
+        $stageModel = new Stage();
+        $stage = $stageModel->updateStage($request->all());
+
+        if (!$stage) {
+            return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
+        }
+
+        $stages = Project::with([
+            'members',
+            'stages' => function ($query) {
+                $query->orderBy('position', 'asc');
+            },
+            
+            'stages.tasks' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
+            // 'stages.tasks.users',
+            'stages.tasks.labels',
+            'stages.tasks.priorities',
+            'stages.tasks.checklists',
+            'stages.tasks.checklists.checklistitems'
+        ])->find($project_id);
+
+        $response = [
+            'status' => true,
+            'data' => $stages,
+            'message' => "List Updated Successfully"
+        ];
+
+        return response()->json($response, 200);
     }
 }

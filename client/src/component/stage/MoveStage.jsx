@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 import {
     setSelectedStage,
     setShowMoveStage,
     setShowStageAction,
+    setStages,
 } from "../../store";
 import "./moveStage.scss";
 const MoveStage = ({ showRect }) => {
@@ -45,15 +47,17 @@ const MoveStage = ({ showRect }) => {
     };
 
     const handleMoveButtonClick = async () => {
-        // console.log(selectedStage);
+        console.log(selectedStage);
         // console.log(selectedProjectFromOption);
         // console.log(selectedPosition);
         const projectId = selectedProjectFromOption.id;
         const stagePosition = selectedPosition;
+        const stageId = selectedStage.id;
 
         const payload = {
             project_id: projectId,
             position: stagePosition,
+            stage_id: stageId,
             user_id: userId,
         };
 
@@ -65,13 +69,10 @@ const MoveStage = ({ showRect }) => {
                 },
             })
             .then((res) => { 
-                
-                if (res.data.status) {
-                    dispatch(setTasks({ tasks: res.data.project.tasks }));
-                    dispatch(
-                        setPriorities({ priorities: res.data.task.priorities })
-                    );
-                    // toast.success(res.data.message);
+                console.log(res);
+                if (res.data?.status && res.data?.data) {
+                    dispatch(setStages({ stages: res.data.data.stages }));
+                    toast.success(res.data.message);
                 } else {
                     toast.error("Server is not responding");
                 }
@@ -88,10 +89,6 @@ const MoveStage = ({ showRect }) => {
                     toast.error("Server is not responding");
                 }
             });
-
-
-    
-
     }
 
     useEffect(() => {

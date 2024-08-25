@@ -16,7 +16,9 @@ class Stage extends Model
     protected $table = 'lists';
 
     protected $fillable = [
-        'project_id', 'title','position'
+        'project_id',
+        'title',
+        'position'
     ];
 
     protected static function boot()
@@ -42,8 +44,9 @@ class Stage extends Model
         return $this->hasMany(Task::class, 'list_id');
     }
 
-    public static function createStage(array $data , $id) {
-        
+    public static function createStage(array $data, $id)
+    {
+
         $project = Project::find($data['project_id']);
 
         if (!$project) {
@@ -53,6 +56,25 @@ class Stage extends Model
         $stage->fill($data);
         $stage->save();
 
+        return $stage;
+    }
+
+    public static function updateStage(array $data)
+    {
+
+        $stage = Stage::find($data['stage_id']);
+        if (!$stage) {
+            return false;
+        }
+
+        if (isset($data['position'])) {
+            $stage->position = $data['position'];
+        }
+        if (isset($data['project_id'])) {
+            $stage->project_id = $data['project_id'];
+        }
+
+        $stage->save();
         return $stage;
     }
 }
