@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
 import {
     setSelectedStage,
@@ -49,14 +50,16 @@ const MoveStage = ({ showRect }) => {
     const handleMoveButtonClick = async () => {
         console.log(selectedStage);
         // console.log(selectedProjectFromOption);
-        // console.log(selectedPosition);
+        console.log(selectedPosition);
         const projectId = selectedProjectFromOption.id;
-        const stagePosition = selectedPosition;
+        const newPosition = selectedPosition;
         const stageId = selectedStage.id;
+        const originalPosition = selectedStage.position;
 
         const payload = {
             project_id: projectId,
-            position: stagePosition,
+            new_position: newPosition,
+            original_position : originalPosition,
             stage_id: stageId,
             user_id: userId,
         };

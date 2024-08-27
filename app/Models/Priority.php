@@ -62,7 +62,6 @@ class Priority extends Model
 
     public static function updatePriority(array $data)
     {
-
         $priority = Priority::find($data['id']);
         if (!$priority) {
             return null;

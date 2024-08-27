@@ -52,6 +52,7 @@ class Stage extends Model
         if (!$project) {
             return false;
         }
+
         $stage = new static;
         $stage->fill($data);
         $stage->save();
@@ -61,20 +62,55 @@ class Stage extends Model
 
     public static function updateStage(array $data)
     {
+        $projectId = $data['project_id'];
+        $stageId = $data['stage_id'];
+        $newPosition = $data['new_position'];
+        $originalPosition = $data['original_position'];
 
-        $stage = Stage::find($data['stage_id']);
+        $response = [
+            'status' => true,
+            'data' => $data,
+            'message' => "List Created Successfully"
+        ];
+
+        return response()->json($response, 200);
+
+        $stage = Stage::find($stageId);
+
         if (!$stage) {
             return false;
         }
 
-        if (isset($data['position'])) {
-            $stage->position = $data['position'];
-        }
-        if (isset($data['project_id'])) {
-            $stage->project_id = $data['project_id'];
-        }
+        $stages = self::where('project_id', $projectId)
+                  ->orderBy('position', 'asc')
+                  ->get();
 
-        $stage->save();
-        return $stage;
+        // Find the stage being moved
+        // $stageToMove = $stages->firstWhere('id', $stageId);
+
+         // Update the stage's position
+         $stage->position = $newPosition;
+         $stage->save();
+
+         if($originalPosition < $newPosition) {
+            foreach($stages as $stage) {
+                if($stage->position > $originalPosition && $stage->position <= $newPosition) {
+                    $stage->position -= 1;
+                    $stage->save();
+                }
+            }
+         } else if($originalPosition > $newPosition) {
+            foreach($stages as $stage) {
+                if($stage->position < $originalPosition && $stage->position >= $newPosition) {
+                    $stage->position += 1;
+                    $stage->save();
+                }
+            }
+         }
+
+        //  return self::where('project_id', $projectId)
+        //  ->orderBy('position', 'asc')
+        //  ->get();
+    
     }
 }

@@ -59,12 +59,13 @@ class StagesController extends Controller
 
     public function moveStage(MoveStageRequest $request)
     {
+        $projectId = $request->input('project_id');
+        $stageId = $request->input('stage_id');
+        $newPosition = $request->input('new_position');
+        $originalPosition = $request->input('original_position');
+        $userId = $request->input('user_id');
 
-        $project_id = $request->input('project_id');
-        $position = $request->input('position');
-        $user_id = $request->input('user_id');
-
-        if ($user_id !== Auth::user()->id) {
+        if ($userId !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
@@ -72,7 +73,7 @@ class StagesController extends Controller
         $stage = $stageModel->updateStage($request->all());
 
         if (!$stage) {
-            return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
+            return response()->json(['status' => false, 'message' => 'Stage not found obv'], 404);
         }
 
         $stages = Project::with([
@@ -89,7 +90,7 @@ class StagesController extends Controller
             'stages.tasks.priorities',
             'stages.tasks.checklists',
             'stages.tasks.checklists.checklistitems'
-        ])->find($project_id);
+        ])->find($projectId);
 
         $response = [
             'status' => true,
