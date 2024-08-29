@@ -26,7 +26,7 @@ const MoveStage = ({ showRect }) => {
     const selectedStage = useSelector((state) => state.selectedStage);
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
-    console.log(projects);
+    console.log(selectedStage);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
         useState(null);
@@ -37,20 +37,19 @@ const MoveStage = ({ showRect }) => {
         dispatch(setShowStageAction({ showStageAction }));
     };
 
-    const handleProjectSelection = async(e) => {
+    const handleProjectSelection = async (e) => {
         const selectedProjectId = e.target.value;
         const selectedProject = projects.find(
             (project) => project.id == selectedProjectId
         );
 
         setSelectedProjectFromOption(selectedProject);
-        
     };
 
     const handleMoveButtonClick = async () => {
-        console.log(selectedStage);
-        // console.log(selectedProjectFromOption);
-        console.log(selectedPosition);
+        // console.log(selectedStage);
+
+        // console.log(selectedPosition);
         const projectId = selectedProjectFromOption.id;
         const newPosition = selectedPosition;
         const stageId = selectedStage.id;
@@ -59,7 +58,7 @@ const MoveStage = ({ showRect }) => {
         const payload = {
             project_id: projectId,
             new_position: newPosition,
-            original_position : originalPosition,
+            original_position: originalPosition,
             stage_id: stageId,
             user_id: userId,
         };
@@ -71,10 +70,11 @@ const MoveStage = ({ showRect }) => {
                     "Content-type": "application/json",
                 },
             })
-            .then((res) => { 
-                console.log(res);
+            .then((res) => {
+                console.log(res.data);
                 if (res.data?.status && res.data?.data) {
                     dispatch(setStages({ stages: res.data.data.stages }));
+                    dispatch(setShowMoveStage({ showMoveStage: false }));
                     toast.success(res.data.message);
                 } else {
                     toast.error("Server is not responding");
@@ -92,7 +92,7 @@ const MoveStage = ({ showRect }) => {
                     toast.error("Server is not responding");
                 }
             });
-    }
+    };
 
     useEffect(() => {
         // const selectedProjectId = selectedProject.id;
@@ -171,7 +171,6 @@ const MoveStage = ({ showRect }) => {
                         return (
                             <option
                                 selected={
-                                    stage.id == selectedStage.id &&
                                     stage.position == selectedStage.position
                                 }
                                 key={stage.id}
@@ -189,7 +188,11 @@ const MoveStage = ({ showRect }) => {
                     )}
             </select>
 
-            <button onClick={handleMoveButtonClick} type="button" className="move-button">
+            <button
+                onClick={handleMoveButtonClick}
+                type="button"
+                className="move-button"
+            >
                 Move
             </button>
         </div>

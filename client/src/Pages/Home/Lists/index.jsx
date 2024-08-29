@@ -134,7 +134,7 @@ const List = () => {
                                         </span>
                                     </div>
                                     <Card stage={stage} />
-                                </div>
+                                </div> 
                             );
                         })}
                 </div>

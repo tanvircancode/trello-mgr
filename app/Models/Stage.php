@@ -67,14 +67,6 @@ class Stage extends Model
         $newPosition = $data['new_position'];
         $originalPosition = $data['original_position'];
 
-        $response = [
-            'status' => true,
-            'data' => $data,
-            'message' => "List Created Successfully"
-        ];
-
-        return response()->json($response, 200);
-
         $stage = Stage::find($stageId);
 
         if (!$stage) {
@@ -84,9 +76,6 @@ class Stage extends Model
         $stages = self::where('project_id', $projectId)
                   ->orderBy('position', 'asc')
                   ->get();
-
-        // Find the stage being moved
-        // $stageToMove = $stages->firstWhere('id', $stageId);
 
          // Update the stage's position
          $stage->position = $newPosition;
@@ -107,10 +96,7 @@ class Stage extends Model
                 }
             }
          }
-
-        //  return self::where('project_id', $projectId)
-        //  ->orderBy('position', 'asc')
-        //  ->get();
+         return true;
     
     }
 }
