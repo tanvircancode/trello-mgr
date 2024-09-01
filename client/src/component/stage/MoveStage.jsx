@@ -81,7 +81,7 @@ const MoveStage = ({ showRect }) => {
                 }
             })
             .catch((error) => {
-                // console.log(error)
+                
                 if (
                     error.response &&
                     error.response?.status &&
@@ -143,10 +143,10 @@ const MoveStage = ({ showRect }) => {
                 }
                 className="form-select"
                 onChange={handleProjectSelection}
-            >
+            > 
                 {projects.map((project) => {
                     return (
-                        <option
+                        <option    
                             // selected={selectedProject.id == project.id}
                             key={project.id}
                             value={project.id}
