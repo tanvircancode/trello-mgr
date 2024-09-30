@@ -1,0 +1,17 @@
+
+.drop_area {
+    // width: 50%;
+    height: 88px;
+    color: #dcdcdc;
+    border: 1px dashed #dcdcdc;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    padding: 15px;
+    opacity: 1;
+    transition: all 0.2s;
+}
+.hide_drop {
+    opacity: 0;
+    width: 0;
+    // display: none;
+}

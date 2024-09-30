@@ -120,7 +120,7 @@ const MoveStage = ({ showRect }) => {
         >
             <div
                 className="card-header d-flex justify-content-between align-items-center"
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer" }} 
             >
                 <BsArrowLeftShort
                     onClick={() => handleMoveStageClick(false, true)}

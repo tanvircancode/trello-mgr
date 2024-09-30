@@ -10,15 +10,18 @@ import {
     setStages,
     setShowStageAction,
     setShowMoveStage,
-    setSelectedStage
+    setSelectedStage,
 } from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
+import DropArea from "../DropArea";
 
 const List = () => {
+
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
-    
+    const [activeCard, setActiveCard] = useState(null);
+
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
@@ -107,40 +110,71 @@ const List = () => {
         dispatch(setShowStageAction({ showStageAction }));
     };
 
+    const handleDragStart = (e, position) => {
+        console.log("dragging " + position);
+    };
+
+    const onDrop = (position) => {
+        console.log(`${activeCard} is going to its new position ${position}`);
+
+        if(activeCard == null || activeCard == undefined) return;
+
+        const stageToMove = stages[activeCard];
+        const updatedStages = stages.filter((stage, index) => index !== activeCard);
+
+
+    };
+
     return (
-        <div className="d-flex">  
-            <div className="stage-list d-flex gap-2">  
+        <div className="d-flex">
+            <div className="stage-list d-flex gap-2">
                 <div className="d-flex gap-2">
+                <DropArea onDrop={() => onDrop(0)} />
+
                     {stages &&
                         stages.length > 0 &&
                         stages.map((stage, index) => {
                             return (
-                                <div key={index} className={`card custom-card`}>
+                                <>
                                     <div
-                                        className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                            blur
-                                                ? "is-blur disable-pointer-events"
-                                                : ""
-                                        }`}
+                                        key={index}
+                                        className={`card custom-card`}
+                                        onDragStart={() => setActiveCard(index)}
+                                        onDragEnd={() => setActiveCard(null)}
+                                        draggable
                                     >
-                                        <span className="card-title custom-stage-title m-0">
-                                            {stage && stage.title}
-                                        </span>
-                                        <span
-                                            className="stage-horizontal-dots mb-1"
-                                            onClick={(event) => handleStageAction(event, stage)}
+                                        <div
+                                            className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                                blur
+                                                    ? "is-blur disable-pointer-events"
+                                                    : ""
+                                            }`}
                                         >
-                                            ...
-                                        </span>
-                                    </div>
-                                    <Card stage={stage} />
-                                </div> 
+                                            <span className="card-title custom-stage-title m-0">
+                                                {stage && stage.title}
+                                            </span>
+                                            <span
+                                                className="stage-horizontal-dots mb-1"
+                                                onClick={(event) =>
+                                                    handleStageAction(
+                                                        event,
+                                                        stage
+                                                    )
+                                                }
+                                            >
+                                                ...
+                                            </span>
+                                        </div>
+                                        <Card stage={stage} />
+                                    </div>  
+                                    <DropArea index={index+1} activeCard={activeCard} onDrop={onDrop} />  
+                                </>      
                             );
                         })}
                 </div>
 
                 {showStageAction && (
-                    <div  
+                    <div
                         className="card"
                         style={{
                             width: "18rem",
@@ -154,7 +188,7 @@ const List = () => {
                             <span style={{ fontWeight: "600" }}>
                                 List Actions
                             </span>
-                            <div  
+                            <div
                                 style={{ cursor: "pointer" }}
                                 onClick={handleCloseStageAction}
                             >
@@ -181,7 +215,7 @@ const List = () => {
                     </div>
                 )}
 
-                {showMoveStage && <MoveStage showRect={showRect} /> }  
+                {showMoveStage && <MoveStage showRect={showRect} />}
                 <div className="custom-card-add">
                     <input
                         type="text"

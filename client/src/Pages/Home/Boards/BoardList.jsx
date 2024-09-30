@@ -122,7 +122,6 @@ const BoardList = () => {
 
                     <div>
                     <List />
-
                         
                     </div>
 

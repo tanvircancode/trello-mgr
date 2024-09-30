@@ -114,6 +114,9 @@ const Card = ({stage}) => {
                 </div> 
             )}
 
+           
+            
+
             {!isCardsLoading &&  
                 tasks && 
                 tasks.length > 0 && 
@@ -140,11 +143,13 @@ const Card = ({stage}) => {
 
                     return (
                         <div
+                        
                             key={index}
                             className={`card custom-card ${
                                 blur ? "is-blur disable-pointer-events" : ""
                             }`} 
                             onClick={() => handleOpenPopup(task)}
+                            
                         >
                             <div
                                 className="card-body d-flex flex-column "
