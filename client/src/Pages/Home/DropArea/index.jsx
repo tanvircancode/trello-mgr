@@ -10,7 +10,7 @@ const DropArea = ({ index, activeCard , onDrop}) => {
     }
     const yyy = () => {
         setShowDrop(false);
-        console.log(showDrop)
+        console.log(showDrop);
     }
 
     return (

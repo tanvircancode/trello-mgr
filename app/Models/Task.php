@@ -32,15 +32,14 @@ class Task extends Model
     }
 
     protected $casts = [
-        'project_id' => 'string',
+        'list_id' => 'string',
         'title' => 'string',
         'description' => 'string',
     ];
 
     public function stage()
     {
-        return $this->belongsTo(Stage::class, 'list_id');
-            
+        return $this->belongsTo(Stage::class, 'list_id');   
     }
 
     public function checklists()

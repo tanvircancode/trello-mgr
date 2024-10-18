@@ -16,7 +16,6 @@ return new class extends Migration
             $table->uuid('project_id');
             $table->string('title');
             $table->timestamps();
-
             $table->foreign('project_id')
             ->references('id')->on('projects')
             ->onDelete('cascade');

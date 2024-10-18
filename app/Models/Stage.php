@@ -37,8 +37,9 @@ class Stage extends Model
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'list_id');
-        return $this->belongsTo(Project::class, 'stage_id');
+        return $this->belongsTo(Project::class, 'project_id');
+        // this above list_id should be project_id ?
+        // return $this->belongsTo(Project::class, 'stage_id');
     }
     public function tasks()
     {
