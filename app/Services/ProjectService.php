@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProjectService
 {
-    public function getAll($data)
+    public function getAll($id)
     {
         $stages = Project::with([
             'members',
@@ -17,12 +17,12 @@ class ProjectService
             'stages.tasks' => function ($query) {
                 $query->orderBy('created_at', 'asc');
             },
-            // 'stages.tasks.users',
+            
             'stages.tasks.labels',
             'stages.tasks.priorities',
             'stages.tasks.checklists',
             'stages.tasks.checklists.checklistitems'
-        ])->find($data['project_id']);
+        ])->find($id);
 
         return $stages;
     }

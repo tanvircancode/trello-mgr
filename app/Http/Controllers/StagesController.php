@@ -11,6 +11,7 @@ use App\Services\ListService;
 use App\Services\ProjectService;
 use App\Services\AuthService;
 use App\Services\ResponseService;
+use App\Services\ModelService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,36 +21,34 @@ class StagesController extends Controller
     protected ?ProjectService $projectService = null;
     protected ?AuthService $authService = null;
     protected ?ResponseService $responseService = null;
+    protected ?ModelService $modelService = null;
 
-    public function __construct(ListService $listService, ProjectService $projectService, AuthService $authService, ResponseService $responseService)
+    public function __construct(ListService $listService, ProjectService $projectService, AuthService $authService, ResponseService $responseService,  ModelService $modelService)
     {
         $this->listService = $listService;
         $this->projectService = $projectService;
         $this->authService = $authService;
+        $this->responseService = $responseService;
+        $this->modelService = $modelService;
     }
 
     public function store(StoreStageRequest $request, $id)
     {
-        if(!$this->authService->isAuthenticated($id)) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        if (!$this->authService->isAuthenticated($id)) {
+            return $this->responseService->unauthorizedResponse();
         }
-        
+
         //List Service starts from here
         $stage = $this->listService->store($request->all());
 
         if (!$stage) {
-            return response()->json(['status' => false, 'message' => 'Project not found'], 404);
+            return $this->responseService->notFoundResponse('Project not found');
         }
 
-        $stages = $this->projectService->getAll($request->all());
+        $projectId = $request->input('project_id');
+        $stages = $this->projectService->getAll($projectId);
 
-        $response = [
-            'status' => true,
-            'data' => $stages,
-            'message' => "List Created Successfully"
-        ];
-
-        return response()->json($response, 200);
+        return $this->responseService->successResponse('List Created Successfully', $stages);
     }
 
     public function moveStage(MoveStageRequest $request)
@@ -57,39 +56,20 @@ class StagesController extends Controller
         $projectId = $request->input('project_id');
         $userId = $request->input('user_id');
 
-        if ($userId !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
-        $stageModel = new Stage();
+        // $stageModel = new Stage();
+        $stageModel = $this->modelService->createModelInstance(Stage::class);
         $stage = $stageModel->updateStage($request->all());
 
         if (!$stage) {
-            return response()->json(['status' => false, 'message' => 'Stage not found'], 404);
+            return $this->responseService->notFoundResponse('Stage not found');
         }
 
-        $stages = Project::with([
-            'members',
-            'stages' => function ($query) {
-                $query->orderBy('position', 'asc');
-            },
+        $stages = $this->projectService->getAll($projectId);
 
-            'stages.tasks' => function ($query) {
-                $query->orderBy('created_at', 'asc');
-            },
-            // 'stages.tasks.users',
-            'stages.tasks.labels',
-            'stages.tasks.priorities',
-            'stages.tasks.checklists',
-            'stages.tasks.checklists.checklistitems'
-        ])->find($projectId);
-
-        $response = [
-            'status' => true,
-            'data' => $stages,
-            'message' => "List Updated Successfully"
-        ];
-
-        return response()->json($response, 200);
+        return $this->responseService->successResponse('List Updated Successfully', $stages);
     }
 }
