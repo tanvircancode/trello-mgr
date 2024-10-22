@@ -14,7 +14,9 @@ import {
     setTasks,
     setStages,
     setShowMoveStage,
-    setShowStageAction
+    setShowStageAction,
+    setMakeBlur,
+    setMakeCardModalBlur
 } from "./store";
 
 function App() {

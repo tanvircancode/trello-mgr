@@ -5,16 +5,62 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\Project;
-use App\Models\Task;
+use App\Services\DependencyManagerService;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    public function store(StoreUserRequest $request)
+    protected ?DependencyManagerService $dependencyManager = null;
+
+    public function __construct(DependencyManagerService $dependencyManager)
     {
+        $this->dependencyManager = $dependencyManager;
+    }
+
+    public function store(StoreUserRequest $request)  
+    {
+        // $input = $request->all();
+
+        // $user = $this->dependencyManager->userService->registerUser($input);
+
+        // // $existingUser = User::where('email', $input['email'])->first();
+        // // if ($existingUser) {
+        // //     $response = [
+        // //         'status' => false,
+        // //         'statusCode' => 404,
+        // //         'message' => 'Email is already registered',
+        // //     ];
+        // //     return response()->json($response, 401);
+        // // }
+
+        // // $input['password'] = bcrypt($input['password']);
+
+        // // if (empty($input['token']) || $input['token'] != env('REGISTER_TOKEN')) {
+        // //     $response = [
+        // //         'status' => false,
+        // //         'message' => 'You are not authorized'
+        // //     ];
+        // //     return response()->json($response, 404);
+        // // }
+
+        // // $user = User::create($input);
+        // $data['id'] = $user->id;
+        // $data['name'] = $user->name;
+        // // $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
+        // if ($user) {
+        //     return $this->dependencyManager->responseService->successResponse('Registration Successfully completed', $data);
+        // }
+
+        // $response = [
+        //     'status' => true,
+        //     'data' => $data,
+        // ];
+
+        // return response()->json($response, 200);
+
+        // new x
         $input = $request->all();
 
         $existingUser = User::where('email', $input['email'])->first();
@@ -62,7 +108,7 @@ class UsersController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-            // $request->session()->regenerate();
+
             $user = Auth::user();
 
             $token = $user->createToken('MyAppToken')->plainTextToken;
@@ -95,7 +141,7 @@ class UsersController extends Controller
         }
     }
 
-   
+
 
     public function me(Request $request)
     {
@@ -133,13 +179,12 @@ class UsersController extends Controller
         $response = [
             'status' => true,
             'data' => $projectsWithRelatedData,
-            // 'checking' => "got it?"
+
         ];
 
         return response()->json($response, 200);
     }
 
-    //search users
     public function searchUsers(Request $request)
     {
         $searchTerm = $request->input('searchTerm');
@@ -176,7 +221,7 @@ class UsersController extends Controller
         return response()->json($response, 200);
     }
 
-   
+
 
 
     public function addMember(Request $request)
@@ -206,8 +251,8 @@ class UsersController extends Controller
             ];
             return response()->json($response, 400);
         }
-        $project = Project::with('members','stages', 'stages.tasks', 'stages.tasks.users','stages.tasks.labels' , 'stages.tasks.priorities', 'stages.tasks.checklists','stages.tasks.checklists.checklistitems')
-        ->find($projectId);
+        $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
+            ->find($projectId);
 
         $response = [
             'status' => true,
@@ -228,7 +273,7 @@ class UsersController extends Controller
             ];
             return response()->json($response, 404);
         }
-       
+
         if ($project->user_id !== Auth::user()->id) {
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
@@ -243,7 +288,7 @@ class UsersController extends Controller
         }
 
         $project->members()->detach($userId);
-        
+
         $stagesUnderProject = $project->stages()->get();
 
         foreach ($stagesUnderProject as $stage) {
@@ -255,8 +300,8 @@ class UsersController extends Controller
             }
         }
 
-        $project = Project::with('members','stages', 'stages.tasks', 'stages.tasks.users','stages.tasks.labels' , 'stages.tasks.priorities', 'stages.tasks.checklists','stages.tasks.checklists.checklistitems')
-        ->find($projectId);
+        $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
+            ->find($projectId);
 
         $response = [
             'status' => true,

@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Models\Stage;
 use App\Models\Project;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+
 
 class ListService
 {

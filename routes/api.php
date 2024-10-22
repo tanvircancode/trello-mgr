@@ -41,7 +41,6 @@ use App\Models\ChecklistItem;
   Route::post('/stage/{id}', [StagesController::class, 'store']);
   Route::put('/movestage', [StagesController::class, 'moveStage']);
 
-
   // task apis
   Route::post('/task/{id}', [TasksController::class, 'store']);
   Route::put('/task', [TasksController::class, 'update']);
@@ -78,8 +77,8 @@ use App\Models\ChecklistItem;
   // assign user to a task
   Route::post('/addtaskmember', [TasksController::class, 'assignTask']);
   Route::post('/removetaskmember', [TasksController::class, 'removeTask']);
-
 });
+
 // Login and Register
 Route::post('/register', [UsersController::class, 'store']);
 Route::post('/login', [UsersController::class, 'login']);
