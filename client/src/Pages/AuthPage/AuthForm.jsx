@@ -43,16 +43,16 @@ const AuthForm = ({ mode , setMode}) => {
                     )
                     .then((res) => {
                         //    console.log(res)
-                        if (res.data.status && res.data.token) {
+                        if (res.data.status && res.data.data.token) {
                             toast.success("Logged in Successfully");
                             dispatch(
                                 setLogin({
-                                    user: res.data.user,
-                                    token: res.data.token,
+                                    user: res.data.data.user,
+                                    token: res.data.data.token,
                                 })
                             );
-                            localStorage.setItem("token", res.data.token);
-                            localStorage.setItem("user_id", res.data.user.id);
+                            localStorage.setItem("token", res.data.data.token);
+                            localStorage.setItem("user_id", res.data.data.user.id);
 
                             navigate("/");
                         } else {

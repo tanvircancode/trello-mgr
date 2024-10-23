@@ -52,10 +52,10 @@ function InitUser() {
                 },
             });
 
-            if (response.data.user) {
+            if (response.data.data) {
                 dispatch(
                     setLogin({
-                        user: response.data.user,
+                        user: response.data.data,
                         token: token,
                     })
                 );

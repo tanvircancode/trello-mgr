@@ -26,13 +26,13 @@ class StagesController extends Controller
         $stage = $this->dependencyManager->listService->store($request->all());
 
         if (!$stage) {
-            return $this->dependencyManager->responseService->notFoundResponse('Project not found');
+            return $this->dependencyManager->responseService->messageResponse('Project not found', false, 404);
         }
 
         $projectId = $request->input('project_id');
         $stages = $this->dependencyManager->projectService->getAll($projectId);
 
-        return $this->dependencyManager->responseService->successResponse('List Created Successfully', $stages);
+        return $this->dependencyManager->responseService->successMessageDataResponse('List Created Successfully', $stages, true, 200);
     }
 
     public function moveStage(MoveStageRequest $request)
@@ -48,11 +48,11 @@ class StagesController extends Controller
         $stage = $stageModel->updateStage($request->all());
 
         if (!$stage) {
-            return $this->dependencyManager->responseService->notFoundResponse('Stage not found');
+            return $this->dependencyManager->responseService->messageResponse('Stage not found', false, 404);
         }
 
         $stages = $this->dependencyManager->projectService->getAll($projectId);
 
-        return $this->dependencyManager->responseService->successResponse('List Updated Successfully', $stages);
+        return $this->dependencyManager->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
     }
 }

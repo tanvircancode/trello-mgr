@@ -19,170 +19,117 @@ class UsersController extends Controller
         $this->dependencyManager = $dependencyManager;
     }
 
-    public function store(StoreUserRequest $request)  
+    public function store(StoreUserRequest $request)
     {
-        // $input = $request->all();
-
-        // $user = $this->dependencyManager->userService->registerUser($input);
-
-        // // $existingUser = User::where('email', $input['email'])->first();
-        // // if ($existingUser) {
-        // //     $response = [
-        // //         'status' => false,
-        // //         'statusCode' => 404,
-        // //         'message' => 'Email is already registered',
-        // //     ];
-        // //     return response()->json($response, 401);
-        // // }
-
-        // // $input['password'] = bcrypt($input['password']);
-
-        // // if (empty($input['token']) || $input['token'] != env('REGISTER_TOKEN')) {
-        // //     $response = [
-        // //         'status' => false,
-        // //         'message' => 'You are not authorized'
-        // //     ];
-        // //     return response()->json($response, 404);
-        // // }
-
-        // // $user = User::create($input);
-        // $data['id'] = $user->id;
-        // $data['name'] = $user->name;
-        // // $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
-        // if ($user) {
-        //     return $this->dependencyManager->responseService->successResponse('Registration Successfully completed', $data);
-        // }
-
-        // $response = [
-        //     'status' => true,
-        //     'data' => $data,
-        // ];
-
-        // return response()->json($response, 200);
-
-        // new x
         $input = $request->all();
 
-        $existingUser = User::where('email', $input['email'])->first();
-        if ($existingUser) {
-            $response = [
-                'status' => false,
-                'statusCode' => 404,
-                'message' => 'Email is already registered',
-            ];
-            return response()->json($response, 401); // 400 Bad Request
-        }
-
-
-        $input['password'] = bcrypt($input['password']);
-
-        if (empty($input['token']) || $input['token'] != env('REGISTER_TOKEN')) {
-            $response = [
-                'status' => false,
-                'message' => 'You are not authorized'
-            ];
-            return response()->json($response, 404);
-        }
-
-        $user = User::create($input);
+        $user = $this->dependencyManager->userService->registerUser($input);
 
         $data['id'] = $user->id;
         $data['name'] = $user->name;
         $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
-
-        $response = [
-            'status' => true,
-            'data' => $data,
-        ];
-
-        return response()->json($response, 200);
+        if ($user) {
+            return $this->dependencyManager->responseService->successResponse('Registration Successfully completed', $data);
+        }
     }
 
     public function login(Request $request)
     {
         $input = $request->all();
+        return $this->dependencyManager->userService->userLogin($input);
 
-        $credentials = [
-            'email' => $input['email'],
-            'password' => $input['password']
-        ];
+        // from here old code
+        // $credentials = [
+        //     'email' => $input['email'],
+        //     'password' => $input['password']
+        // ];
 
-        if (Auth::attempt($credentials)) {
+        // if (Auth::attempt($credentials)) {
 
-            $user = Auth::user();
+        //     $user = Auth::user();
+        //     $user = $this->userRe->
 
-            $token = $user->createToken('MyAppToken')->plainTextToken;
-            $response = [
-                'status' => true,
-                'user' => $user,
-                'token' => $token,
-            ];
+        //     $token = $user->createToken('MyAppToken')->plainTextToken;
+        //     $response = [
+        //         'status' => true,
+        //         'user' => $user,
+        //         'token' => $token,
+        //     ];
 
-            return response()->json($response, 200);
-        }
+        //     return response()->json($response, 200);
+        // }
 
-        $response = [
-            'status' => false,
-            'message' => 'Invalid Credentials'
-        ];
-        return response()->json($response, 404);
+        // $response = [
+        //     'status' => false,
+        //     'message' => 'Invalid Credentials'
+        // ];
+        // return response()->json($response, 404);
     }
 
     public function logout(Request $request)
     {
-        if ($request->user()->currentAccessToken()->delete()) {
-            $response = [
-                'status' => true,
-                'message' => 'Logged out successfully'
-            ];
-            return response()->json($response, 200);
-        } else {
-            return response()->json(['status' => false], 404);
-        }
+        // if ($request->user()->currentAccessToken()->delete()) {
+        //     $response = [
+        //         'status' => true,
+        //         'message' => 'Logged out successfully'
+        //     ];
+        //     return response()->json($response, 200);
+        // } else {
+        //     return response()->json(['status' => false], 404);
+        // }
+
+        //  new service code below
+        return $this->dependencyManager->userService->logout($request->user());
     }
 
-
-
-    public function me(Request $request)
+    public function me()
     {
-        if (!Auth::user()) {
-            return response()->json(['status' => false], 403);
-        }
+        // if (!Auth::user()) {
+        //     return response()->json(['status' => false], 403);
+        // }
 
-        $user = Auth::user();
+        // $user = Auth::user();
 
-        $response = [
-            'user' => $user,
-            'status' => true,
-        ];
-        return response()->json($response, 200);
+        // $response = [
+        //     'user' => $user,
+        //     'status' => true,
+        // ];
+        // return response()->json($response, 200);
+
+        //  new service code below
+        return $this->dependencyManager->userService->getUserDetails();
     }
 
     public function show($id)
     {
+        // if ($id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        if ($id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // $user = User::find($id);
 
-        $user = User::find($id);
+        // if (!$user) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'User not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
+        // $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
 
-        if (!$user) {
-            $response = [
-                'status' => false,
-                'message' => 'User not found'
-            ];
-            return response()->json($response, 404);
-        }
-        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+        // $response = [
+        //     'status' => true,
+        //     'data' => $projectsWithRelatedData,
 
-        $response = [
-            'status' => true,
-            'data' => $projectsWithRelatedData,
+        // ];
 
-        ];
+        // return response()->json($response, 200);
 
-        return response()->json($response, 200);
+
+        //new services code from here show func
+        
+
+        return $this->dependencyManager->userService->showUserProjects($id);
     }
 
     public function searchUsers(Request $request)

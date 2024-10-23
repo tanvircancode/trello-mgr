@@ -14,19 +14,34 @@ class ResponseService
         ], 403);
     }
 
-    public function notFoundResponse(string $message): JsonResponse
+    public function notFoundStatus(): JsonResponse
     {
         return response()->json([
             'status' => false,
-            'message' => $message
         ], 404);
     }
-    public function successResponse(string $message, $data): JsonResponse
+
+    public function messageResponse(string $message,  bool $status, int $statusCode): JsonResponse
     {
         return response()->json([
-            'status' => true,
-            'data' => $data,
             'message' => $message,
-        ], 200);
+            'status' => $status,
+        ], $statusCode);
+    }
+
+    public function successDataResponse( $data, bool $status, int $statusCode): JsonResponse
+    {
+        return response()->json([
+            'status' => $status,
+            'data' => $data,
+        ], $statusCode);
+    }
+    public function successMessageDataResponse(string $message, $data, bool $status, int $statusCode): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'data' => $data,
+            'status' => $status,
+        ], $statusCode);
     }
 }
