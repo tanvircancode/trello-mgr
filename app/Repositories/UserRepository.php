@@ -10,7 +10,7 @@ class UserRepository
 {
     protected $userModel;
 
-    public function __construct(User $userModel)  
+    public function __construct(User $userModel)
     {
         $this->userModel = $userModel;
     }
@@ -19,12 +19,12 @@ class UserRepository
     {
         return $this->userModel->find($id);
     }
-        
-    public function isEmailUnique($email)  
+
+    public function isEmailUnique($email)
     {
         return $this->userModel->where('email', $email)->doesntExist();
     }
-    
+
     public function createUser(array $userData)
     {
         return $this->userModel->create($userData);
@@ -47,10 +47,10 @@ class UserRepository
                 'members',
                 'user',
                 'stages' => function ($query) {
-                    $query->orderBy('position', 'asc'); 
+                    $query->orderBy('position', 'asc');
                 },
                 'stages.tasks' => function ($query) {
-                    $query->orderBy('created_at', 'asc'); 
+                    $query->orderBy('created_at', 'asc');
                 },
                 'stages.tasks.labels',
                 'stages.tasks.priorities',
@@ -58,8 +58,20 @@ class UserRepository
                 'stages.tasks.checklists.checklistitems'
             ])
             ->get();
-
     }
 
-    
+    public function searchBetweenUsers(string $searchTerm)
+    {
+        return $this->userModel->where('name', 'like', "%{$searchTerm}%")
+            ->orWhere('email', 'like', "%{$searchTerm}%")
+            ->get();
+    }
+
+    public function isMemberOfProject($userId, $projectId)
+    {
+        // check later 
+        $user = $this->findById($userId);
+
+        return $user->projects()->where('project_id', $projectId)->exists();
+    }
 }

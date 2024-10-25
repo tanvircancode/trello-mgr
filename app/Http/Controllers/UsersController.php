@@ -12,31 +12,31 @@ use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManager = null;
+    protected ?DependencyManagerService $dependencyManagerService = null;
 
-    public function __construct(DependencyManagerService $dependencyManager)
+    public function __construct(DependencyManagerService $dependencyManagerService)
     {
-        $this->dependencyManager = $dependencyManager;
+        $this->dependencyManagerService = $dependencyManagerService;
     }
 
     public function store(StoreUserRequest $request)
     {
         $input = $request->all();
 
-        $user = $this->dependencyManager->userService->registerUser($input);
+        $user = $this->dependencyManagerService->userService->registerUser($input);
 
         $data['id'] = $user->id;
         $data['name'] = $user->name;
         $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
         if ($user) {
-            return $this->dependencyManager->responseService->successResponse('Registration Successfully completed', $data);
+            return $this->dependencyManagerService->responseService->successMessageDataResponse('Registration Successfully completed', $data, true, 200);
         }
     }
 
     public function login(Request $request)
     {
         $input = $request->all();
-        return $this->dependencyManager->userService->userLogin($input);
+        return $this->dependencyManagerService->userService->userLogin($input);
 
         // from here old code
         // $credentials = [
@@ -79,7 +79,7 @@ class UsersController extends Controller
         // }
 
         //  new service code below
-        return $this->dependencyManager->userService->logout($request->user());
+        return $this->dependencyManagerService->userService->logout($request->user());
     }
 
     public function me()
@@ -97,7 +97,7 @@ class UsersController extends Controller
         // return response()->json($response, 200);
 
         //  new service code below
-        return $this->dependencyManager->userService->getUserDetails();
+        return $this->dependencyManagerService->userService->getUserDetails();
     }
 
     public function show($id)
@@ -129,7 +129,7 @@ class UsersController extends Controller
         //new services code from here show func
         
 
-        return $this->dependencyManager->userService->showUserProjects($id);
+        return $this->dependencyManagerService->userService->showUserProjects($id);
     }
 
     public function searchUsers(Request $request)
@@ -166,47 +166,55 @@ class UsersController extends Controller
         ];
 
         return response()->json($response, 200);
-    }
 
+         //new services code from here show func
+         $input = $request->all();
+         return $this->dependencyManagerService->userService->searchUsers($input);
+    }
 
 
 
     public function addMember(Request $request)
     {
-        $projectId = $request->input('project_id');
-        $userId = $request->input('user_id');
-        $ownerId = $request->input('owner_id');
+        // $projectId = $request->input('project_id');
+        // $userId = $request->input('user_id');
+        // $ownerId = $request->input('owner_id');
 
-        if ($ownerId !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // if ($ownerId !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        $user = User::find($userId);
-        if (!$user) {
-            $response = [
-                'status' => false,
-                'message' => 'User not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // $user = User::find($userId);
+        // if (!$user) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'User not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if (!$user->addToProject($projectId)) {
+        // if (!$user->addToProject($projectId)) {
 
-            $response = [
-                'status' => false,
-                'message' => 'User is already a member of this project.',
-            ];
-            return response()->json($response, 400);
-        }
-        $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
-            ->find($projectId);
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'User is already a member of this project.',
+        //     ];
+        //     return response()->json($response, 400);
+        // }
+        // $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
+        //     ->find($projectId);
 
-        $response = [
-            'status' => true,
-            'project' => $project,
-            'message' => "Member Added Successfully"
-        ];
-        return response()->json($response, 200);
+        // $response = [
+        //     'status' => true,
+        //     'project' => $project,
+        //     'message' => "Member Added Successfully"
+        // ];
+        // return response()->json($response, 200);
+
+
+        // new services code from here show func
+        $input = $request->all();
+        return $this->dependencyManagerService->userService->addMember($input);
     }
 
     public function removeMember($projectId, $userId)

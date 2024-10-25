@@ -82,7 +82,7 @@ const AddMemberModal = ({ showAddMemberModal, setShowAddMemberModal }) => {
                     },
                 })
                 .then((res) => {
-                    setUsers(res.data.users);
+                    setUsers(res.data.data);
                 })
                 .catch((error) => {
                     setError(error);

@@ -79,52 +79,51 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Task::class, 'task_users');
     }
-
-    // must ** 
+    
     public function isMemberOfProject($projectId)
     {
         return $this->projects()->where('project_id', $projectId)->exists();
     }
 
     //custom methods
-    public function getProjectsWithOwnerAndTasks()
-    {
-        $projects = $this->projects()
-            ->with([
-                'members',
-                'user',
-                'stages' => function ($query) {
-                    $query->orderBy('position', 'asc'); 
-                },
-                'stages.tasks' => function ($query) {
-                    $query->orderBy('created_at', 'asc'); 
-                },
-                'stages.tasks.labels',
-                'stages.tasks.priorities',
-                'stages.tasks.checklists',
-                'stages.tasks.checklists.checklistitems'
-            ])
-            ->get();
+    // public function getProjectsWithOwnerAndTasks()
+    // {
+    //     $projects = $this->projects()
+    //         ->with([
+    //             'members',
+    //             'user',
+    //             'stages' => function ($query) {
+    //                 $query->orderBy('position', 'asc'); 
+    //             },
+    //             'stages.tasks' => function ($query) {
+    //                 $query->orderBy('created_at', 'asc'); 
+    //             },
+    //             'stages.tasks.labels',
+    //             'stages.tasks.priorities',
+    //             'stages.tasks.checklists',
+    //             'stages.tasks.checklists.checklistitems'
+    //         ])
+    //         ->get();
 
-        foreach ($projects as $project) {
-            $project->is_owner = $project->user_id === $this->id;
-        }
+    //     foreach ($projects as $project) {
+    //         $project->is_owner = $project->user_id === $this->id;
+    //     }
 
-        return $projects;
-    }
+    //     return $projects;
+    // }
 
-    //must
-    public function addToProject($projectId)
-    {
-        $project = Project::find($projectId);
+   
+    // public function addToProject($projectId)
+    // {
+    //     $project = Project::find($projectId);
 
-        if ($project->members()->where('user_id', $this->id)->exists()) {
-            return false;
-        }
+    //     if ($project->members()->where('user_id', $this->id)->exists()) {
+    //         return false;
+    //     }
 
-        $memberId = Str::uuid();
-        $project->members()->attach($this->id, ['id' => $memberId]);
+    //     $memberId = Str::uuid();
+    //     $project->members()->attach($this->id, ['id' => $memberId]);
 
-        return true;
-    }
+    //     return true;
+    // }
 }
