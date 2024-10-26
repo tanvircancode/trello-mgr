@@ -134,38 +134,38 @@ class UsersController extends Controller
 
     public function searchUsers(Request $request)
     {
-        $searchTerm = $request->input('searchTerm');
-        $projectId = $request->input('project_id');
+        // $searchTerm = $request->input('searchTerm');
+        // $projectId = $request->input('project_id');
 
-        $project = Project::find($projectId);
+        // $project = Project::find($projectId);
 
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if ($project->user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // if ($project->user_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        $users = User::where('name', 'like', "%{$searchTerm}%")
-            ->orWhere('email', 'like', "%{$searchTerm}%")
-            ->get();
+        // $users = User::where('name', 'like', "%{$searchTerm}%")
+        //     ->orWhere('email', 'like', "%{$searchTerm}%")
+        //     ->get();
 
-        $users = $users->map(function ($user) use ($projectId) {
-            $user->isMember = $user->isMemberOfProject($projectId);
-            return $user;
-        });
+        // $users = $users->map(function ($user) use ($projectId) {
+        //     $user->isMember = $user->isMemberOfProject($projectId);
+        //     return $user;
+        // });
 
-        $response = [
-            'status' => true,
-            'users' => $users,
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'users' => $users,
+        // ];
 
-        return response()->json($response, 200);
+        // return response()->json($response, 200);
 
          //new services code from here show func
          $input = $request->all();
@@ -219,51 +219,52 @@ class UsersController extends Controller
 
     public function removeMember($projectId, $userId)
     {
-        $project = Project::find($projectId);
+        return $this->dependencyManagerService->userService->removeMemberFromProject($projectId, $userId);
+        // $project = Project::find($projectId);
 
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if ($project->user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // if ($project->user_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        $user = User::find($userId);
-        if (!$user) {
-            $response = [
-                'status' => false,
-                'message' => 'User not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // $user = User::find($userId);
+        // if (!$user) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'User not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        $project->members()->detach($userId);
+        // $project->members()->detach($userId);
 
-        $stagesUnderProject = $project->stages()->get();
+        // $stagesUnderProject = $project->stages()->get();
 
-        foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $stage->tasks()->get();
-            foreach ($tasksUnderStage as $task) {
-                if ($task->users->contains($userId)) {
-                    $task->users()->detach($userId);
-                }
-            }
-        }
+        // foreach ($stagesUnderProject as $stage) {
+        //     $tasksUnderStage = $stage->tasks()->get();
+        //     foreach ($tasksUnderStage as $task) {
+        //         if ($task->users->contains($userId)) {
+        //             $task->users()->detach($userId);
+        //         }
+        //     }
+        // }
 
-        $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
-            ->find($projectId);
+        // $project = Project::with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
+        //     ->find($projectId);
 
-        $response = [
-            'status' => true,
-            'project' => $project,
-            'message' => "Member Removed Successfully"
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'project' => $project,
+        //     'message' => "Member Removed Successfully"
+        // ];
 
-        return response()->json($response, 200);
+        // return response()->json($response, 200);
     }
 }

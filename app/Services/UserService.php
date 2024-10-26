@@ -80,23 +80,20 @@ class UserService
 
     public function showUserProjects($id)
     {
-
         if (!$this->dependencyManagerService->authService->isAuthenticated($id)) {
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($id);
-
-        if (!$user) {
+        $projectsOfUser = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($id);
+        if (!$projectsOfUser) {
             return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);
         }
 
-        $projects = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks();
-        foreach ($projects as $project) {
-            $project->is_owner = $project->user_id === $user->id;
+        foreach ($projectsOfUser as $project) {
+            $project->is_owner = $project->user_id === $id;
         }
 
-        return $this->dependencyManagerService->responseService->successDataResponse($projects, true, 200);
+        return $this->dependencyManagerService->responseService->successDataResponse($projectsOfUser, true, 200);
     }
 
     public function searchUsers(array $searchData)
@@ -147,10 +144,10 @@ class UserService
         return $this->dependencyManagerService->responseService->successMessageDataResponse('Member Added Successfully', $project, true, 200);
     }
 
-    public function removeMember($projectId, $userId) {
-
+    public function removeMemberFromProject($projectId, $userId)
+    {
         $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
-        if(!$project) {
+        if (!$project) {
             return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
         }
 
@@ -163,10 +160,12 @@ class UserService
             return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);
         }
 
-        $project->members()->detach($userId);
-        $this->dependencyManagerRepository->projectRepository->detachUser($userId);
- 
+       
+        $this->dependencyManagerRepository->projectRepository->detachUser($projectId,$userId);
+        $this->dependencyManagerRepository->projectRepository->stagesOfProject($projectId,$userId);
 
-
+        $projectData = $this->dependencyManagerRepository->projectRepository->fetchDetailstWithProjectId($projectId);
+        return $this->dependencyManagerService->responseService->successMessageDataResponse('Member Removed Successfully', $projectData, true, 200);
+    
     }
 }

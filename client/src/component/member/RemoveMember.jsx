@@ -33,10 +33,10 @@ const RemoveMember = ({
                     setUsers(
                         users.filter((user) => user.id !== removeMemberId)
                     );
-                    dispatch(setTasks({ tasks: res.data.project.tasks }));
+                    dispatch(setTasks({ tasks: res.data.data.tasks }));
                     dispatch(
                         setSelectedProjectMembers({
-                            selectedProjectMembers: res.data.project.members,
+                            selectedProjectMembers: res.data.data.members,
                         })
                     );
                 } else {

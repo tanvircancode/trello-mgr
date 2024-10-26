@@ -80,10 +80,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Task::class, 'task_users');
     }
     
-    public function isMemberOfProject($projectId)
-    {
-        return $this->projects()->where('project_id', $projectId)->exists();
-    }
+    // public function isMemberOfProject($projectId)
+    // {
+    //     return $this->projects()->where('project_id', $projectId)->exists();
+    // }
 
     //custom methods
     // public function getProjectsWithOwnerAndTasks()
