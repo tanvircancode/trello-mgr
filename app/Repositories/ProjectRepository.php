@@ -20,6 +20,18 @@ class ProjectRepository
         return $this->projectModel->find($id);
     }
 
+    // new code starts
+    public function createProject(array $projectData)
+    {
+        return $this->projectModel->create($projectData);
+    }
+
+    public function assignMember(Project $project, $userId)
+    {
+        return $project->members()->attach($userId, ['id' => Str::uuid()]);
+    }
+
+    // new code end
     public function projectData($projectId)
     {
         $stages = $this->projectModel->with([
@@ -81,6 +93,4 @@ class ProjectRepository
         }
         return true;
     }
-
-    
 }

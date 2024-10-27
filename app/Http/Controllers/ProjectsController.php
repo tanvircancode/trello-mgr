@@ -7,15 +7,24 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\DependencyManagerService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
 class ProjectsController extends Controller
 {
-    //
+    protected ?DependencyManagerService $dependencyManagerService = null;
+
+    public function __construct(DependencyManagerService $dependencyManagerService)
+    {
+        $this->dependencyManagerService = $dependencyManagerService;
+    }
+
     public function store(StoreProjectRequest $request)
     {
+        return $this->dependencyManagerService->projectService->store($request->all());
+        //  new service code below
         $input = $request->all();
 
         if ($input['user_id'] !== Auth::user()->id) {
@@ -136,7 +145,7 @@ class ProjectsController extends Controller
             return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         }
 
-      
+
 
         $stagesUnderProject = $project->stages()->get();
 

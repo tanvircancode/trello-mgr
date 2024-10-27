@@ -40,13 +40,13 @@ class UserRepository
         return $user->currentAccessToken()->delete();
     }
 
-    public function getProjectsWithOwnerAndTasks($userId)
+    public function getProjectsWithOwnerAndTasks(User $user)
     {
-        $user = $this->findById($userId);
+        // $user = $this->findById($userId);
 
-        if (!$user) {
-            return false;
-        }
+        // if (!$user) {
+        //     return false;
+        // }
         // check later 
         return $user->projects()
             ->with([
