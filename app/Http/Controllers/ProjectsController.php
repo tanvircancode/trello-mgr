@@ -23,153 +23,158 @@ class ProjectsController extends Controller
 
     public function store(StoreProjectRequest $request)
     {
-        return $this->dependencyManagerService->projectService->store($request->all());
-        //  new service code below
-        $input = $request->all();
+        return $this->dependencyManagerService->projectService->storeProject($request->all());
+        // new service code below
+        // $input = $request->all();
 
-        if ($input['user_id'] !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => "Unauthorized Access"], 403);
-        }
+        // if ($input['user_id'] !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => "Unauthorized Access"], 403);
+        // }
 
-        $project = Project::create($input);
+        // $project = Project::create($input);
 
-        if ($project) {
-            $user = User::find($input['user_id']);
-            // $projects = User::with('project')->find($user->id);
+        // if ($project) {
+        //     $user = User::find($input['user_id']);
+        //     // $projects = User::with('project')->find($user->id);
 
-            $project->members()->attach($input['user_id'], ['id' => Str::uuid()]);
-            $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+        //     $project->members()->attach($input['user_id'], ['id' => Str::uuid()]);
+        //     $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
 
-            $response = [
-                'status' => true,
-                'data' => $projectsWithRelatedData,
-                'message' => "Project created Successfully"
-            ];
-            return response()->json($response, 200);
-        }
+        //     $response = [
+        //         'status' => true,
+        //         'data' => $projectsWithRelatedData,
+        //         'message' => "Project created Successfully"
+        //     ];
+        //     return response()->json($response, 200);
+        // }
 
-        $response = [
-            'status' => false,
-            'message' => 'Project not created'
-        ];
-        return response()->json($response, 404);
+        // $response = [
+        //     'status' => false,
+        //     'message' => 'Project not created'
+        // ];
+        // return response()->json($response, 404);
     }
 
     public function showMembers($id)
     {
-        $project = Project::find($id);
+        return $this->dependencyManagerService->projectService->showMembersOfAProject($id);
+        // new service code below
+        // $project = Project::find($id);
 
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if ($project->user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // if ($project->user_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        $memberArray = $project->getMembers();
+        // $memberArray = $project->getMembers();
 
-        $response = [
-            'status' => true,
-            'users' => $memberArray,
-            'message' => "Member fetched Successfully"
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'users' => $memberArray,
+        //     'message' => "Member fetched Successfully"
+        // ];
 
-        return response()->json($response, 200);
+        // return response()->json($response, 200);
     }
 
     public function destroy($id)
     {
-        $project = Project::find($id);
-        $user_id = $project->user_id;
+        return $this->dependencyManagerService->projectService->destroyProject($id);
+        // new service code below
+        // $project = Project::find($id);
+        // $user_id = $project->user_id;
 
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if ($user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // if ($user_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
-        // $tasksUnderProject = $project->tasks()->get();
-        $stagesUnderProject = $project->stages()->get();
+        // // $tasksUnderProject = $project->tasks()->get();
+        // $stagesUnderProject = $project->stages()->get();
 
-        foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $stage->tasks()->get();
-            foreach ($tasksUnderStage as $task) {
-                $task->users()->detach();
-            }
-        }
+        // foreach ($stagesUnderProject as $stage) {
+        //     $tasksUnderStage = $stage->tasks()->get();
+        //     foreach ($tasksUnderStage as $task) {
+        //         $task->users()->detach();
+        //     }
+        // }
 
-        $project->stages()->delete();
+        // $project->stages()->delete();
 
-        $project->members()->detach();
+        // $project->members()->detach();
 
-        $project->delete();
+        // $project->delete();
 
-        $user = User::find($user_id);
-        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+        // $user = User::find($user_id);
+        // $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
 
-        $response = [
-            'status' => true,
-            'data' => $projectsWithRelatedData,
-            'message' => "Project Deleted Successfully"
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'data' => $projectsWithRelatedData,
+        //     'message' => "Project Deleted Successfully"
+        // ];
 
 
-        return response()->json($response, 200);
+        // return response()->json($response, 200);
     }
 
     public function leaveProject($id, $userId)
     {
+        return $this->dependencyManagerService->projectService->leaveProject($id, $userId);
+// new service code below
+        // $project = Project::find($id);
 
-        $project = Project::find($id);
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
 
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
-
-        if ($userId !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
-
-
-
-        $stagesUnderProject = $project->stages()->get();
-
-        foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $stage->tasks()->get();
-            foreach ($tasksUnderStage as $task) {
-                if ($task->users->contains($userId)) {
-                    $task->users()->detach($userId);
-                }
-            }
-        }
-
-        $project->members()->detach($userId);
-
-        $user = User::find($userId);
-        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
-
-        $response = [
-            'status' => true,
-            'data' => $projectsWithRelatedData,
-            'message' => "Left Project Successfully"
-        ];
+        // if ($userId !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
 
-        return response()->json($response, 200);
+
+        // $stagesUnderProject = $project->stages()->get();
+
+        // foreach ($stagesUnderProject as $stage) {
+        //     $tasksUnderStage = $stage->tasks()->get();
+        //     foreach ($tasksUnderStage as $task) {
+        //         if ($task->users->contains($userId)) {
+        //             $task->users()->detach($userId);
+        //         }
+        //     }
+        // }
+
+        // $project->members()->detach($userId);
+
+        // $user = User::find($userId);
+        // $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
+        // $response = [
+        //     'status' => true,
+        //     'data' => $projectsWithRelatedData,
+        //     'message' => "Left Project Successfully"
+        // ];
+
+
+        // return response()->json($response, 200);
     }
 }

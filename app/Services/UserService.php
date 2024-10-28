@@ -162,7 +162,7 @@ class UserService
         }
 
 
-        $this->dependencyManagerRepository->projectRepository->detachUser($projectId, $userId);
+        $this->dependencyManagerRepository->projectRepository->detachUser($project, $userId);
         $this->dependencyManagerRepository->projectRepository->stagesOfProject($projectId, $userId);
 
         $projectData = $this->dependencyManagerRepository->projectRepository->fetchDetailstWithProjectId($projectId);

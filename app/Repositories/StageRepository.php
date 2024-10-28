@@ -60,4 +60,10 @@ class StageRepository
          }
          return true;
     }
+
+    public function stagesOfATask(Stage $stage)
+    {
+        return $stage->tasks()->get();
+    }
+
 }

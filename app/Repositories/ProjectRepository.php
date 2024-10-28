@@ -31,6 +31,29 @@ class ProjectRepository
         return $project->members()->attach($userId, ['id' => Str::uuid()]);
     }
 
+    public function getMembersOfProject(Project $project)
+    {
+        $members = $project->members()->get();
+
+        return $members;
+    }
+
+    public function stagesOfAProject(Project $project)
+    {
+        return $project->stages()->get();
+    }
+
+    public function deletionOfAProject(Project $project)
+    {
+        $project->stages()->delete();
+
+        $project->members()->detach();
+
+        $project->delete();
+
+        return true;
+    }
+
     // new code end
     public function projectData($projectId)
     {
@@ -72,9 +95,8 @@ class ProjectRepository
             ->find($id);
     }
 
-    public function detachUser($projectId, $userId)
+    public function detachUser($project, $userId)
     {
-        $project = $this->findById($projectId);
         return $project->members()->detach($userId);
     }
 

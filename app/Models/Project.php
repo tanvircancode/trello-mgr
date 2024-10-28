@@ -47,15 +47,14 @@ class Project extends Model
         return $this->hasMany(Stage::class);
     }
 
-    //new
-    public function getMembers()
-    {
-        $members = $this->members()->get();
+    // public function getMembers()
+    // {
+    //     $members = $this->members()->get();
 
-        for ($i = 0; $i < count($members); $i++) {
-            $members[$i]->isMember = true;
-        }
+    //     for ($i = 0; $i < count($members); $i++) {
+    //         $members[$i]->isMember = true;
+    //     }
 
-        return $members;
-    }
+    //     return $members;
+    // }
 }
