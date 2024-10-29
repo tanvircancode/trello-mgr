@@ -9,19 +9,44 @@ use App\Models\Task;
 use App\Models\Stage;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\DependencyManagerService;
 use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
+    protected ?DependencyManagerService $dependencyManagerService = null;
+
+    public function __construct(DependencyManagerService $dependencyManagerService)
+    {
+        $this->dependencyManagerService = $dependencyManagerService;
+    }
 
     public function store(StoreTaskRequest $request, $id)
     {
+        // return $this->dependencyManagerService->taskService->storeTask($request->all(), $id);
+        // new service code below
 
-        if ($id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+
+        if (!$this->dependencyManagerService->authService->isAuthenticated($id)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $list_id = $request->input('list_id');
+        $listId = $request->input('list_id');
+        $stageExists = $this->dependencyManagerService->listService->findStage($listId);
+
+        if (!$stageExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Stage not found', false, 404);
+        }
+
+        // if ($id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
+        $result = $this->dependencyManagerService->taskService->createTask($request->all(), $id);
+        if (!$result) {
+            return $this->dependencyManagerService->responseService->messageResponse($result['message'], $result['status'], $result['statusCode']);
+        }
+
+        $listId = $request->input('list_id');
 
         $task = Task::createTask($request->all(), $id);
 
@@ -30,8 +55,8 @@ class TasksController extends Controller
         }
 
         $tasks = Project::with([
-            'members',  
-            'stages' => function ($query) { 
+            'members',
+            'stages' => function ($query) {
                 $query->orderBy('created_at', 'asc'); // Order stages by created_at in ascending order
             },
             'stages.tasks' => function ($query) {
@@ -42,14 +67,9 @@ class TasksController extends Controller
             'stages.tasks.priorities',
             'stages.tasks.checklists',
             'stages.tasks.checklists.checklistitems'
-        ])->whereHas('stages', function ($query) use ($list_id) {    
+        ])->whereHas('stages', function ($query) use ($list_id) {
             $query->where('id', $list_id);
         })->first();
-
-        // if ($tasks) {
-        //     $tasks = $tasks->stages->flatMap->tasks;
-        // }
-        // ->find($project_id);
 
         $response = [
             'status' => true,

@@ -17,6 +17,11 @@ class ProjectService
         $this->dependencyManagerRepository = $dependencyManagerRepository;
     }
 
+    public function stagesOfProject($projectId)
+    {
+        return $this->dependencyManagerRepository->projectRepository->projectData($projectId);
+    }
+
     public function storeProject(array $projectData)
     {
         $userId = $projectData['user_id'];
@@ -84,7 +89,7 @@ class ProjectService
         }
 
         $this->dependencyManagerRepository->projectRepository->deletionOfAProject($project);
-        
+
         $user = $this->dependencyManagerRepository->userRepository->findById($userId);
 
         $projectsWithRelatedData = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
@@ -96,7 +101,7 @@ class ProjectService
         return $this->dependencyManagerService->responseService->successMessageDataResponse("Project Deleted Successfully", $projectsWithRelatedData, true, 200);
     }
 
-    public function leaveProject($projectId, $userId)
+    public function leaveProjectAsMember($projectId, $userId)
     {
         $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
 
@@ -109,18 +114,18 @@ class ProjectService
         }
 
         $stagesUnderProject = $this->dependencyManagerRepository->projectRepository->stagesOfAProject($project);
-        
+
         foreach ($stagesUnderProject as $stage) {
             $tasksUnderStage = $this->dependencyManagerRepository->stageRepository->stagesOfATask($stage);
             foreach ($tasksUnderStage as $task) {
-                if($this->dependencyManagerRepository->taskRepository->checkUserOfTask($task, $userId)) {
-                    $this->dependencyManagerRepository->taskRepository->deleteUserOfATask($userId);
+                if ($this->dependencyManagerRepository->taskRepository->checkUserOfTask($task, $userId)) {
+                    $this->dependencyManagerRepository->taskRepository->deleteUserOfATask($task, $userId);
                 }
             }
         }
 
         $this->dependencyManagerRepository->projectRepository->detachUser($project, $userId);
-        
+
         $user = $this->dependencyManagerRepository->userRepository->findById($userId);
 
         $projectsWithRelatedData = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
@@ -130,10 +135,5 @@ class ProjectService
         }
 
         return $this->dependencyManagerService->responseService->successMessageDataResponse("Left Project Successfully", $projectsWithRelatedData, true, 200);
-    }
-
-    public function stagesOfProject($projectId)
-    {
-        return $this->dependencyManagerRepository->projectRepository->projectData($projectId);
     }
 }

@@ -134,8 +134,8 @@ class ProjectsController extends Controller
 
     public function leaveProject($id, $userId)
     {
-        return $this->dependencyManagerService->projectService->leaveProject($id, $userId);
-// new service code below
+        return $this->dependencyManagerService->projectService->leaveProjectAsMember($id, $userId);
+        // new service code below
         // $project = Project::find($id);
 
         // if (!$project) {

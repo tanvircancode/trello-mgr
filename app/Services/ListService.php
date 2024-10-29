@@ -19,6 +19,11 @@ class ListService
     $this->dependencyManagerService = $dependencyManagerService;
   }
 
+  public function findStage($id)
+  {
+    return $this->dependencyManagerRepository->stageRepository->findById($id);
+  }
+  
   public function storeStage(array $data, $userId)
   {
     if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {

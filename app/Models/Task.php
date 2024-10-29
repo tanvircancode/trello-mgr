@@ -84,10 +84,7 @@ class Task extends Model
         $this->users()->detach($user->id);
         return true;
     }
-   
-
-
-    //custom methods
+    
     public static function createTask(array $data , $id)
     {
         $stage = Stage::find($data['list_id']);
