@@ -85,44 +85,44 @@ class Task extends Model
         return true;
     }
     
-    public static function createTask(array $data , $id)
-    {
-        $stage = Stage::find($data['list_id']);
+    // public static function createTask(array $data , $id)
+    // {
+    //     $stage = Stage::find($data['list_id']);
 
-        if (!$stage) {
-            return false;
-        }
+    //     if (!$stage) {
+    //         return false;
+    //     }
 
-        $task = new static;
-        $task->fill($data);
-        $task->save();
+    //     $task = new static;
+    //     $task->fill($data);
+    //     $task->save();
         
-        $task->users()->attach($id , ['id' => Str::uuid()]);
+    //     $task->users()->attach($id , ['id' => Str::uuid()]);
 
-        // Create priorities for the task
-        $prioritiesData = [
-            ['name' => 'Highest', 'color' => '#f12323b3', 'task_id' => $task->id],
-            ['name' => 'Medium', 'color' => '#68c757c7', 'task_id' => $task->id],
-            ['name' => 'Low', 'color' => '#0079BF', 'task_id' => $task->id],
-        ];
+    //     // Create priorities for the task
+    //     $prioritiesData = [
+    //         ['name' => 'Highest', 'color' => '#f12323b3', 'task_id' => $task->id],
+    //         ['name' => 'Medium', 'color' => '#68c757c7', 'task_id' => $task->id],
+    //         ['name' => 'Low', 'color' => '#0079BF', 'task_id' => $task->id],
+    //     ];
 
-        foreach ($prioritiesData as $priorityData) {
-            $priority = new Priority($priorityData);
-            $task->priorities()->save($priority);
-        }
+    //     foreach ($prioritiesData as $priorityData) {
+    //         $priority = new Priority($priorityData);
+    //         $task->priorities()->save($priority);
+    //     }
 
-        // Create labels for the task
-        $labelsData = [
-            ['color' => '#216E4E', 'name' => '', 'task_id' => $task->id],
-            ['color' => '#7F5F01', 'name' => '', 'task_id' => $task->id],
-            ['color' => '#A54800', 'name' => '', 'task_id' => $task->id],
-        ];
+    //     // Create labels for the task
+    //     $labelsData = [
+    //         ['color' => '#216E4E', 'name' => '', 'task_id' => $task->id],
+    //         ['color' => '#7F5F01', 'name' => '', 'task_id' => $task->id],
+    //         ['color' => '#A54800', 'name' => '', 'task_id' => $task->id],
+    //     ];
 
-        foreach ($labelsData as $labelData) {
-            $label = new Label($labelData);
-            $task->labels()->save($label);
-        }
+    //     foreach ($labelsData as $labelData) {
+    //         $label = new Label($labelData);
+    //         $task->labels()->save($label);
+    //     }
 
-        return $task;
-    }
+    //     return $task;
+    // }
 }

@@ -44,4 +44,13 @@ class ResponseService
             'status' => $status,
         ], $statusCode);
     }
+    public function successProjectTaskResponse(string $message, $project, $task, bool $status, int $statusCode): JsonResponse
+    {
+        return response()->json([
+            'message' => $message,
+            'project' => $project,
+            'task' => $task,
+            'status' => $status,
+        ], $statusCode);
+    }
 }

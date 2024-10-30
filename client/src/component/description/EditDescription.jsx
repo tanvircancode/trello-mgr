@@ -45,7 +45,6 @@ const EditDescription = ({
             })
             .then((res) => {
                 
-
                 if (res.data.status) {
                     dispatch(setTasks({ tasks: res.data.project.tasks }));
                     dispatch(setFetchSingleCard({ fetchSingleCard: res.data.task}));

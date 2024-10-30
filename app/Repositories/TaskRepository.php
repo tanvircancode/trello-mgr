@@ -24,9 +24,9 @@ class TaskRepository
         return $task->users()->detach();
     }
 
-    // public function createTask(array $data) {
-    //     return $this->taskModel->create($data);
-    // }
+    public function saveTask(Task $task) {
+        return $task->save();
+    }
 
     public function checkUserOfTask(Task $task, $userId)
     {
@@ -38,7 +38,9 @@ class TaskRepository
         return $task->users()->detach($userId);
     }
 
-    public function createTaskWithRelations(array $taskData, $userId) {
+    public function createTaskWithRelations(array $taskData, $userId)
+    {
+
         $task = $this->taskModel->create($taskData);
 
         $task->users()->attach($userId, ['id' => Str::uuid()]);
@@ -50,9 +52,15 @@ class TaskRepository
             ['name' => 'Low', 'color' => '#0079BF', 'task_id' => $task->id],
         ];
 
-        foreach ($prioritiesData as $priorityData) {
-            $priority = new Priority($priorityData);
-            $task->priorities()->save($priority);
-        }
+        $task->priorities()->createMany($prioritiesData);
+
+        $labelsData = [
+            ['color' => '#216E4E', 'name' => '', 'task_id' => $task->id],
+            ['color' => '#7F5F01', 'name' => '', 'task_id' => $task->id],
+            ['color' => '#A54800', 'name' => '', 'task_id' => $task->id],
+        ];
+
+        $task->labels()->createMany($labelsData);
+        return $task;
     }
 }

@@ -75,6 +75,27 @@ class ProjectRepository
         return $stages;
     }
 
+    public function getTasksByListId($listId)
+    {
+        $tasks = $this->projectModel->with([
+           'members',
+            'stages' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
+            'stages.tasks' => function ($query) {
+                $query->orderBy('created_at', 'asc'); 
+            },
+            'stages.tasks.labels',
+            'stages.tasks.priorities',
+            'stages.tasks.checklists',
+            'stages.tasks.checklists.checklistitems'
+        ])->whereHas('stages', function ($query) use ($listId) {
+            $query->where('id', $listId);
+        })->first();
+
+        return $tasks;
+    }
+
     public function isUserAlreadyMember($projectId, $userId)
     {
         $project = $this->findById($projectId);
