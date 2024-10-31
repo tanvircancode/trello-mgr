@@ -76,66 +76,87 @@ class TasksController extends Controller
 
         // return response()->json($response, 200);
 
-         // new service code below
-         $userId = $request->input('user_id');
-         if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+        // new service code below
+        $userId = $request->input('user_id');
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
         return $this->dependencyManagerService->taskService->updateTask($request->all());
-
     }
 
     public function assignTask(Request $request)
     {
+        // $taskId = request()->input('task_id');
+        // $task = Task::find($taskId);
 
-        $taskId = request()->input('task_id');
-        $task = Task::find($taskId);
+        // if (!$task) {
+        //     return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // }
 
-        if (!$task) {
-            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // $owner_id = request()->input('owner_id');
+        // if ($owner_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
+
+        // $addedTask = $this->dependencyManagerService->taskService->assignUserToTask($request->all());
+
+        // if (!$addedTask) {
+        //     return response()->json(['status' => false, 'message' => 'Member not found'], 404);
+        // }
+
+        // $tasks = Task::with('users')->find($task->id);
+
+        // $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        //     ->find($task->project_id);
+
+        // $response = [
+        //     'status' => true,
+        //     'task' => $tasks,
+        //     'project' => $projects,
+        //     'message' => "Task assigned Successfully"
+        // ];
+
+        // return response()->json($response, 200);
+
+        // new service code below
+        $userId = $request->input('owner_id');
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $owner_id = request()->input('owner_id');
-        if ($owner_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        $taskId = $request->input('task_id');
+        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+
+        if (!$taskExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
         }
 
-        $addedTask = $task->assignUser($request->all());
-        if (!$addedTask) {
-            return response()->json(['status' => false, 'message' => 'Member not found'], 404);
+        $assignUser = $this->dependencyManagerService->taskService->assignUserToTask($request->all());
+
+        if (!$assignUser) {
+            return $this->dependencyManagerService->responseService->messageResponse('Member not found', false, 404);
         }
 
-        $tasks = Task::with('users')->find($task->id);
-
-        $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
-            ->find($task->project_id);
-
-        $response = [
-            'status' => true,
-            'task' => $tasks,
-            'project' => $projects,
-            'message' => "Task assigned Successfully"
-        ];
-
-
-        return response()->json($response, 200);
+        $taskWithUsers = $this->dependencyManagerService->taskService->fetchUsersOfTask($taskId);
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskExists->project_id);
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Task assigned Successfully', $project, $taskWithUsers, true, 200);
     }
 
     public function removeTask(Request $request)
     {
 
-        $taskId = request()->input('task_id');
-        $task = Task::find($taskId);
+        // $taskId = request()->input('task_id');
+        // $task = Task::find($taskId);
 
-        if (!$task) {
-            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
-        }
+        // if (!$task) {
+        //     return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // }
 
-        $owner_id = request()->input('owner_id');
-        if ($owner_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
+        // $owner_id = request()->input('owner_id');
+        // if ($owner_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
 
         $removedTask = $task->removeUser($request->all());
         if (!$removedTask) {
@@ -157,6 +178,30 @@ class TasksController extends Controller
 
 
         return response()->json($response, 200);
+
+
+        // new service code below
+
+        $userId = $request->input('owner_id');
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        }
+
+        $taskId = $request->input('task_id');
+        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+
+        if (!$taskExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+        }
+
+        $removeUser = $this->dependencyManagerService->taskService->removeUserFromTask($request->all());
+        if (!$removeUser) {
+            return $this->dependencyManagerService->responseService->messageResponse('Member not found', false, 404);
+        }
+
+       
+
+       
     }
 
     public function destroy($id, $userId)

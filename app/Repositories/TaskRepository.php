@@ -28,6 +28,11 @@ class TaskRepository
         return $task->save();
     }
 
+    public function attachUserToTask(Task $task, $userId)
+    {
+        return $task->users()->attach($userId, ['id' => Str::uuid()]);
+    }
+
     public function checkUserOfTask(Task $task, $userId)
     {
         return $task->users()->contains($userId);

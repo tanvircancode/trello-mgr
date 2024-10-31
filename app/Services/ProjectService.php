@@ -22,6 +22,11 @@ class ProjectService
         return $this->dependencyManagerRepository->projectRepository->projectData($projectId);
     }
 
+    public function fetchDetailstWithProjectId($projectId)
+    {
+        return $this->dependencyManagerRepository->projectRepository->projectDetails($projectId);
+    }
+
     public function storeProject(array $projectData)
     {
         $userId = $projectData['user_id'];

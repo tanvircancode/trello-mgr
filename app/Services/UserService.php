@@ -19,6 +19,11 @@ class UserService
         $this->dependencyManagerService = $dependencyManagerService;
     }
 
+    public function findUserById($id)
+    {
+        return $this->dependencyManagerRepository->userRepository->findById($id);
+    }
+
     public function registerUser(array $userData)
     {
         if ($this->dependencyManagerRepository->userRepository->isEmailUnique($userData['email'])) {
@@ -83,9 +88,9 @@ class UserService
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($id);
+        $user = $this->findUserById($id);
         $projectsOfUser = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
-        
+
         // if (!$projectsOfUser) {
         //     return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);
         // }
@@ -132,7 +137,7 @@ class UserService
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($userId);
+        $user = $this->findUserById($userId);
         if (!$user) {
             return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);
         }
@@ -141,7 +146,7 @@ class UserService
             return $this->dependencyManagerService->responseService->messageResponse('User is already a member of this project', false, 404);
         }
 
-        $project = $this->dependencyManagerRepository->projectRepository->fetchDetailstWithProjectId($projectId);
+        $project = $this->dependencyManagerRepository->projectRepository->projectDetails($projectId);
         return $this->dependencyManagerService->responseService->successMessageDataResponse('Member Added Successfully', $project, true, 200);
     }
 
@@ -156,7 +161,7 @@ class UserService
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($userId);
+        $user = $this->findUserById($userId);
         if (!$user) {
             return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);
         }
@@ -165,7 +170,7 @@ class UserService
         $this->dependencyManagerRepository->projectRepository->detachUser($project, $userId);
         $this->dependencyManagerRepository->projectRepository->stagesOfProject($projectId, $userId);
 
-        $projectData = $this->dependencyManagerRepository->projectRepository->fetchDetailstWithProjectId($projectId);
+        $projectData = $this->dependencyManagerRepository->projectRepository->projectDetails($projectId);
         return $this->dependencyManagerService->responseService->successMessageDataResponse('Member Removed Successfully', $projectData, true, 200);
     }
 }

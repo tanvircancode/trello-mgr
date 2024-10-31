@@ -110,7 +110,7 @@ class ProjectRepository
         return true;
     }
 
-    public function fetchDetailstWithProjectId($id)
+    public function projectDetails($id)
     {
         return $this->projectModel->with('members', 'stages', 'stages.tasks', 'stages.tasks.users', 'stages.tasks.labels', 'stages.tasks.priorities', 'stages.tasks.checklists', 'stages.tasks.checklists.checklistitems')
             ->find($id);
