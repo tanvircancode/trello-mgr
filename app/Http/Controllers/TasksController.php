@@ -158,27 +158,25 @@ class TasksController extends Controller
         //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         // }
 
-        $removedTask = $task->removeUser($request->all());
-        if (!$removedTask) {
-            return response()->json(['status' => false, 'message' => 'Member not found'], 404);
-        }
+        // $removedTask = $task->removeUser($request->all());
+        // if (!$removedTask) {
+        //     return response()->json(['status' => false, 'message' => 'Member not found'], 404);
+        // }
 
 
-        $tasks = Task::with('users')->find($task->id);
+        // $tasks = Task::with('users')->find($task->id);
 
-        $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
-            ->find($task->project_id);
+        // $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        //     ->find($task->project_id);
 
-        $response = [
-            'status' => true,
-            'task' => $tasks,
-            'project' => $projects,
-            'message' => "Task assigned Successfully"
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'task' => $tasks,
+        //     'project' => $projects,
+        //     'message' => "Member removed Successfully"
+        // ];
 
-
-        return response()->json($response, 200);
-
+        // return response()->json($response, 200);
 
         // new service code below
 
@@ -199,52 +197,82 @@ class TasksController extends Controller
             return $this->dependencyManagerService->responseService->messageResponse('Member not found', false, 404);
         }
 
-       
-
-       
+        $taskWithUsers = $this->dependencyManagerService->taskService->fetchUsersOfTask($taskId);
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskExists->project_id);
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Member removed Successfully', $project, $taskWithUsers, true, 200);
     }
 
-    public function destroy($id, $userId)
+    public function destroy($taskId, $userId)
     {
-        if ($userId !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // if ($userId !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
+
+        // $task = Task::find($id);
+
+        // if (!$task) {
+        //     return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // }
+
+        // $projectId = $task->project_id;
+
+        // $project = Project::find($projectId);
+
+        // if (!$project) {
+        //     $response = [
+        //         'status' => false,
+        //         'message' => 'Project not found'
+        //     ];
+        //     return response()->json($response, 404);
+        // }
+
+        // $membersUnderTask = $task->users()->get();
+        // foreach ($membersUnderTask as $member) {
+        //     $task->users()->detach($member->id);
+        // }
+        // $task->delete();
+
+        // $user = User::find($userId);
+        // $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
+
+        // $response = [
+        //     'status' => true,
+        //     'data' => $projectsWithRelatedData,
+        //     'project_id' => $projectId,
+        //     'message' => "Task deleted Successfully"
+        // ];
+
+        // return response()->json($response, 200);
+
+          // new service code below
+
+          if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+              return $this->dependencyManagerService->responseService->unauthorizedResponse();
+          }
+  
+          $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+  
+          if (!$taskExists) {
+              return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+          }
+
+          $projectId = $taskExists->project_id;
+          $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($projectId);
+
+          if(!$project) {
+            return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
+          }
+          $taskWithUsers = $this->dependencyManagerService->taskService->fetchUsersOfTask($taskId);
+          $this->dependencyManagerService->taskService->removeMembersFromTask($taskExists, $taskWithUsers);
+
+          $user = $this->dependencyManagerService->userService->findUserById($userId);
+          $projectsWithRelatedData = $this->dependencyManagerService->userService->getProjectsFromUser($user);
+
+          foreach ($projectsWithRelatedData as $project) {
+            $project->is_owner = $project->user_id === $userId;
         }
-
-        $task = Task::find($id);
-
-        if (!$task) {
-            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
-        }
-
-        $projectId = $task->project_id;
-
-        $project = Project::find($projectId);
-
-        if (!$project) {
-            $response = [
-                'status' => false,
-                'message' => 'Project not found'
-            ];
-            return response()->json($response, 404);
-        }
-
-        $membersUnderTask = $task->users()->get();
-        foreach ($membersUnderTask as $member) {
-            $task->users()->detach($member->id);
-        }
-        $task->delete();
-
-        $user = User::find($userId);
-        $projectsWithRelatedData = $user->getProjectsWithOwnerAndTasks();
-
-        $response = [
-            'status' => true,
-            'data' => $projectsWithRelatedData,
-            'project_id' => $projectId,
-            'message' => "Task deleted Successfully"
-        ];
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Task deleted Successfully', $project, $taskWithUsers, true, 200);
 
 
-        return response()->json($response, 200);
     }
 }

@@ -27,10 +27,17 @@ class TaskRepository
     public function saveTask(Task $task) {
         return $task->save();
     }
+    public function deleteTask(Task $task) {
+        return $task->delete();
+    }
 
     public function attachUserToTask(Task $task, $userId)
     {
         return $task->users()->attach($userId, ['id' => Str::uuid()]);
+    }
+    public function detachUserFromTask(Task $task, $userId)
+    {
+        return $task->users()->detach($userId);
     }
 
     public function checkUserOfTask(Task $task, $userId)

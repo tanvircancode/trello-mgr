@@ -12,6 +12,7 @@ const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCa
     const token = useSelector((state) => state.token);
     const cardId = fetchSingleCard.id;
     const userId = localStorage.getItem("user_id");
+    const projectId = selectedProject.id;
 
    
 
@@ -36,7 +37,7 @@ const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCa
 
                 if (res.data.status) {
                     const allProjects = res.data.data;
-                    var filteredProject = allProjects.filter((project) => project.id === res.data.project_id);
+                    var filteredProject = allProjects.filter((project) => project.id === projectId);
                     filteredProject = filteredProject[0];
                    
                     dispatch(setProjects({ projects: allProjects }));

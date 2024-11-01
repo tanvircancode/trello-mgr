@@ -23,6 +23,10 @@ class UserService
     {
         return $this->dependencyManagerRepository->userRepository->findById($id);
     }
+    public function getProjectsFromUser($user)
+    {
+       return $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+    }
 
     public function registerUser(array $userData)
     {
@@ -89,7 +93,7 @@ class UserService
         }
 
         $user = $this->findUserById($id);
-        $projectsOfUser = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+        $projectsOfUser = $this->getProjectsFromUser($user);
 
         // if (!$projectsOfUser) {
         //     return $this->dependencyManagerService->responseService->messageResponse('User not found', false, 404);

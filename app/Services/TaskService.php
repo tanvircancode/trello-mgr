@@ -32,7 +32,7 @@ class TaskService
         return $this->dependencyManagerRepository->taskRepository->findById($id);
     }
 
-    
+
 
     public function updateTask(array $data)
     {
@@ -66,7 +66,7 @@ class TaskService
         $taskId = $data['task_id'];
         $task = $this->findTaskById($taskId);
         $this->dependencyManagerRepository->taskRepository->attachUserToTask($task, $userId);
-        
+
         return true;
     }
 
@@ -77,7 +77,8 @@ class TaskService
         return $task;
     }
 
-    public function removeUserFromTask(array $data) {
+    public function removeUserFromTask(array $data)
+    {
         $userId = $data['user_id'];
 
         $user = $this->dependencyManagerService->userService->findUserById($userId);
@@ -88,8 +89,22 @@ class TaskService
 
         $taskId = $data['task_id'];
         $task = $this->findTaskById($taskId);
-        $this->dependencyManagerRepository->taskRepository->attachUserToTask($task, $userId);
+        $this->removeSingleUserFromTask($task, $userId);
+
+        return true;
+    }
+
+    public function removeSingleUserFromTask($task, $userId)
+    {
+        return $this->dependencyManagerRepository->taskRepository->detachUserFromTask($task, $userId);
+    }
+
+    public function removeMembersFromTask($task, $tusers) {
+        foreach ($tusers as $user) {
+            $this->removeSingleUserFromTask($task,$user->id);
+        }
         
+        $this->dependencyManagerRepository->taskRepository->deleteTask($task);
         return true;
     }
 }
