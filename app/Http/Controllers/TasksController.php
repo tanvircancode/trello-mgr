@@ -244,35 +244,34 @@ class TasksController extends Controller
 
         // return response()->json($response, 200);
 
-          // new service code below
+        // new service code below
 
-          if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-              return $this->dependencyManagerService->responseService->unauthorizedResponse();
-          }
-  
-          $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
-  
-          if (!$taskExists) {
-              return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
-          }
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        }
 
-          $projectId = $taskExists->project_id;
-          $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($projectId);
+        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
 
-          if(!$project) {
+        if (!$taskExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+        }
+
+        $projectId = $taskExists->project_id;
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($projectId);
+
+        if (!$project) {
             return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
-          }
-          $taskWithUsers = $this->dependencyManagerService->taskService->fetchUsersOfTask($taskId);
-          $this->dependencyManagerService->taskService->removeMembersFromTask($taskExists, $taskWithUsers);
+        }
+        
+        $taskWithUsers = $this->dependencyManagerService->taskService->fetchUsersOfTask($taskId);
+        $this->dependencyManagerService->taskService->removeMembersFromTask($taskExists, $taskWithUsers);
 
-          $user = $this->dependencyManagerService->userService->findUserById($userId);
-          $projectsWithRelatedData = $this->dependencyManagerService->userService->getProjectsFromUser($user);
+        $user = $this->dependencyManagerService->userService->findUserById($userId);
+        $projectsWithRelatedData = $this->dependencyManagerService->userService->getProjectsFromUser($user);
 
-          foreach ($projectsWithRelatedData as $project) {
+        foreach ($projectsWithRelatedData as $project) {
             $project->is_owner = $project->user_id === $userId;
         }
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Task deleted Successfully', $project, $taskWithUsers, true, 200);
-
-
+        return $this->dependencyManagerService->responseService->successMessageDataResponse('Task deleted Successfully', $projectsWithRelatedData, true, 200);
     }
 }

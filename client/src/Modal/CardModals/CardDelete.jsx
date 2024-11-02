@@ -1,20 +1,30 @@
 import "../modal.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { setMakeCardModalBlur, setProjects, setTasks, setMakeBlur, setSelectedProjectMembers, setSelectedProject } from "../../store";
+import {
+    setMakeCardModalBlur,
+    setProjects,
+    setTasks,
+    setMakeBlur,
+    setSelectedProjectMembers,
+    setSelectedProject,
+} from "../../store";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 
-const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCardModal}) => {
+const CardDelete = ({
+    openDeleteCardModal,
+    setOpenDeleteCardModal,
+    setOpenNewCardModal,
+}) => {
     const fetchSingleCard = useSelector((state) => state.fetchSingleCard);
     const selectedProject = useSelector((state) => state.selectedProject);
 
     const token = useSelector((state) => state.token);
     const cardId = fetchSingleCard.id;
     const userId = localStorage.getItem("user_id");
+    // check later
     const projectId = selectedProject.id;
-
-   
 
     const dispatch = useDispatch();
 
@@ -33,13 +43,13 @@ const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCa
                 },
             })
             .then((res) => {
-                
-
                 if (res.data.status) {
                     const allProjects = res.data.data;
-                    var filteredProject = allProjects.filter((project) => project.id === projectId);
+                    var filteredProject = allProjects.filter(
+                        (project) => project.id === projectId
+                    );
                     filteredProject = filteredProject[0];
-                   
+
                     dispatch(setProjects({ projects: allProjects }));
                     if (allProjects.length > 0) {
                         dispatch(
@@ -59,7 +69,7 @@ const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCa
                             })
                         );
                     }
-                    
+
                     toast.success(res.data?.message);
                 } else {
                     toast.error("Server is not responding");
@@ -67,7 +77,6 @@ const CardDelete = ({ openDeleteCardModal, setOpenDeleteCardModal , setOpenNewCa
                 closePopup();
             })
             .catch((error) => {
-               
                 if (
                     error.response &&
                     error.response?.status &&
