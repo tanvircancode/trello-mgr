@@ -52,7 +52,6 @@ class Label extends Model
             return null;
         }
 
-
         $label = new static;
         $label->fill($data);
         $label->save();

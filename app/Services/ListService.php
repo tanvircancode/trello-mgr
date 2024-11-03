@@ -26,6 +26,7 @@ class ListService
   
   public function storeStage(array $data, $userId)
   {
+    
     if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
       return $this->dependencyManagerService->responseService->unauthorizedResponse();
     }

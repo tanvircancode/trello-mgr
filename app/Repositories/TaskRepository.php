@@ -24,10 +24,13 @@ class TaskRepository
         return $task->users()->detach();
     }
 
-    public function saveTask(Task $task) {
+    public function saveTask(Task $task)
+    {
         return $task->save();
     }
-    public function deleteTask(Task $task) {
+
+    public function deleteTask(Task $task)
+    {
         return $task->delete();
     }
 

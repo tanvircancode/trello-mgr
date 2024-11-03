@@ -29,6 +29,7 @@ class TasksController extends Controller
         if (!$this->dependencyManagerService->authService->isAuthenticated($id)) {
             return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
+        
         $listId = $request->input('list_id');
         $stageExists = $this->dependencyManagerService->listService->findStage($listId);
 

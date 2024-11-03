@@ -36,36 +36,34 @@ class UsersController extends Controller
     public function login(Request $request)
     {
         $input = $request->all();
-        // return $this->dependencyManagerService->userService->userLogin($input);
+        return $this->dependencyManagerService->userService->userLogin($input);
 
         // from here old code
-   
 
-        $credentials = [
-            'email' => $input['email'],
-            'password' => $input['password']
-        ];
+        // $credentials = [
+        //     'email' => $input['email'],
+        //     'password' => $input['password']
+        // ];
 
-        if (Auth::attempt($credentials)) {
-            // $request->session()->regenerate();
-            $user = Auth::user();
+        // if (Auth::attempt($credentials)) {
+        //     // $request->session()->regenerate();
+        //     $user = Auth::user();
 
-            // $token = $user->createToken('MyAppToken')->plainTextToken;
-            $response = [
-                'status' => true,
-                'user' => $user,
-                // 'token' => $token,
-            ];
+        //     $token = $user->createToken('MyAppToken')->plainTextToken;
+        //     $response = [
+        //         'status' => true,
+        //         'user' => $user,
+        //         'token' => $token,
+        //     ];
 
-            return response()->json($response, 200);
-        }
+        //     return response()->json($response, 200);
+        // }
 
-        $response = [
-            'status' => false,
-            'message' => 'Invalid Credentials',
-            'data' => "Oise ni?"
-        ];
-        return response()->json($response, 404);
+        // $response = [
+        //     'status' => false,
+        //     'message' => 'Invalid Credentials',
+        // ];
+        // return response()->json($response, 404);
     }
 
     public function logout(Request $request)
@@ -129,7 +127,7 @@ class UsersController extends Controller
 
 
         //new services code from here show func
-        
+
 
         return $this->dependencyManagerService->userService->showUserProjects($id);
     }
@@ -169,9 +167,9 @@ class UsersController extends Controller
 
         // return response()->json($response, 200);
 
-         //new services code from here show func
-         $input = $request->all();
-         return $this->dependencyManagerService->userService->searchUsers($input);
+        //new services code from here show func
+        $input = $request->all();
+        return $this->dependencyManagerService->userService->searchUsers($input);
     }
 
 

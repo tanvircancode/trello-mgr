@@ -9,29 +9,36 @@ use App\Models\Label;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use App\Services\DependencyManagerService;
 use Illuminate\Support\Facades\Auth;
-
 
 class LabelsController extends Controller
 {
+    protected ?DependencyManagerService $dependencyManagerService = null;
+
+    public function __construct(DependencyManagerService $dependencyManagerService)
+    {
+        $this->dependencyManagerService = $dependencyManagerService;
+    }
+
     public function store(StoreLabelRequest $request)
     {
-        $user_id = $request->input('user_id');
-        $project_id = $request->input('project_id');
+        // $userId = $request->input('user_id');
+        $projectId = $request->input('project_id');
 
-        if ($user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
-        }
-        
+        // if ($userId !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
+
         $label = Label::createLabel($request->all());
 
-        if (!$label) {
-            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
-        }
+        // if (!$label) { 
+        //     return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // }             
 
         $tasks = Task::with('labels')->find($label->task_id);
-        $projects = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
-        ->find($project_id);
+        $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($project_id);
 
         $response = [
             'status' => true,
@@ -40,8 +47,24 @@ class LabelsController extends Controller
             'message' => "Label Created Successfully"
         ];
 
-
         return response()->json($response, 200);
+
+        // new service code below
+        //
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        }
+
+        $taskId = $request->input('task_id');
+        $taskExists = $this->dependencyManagerService->taskService->findTask($taskId);
+
+        if (!$taskExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+        }
+
+        $tasks = $this->dependencyManagerService->labelService->createLabel($request->all());
+
+        return $this->dependencyManagerService->responseService->successMessageDataResponse('Task Created Successfully', $tasks, true, 200);
     }
 
     public function update(UpdateLabelRequest $request, $id)
@@ -63,10 +86,10 @@ class LabelsController extends Controller
         if (!$label) {
             return response()->json(['status' => false, 'message' => 'Label not found'], 404);
         }
-        
+
         $task = Task::with('labels')->find($label->task_id);
-        $project = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
-        ->find($task->project_id);
+        $project = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($task->project_id);
 
         $response = [
             'status' => true,
@@ -89,8 +112,8 @@ class LabelsController extends Controller
 
         $label->delete();
         $task = Task::with('labels')->find($label->task_id);
-        $project = Project::with('members','tasks', 'tasks.users','tasks.labels' , 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
-        ->find($task->project_id);
+        $project = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($task->project_id);
 
         $response = [
             'status' => true,
@@ -122,10 +145,10 @@ class LabelsController extends Controller
         if (!$label) {
             return response()->json(['status' => false, 'message' => 'Label not found'], 404);
         }
-        
+
         $task = Task::with('labels')->find($label->task_id);
-        $project = Project::with('members','tasks', 'tasks.users','tasks.labels', 'tasks.priorities', 'tasks.checklists','tasks.checklists.checklistitems')
-        ->find($task->project_id);
+        $project = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+            ->find($task->project_id);
 
         $response = [
             'status' => true,

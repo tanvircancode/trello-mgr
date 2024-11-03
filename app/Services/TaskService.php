@@ -32,7 +32,10 @@ class TaskService
         return $this->dependencyManagerRepository->taskRepository->findById($id);
     }
 
-
+    public function findTask($id)
+    {
+      return $this->dependencyManagerRepository->taskRepository->findById($id);
+    }
 
     public function updateTask(array $data)
     {
