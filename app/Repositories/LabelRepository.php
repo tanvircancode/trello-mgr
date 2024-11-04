@@ -18,7 +18,13 @@ class LabelRepository
         return $this->labelModel->find($id);
     }
 
-    public function createLabel(array $data)
+    public function saveLabel(Label $label, $data )
+    {
+        // check later
+        return $label->update($data);
+    }
+
+    public function storeLabel(array $data)
     {
         return $this->labelModel->create($data);
     }

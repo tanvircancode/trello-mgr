@@ -10,7 +10,7 @@ class ProjectService
 {
     protected DependencyManagerService $dependencyManagerService;
     protected DependencyManagerRepository $dependencyManagerRepository;
-
+    
     public function __construct(DependencyManagerService $dependencyManagerService, DependencyManagerRepository $dependencyManagerRepository)
     {
         $this->dependencyManagerService = $dependencyManagerService;

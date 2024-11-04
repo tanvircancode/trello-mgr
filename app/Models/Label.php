@@ -43,21 +43,20 @@ class Label extends Model
         return $this->belongsTo(Task::class);
     }
 
-    //custom methods
-    public static function createLabel(array $data)
-    {
-        $task = Task::find($data['task_id']);
+    // public static function createLabel(array $data)
+    // {
+    //     $task = Task::find($data['task_id']);
 
-        if (!$task) {
-            return null;
-        }
+    //     if (!$task) {
+    //         return null;
+    //     }
 
-        $label = new static;
-        $label->fill($data);
-        $label->save();
+    //     $label = new static;
+    //     $label->fill($data);
+    //     $label->save();
 
-        return $label;
-    }
+    //     return $label;
+    // }
 
     public static function updateLabel(array $data, $id)
     {
