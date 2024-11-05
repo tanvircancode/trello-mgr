@@ -25,7 +25,7 @@ class UserService
     }
     public function getProjectsFromUser($user)
     {
-       return $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+        return $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
     }
 
     public function registerUser(array $userData)
@@ -53,6 +53,7 @@ class UserService
             'email' => $userData['email'],
             'password' => $userData['password']
         ];
+        
 
         if (Auth::attempt($credentials)) {
             $user = $this->dependencyManagerRepository->userRepository->getAuthenticatedUser();

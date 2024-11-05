@@ -58,19 +58,19 @@ class Label extends Model
     //     return $label;
     // }
 
-    public static function updateLabel(array $data, $id)
-    {
-        $label = Label::find($id);
-        if (!$label) {
-            return null;
-        }
+    // public static function updateLabel(array $data, $id)
+    // {
+    //     $label = Label::find($id);
+    //     if (!$label) {
+    //         return null;
+    //     }
 
-        if (isset($data['is_active'])) {
-            $label->is_active = $data['is_active'];
-        }
+    //     if (isset($data['is_active'])) {
+    //         $label->is_active = $data['is_active'];
+    //     }
 
-        $label->fill($data);
-        $label->save();
-        return $label;
-    }
+    //     $label->fill($data);
+    //     $label->save();
+    //     return $label;
+    // }
 }

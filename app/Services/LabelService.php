@@ -30,6 +30,10 @@ class LabelService
     {
         return $this->dependencyManagerRepository->labelRepository->saveLabel($label, $data);
     }
+    public function deleteLabel($label)
+    {
+        return $this->dependencyManagerRepository->labelRepository->delete($label);
+    }
 
     public function fetchLabelsOfATask($taskId)
     {

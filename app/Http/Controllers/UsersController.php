@@ -21,6 +21,8 @@ class UsersController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+        return response()->json(['dd' => true, 'message' => 'checking now'], 200);
+
         $input = $request->all();
 
         $user = $this->dependencyManagerService->userService->registerUser($input);
@@ -35,7 +37,9 @@ class UsersController extends Controller
 
     public function login(Request $request)
     {
+        return response()->json(['status' => true, 'message' => 'checking now'], 200);
         $input = $request->all();
+
         return $this->dependencyManagerService->userService->userLogin($input);
 
         // from here old code

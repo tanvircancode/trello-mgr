@@ -9,6 +9,7 @@ use App\Services\ResponseService;
 use App\Services\UserService;
 use App\Services\TaskService;
 use App\Services\LabelService;
+use App\Services\PriorityService;
 
 class DependencyManagerService
 {
@@ -19,6 +20,7 @@ class DependencyManagerService
     public TaskService $taskService;
     public UserService $userService;
     public LabelService $labelService;
+    public PriorityService $priorityService;
 
     public function __construct(
         ListService $listService,
@@ -28,6 +30,7 @@ class DependencyManagerService
         TaskService $taskService,
         UserService $userService,
         LabelService $labelService,
+        PriorityService $priorityService,
     ) {
         $this->listService = $listService;
         $this->projectService = $projectService;
@@ -36,5 +39,6 @@ class DependencyManagerService
         $this->userService = $userService;
         $this->taskService = $taskService;
         $this->labelService = $labelService;
+        $this->priorityService = $priorityService;
     }
 }

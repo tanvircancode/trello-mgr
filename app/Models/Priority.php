@@ -18,7 +18,10 @@ class Priority extends Model
 
 
     protected $fillable = [
-        'task_id', 'name', 'color', 'is_active'
+        'task_id',
+        'name',
+        'color',
+        'is_active'
     ];
 
     protected static function boot()
@@ -42,42 +45,39 @@ class Priority extends Model
         return $this->belongsTo(Task::class);
     }
 
+    // public static function createPriority(array $data)
+    // {
+    //     $task = Task::find($data['task_id']);
 
-    //custom methods
-    public static function createPriority(array $data)
-    {
-        $task = Task::find($data['task_id']);
+    //     if (!$task) {
+    //         return null;
+    //     }
 
-        if (!$task) {
-            return null;
-        }
+    //     $priority = new static;
+    //     $priority->fill($data);
+    //     $priority->save();
 
+    //     return $priority;
+    // }
 
-        $priority = new static;
-        $priority->fill($data);
-        $priority->save();
+    // public static function updatePriority(array $data)
+    // {
+    //     $priority = Priority::find($data['id']);
+    //     if (!$priority) {
+    //         return null;
+    //     }
 
-        return $priority;
-    }
+    //     if (isset($data['name'])) {
+    //         $priority->name = $data['name'];
+    //     }
 
-    public static function updatePriority(array $data)
-    {
-        $priority = Priority::find($data['id']);
-        if (!$priority) {
-            return null;
-        }
+    //     if (isset($data['color'])) {
+    //         $priority->color = $data['color'];
+    //     }
 
-        if (isset($data['name'])) {
-            $priority->name = $data['name'];
-        }
-
-        if (isset($data['color'])) {
-            $priority->color = $data['color'];
-        }
-
-        $priority->save();
-        return $priority;
-    }
+    //     $priority->save();
+    //     return $priority;
+    // }
 
     public static function changePriority(array $data)
     {
