@@ -79,47 +79,46 @@ class Priority extends Model
     //     return $priority;
     // }
 
-    public static function changePriority(array $data)
-    {
-        $selectedPriorityId = $data['id'];
-        $task_id = $data['task_id'];
+    // public static function changePriority(array $data)
+    // {
+    //     $selectedPriorityId = $data['id'];
+    //     $task_id = $data['task_id'];
 
-        $priorities = Task::find($task_id)->priorities;
+    //     $priorities = Task::find($task_id)->priorities;
 
-        if ($selectedPriorityId === 'null') {
-            foreach ($priorities as $priority) {
-                $priority->is_active = 0;
-                $priority->save();
-            }
-            return true;
-        }
+    //     if ($selectedPriorityId === 'null') {  
+    //         foreach ($priorities as $priority) {
+    //             $priority->is_active = 0;
+    //             $priority->save();
+    //         }
+    //         return true;
+    //     }
 
-        $priority = Priority::find($selectedPriorityId);
+    //     $priority = Priority::find($selectedPriorityId);
 
-        if (!$priority) {
-            return null;
-        }
+    //     if (!$priority) {
+    //         return null;
+    //     }
 
-        $prevSelectedPriority = null;
-        foreach ($priorities as $prior) {
-            if ($prior->is_active) {
-                $prevSelectedPriority = $prior;
-                break;
-            }
-        }
+    //     $prevSelectedPriority = null;
+    //     foreach ($priorities as $prior) {
+    //         if ($prior->is_active) {
+    //             $prevSelectedPriority = $prior;
+    //             break;
+    //         }
+    //     }
+    
+    //     if ($prevSelectedPriority !== null  && $prevSelectedPriority->id === $selectedPriorityId) {
+    //         $priority->is_active = 0;
+    //         $priority->save();
+    //         return true;
+    //     }
 
-        if ($prevSelectedPriority !== null  && $prevSelectedPriority->id === $selectedPriorityId) {
-            $priority->is_active = 0;
-            $priority->save();
-            return true;
-        }
+    //     foreach ($priorities as $priority) {
+    //         $priority->is_active = $priority->id === $selectedPriorityId;
+    //         $priority->save();
+    //     }
 
-        foreach ($priorities as $priority) {
-            $priority->is_active = $priority->id === $selectedPriorityId;
-            $priority->save();
-        }
-
-
-        return true;
-    }
+    //     return true;
+    // }
 }

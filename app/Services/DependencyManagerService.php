@@ -10,6 +10,7 @@ use App\Services\UserService;
 use App\Services\TaskService;
 use App\Services\LabelService;
 use App\Services\PriorityService;
+use App\Services\ChecklistService;
 
 class DependencyManagerService
 {
@@ -21,6 +22,7 @@ class DependencyManagerService
     public UserService $userService;
     public LabelService $labelService;
     public PriorityService $priorityService;
+    public ChecklistService $checklistService;
 
     public function __construct(
         ListService $listService,
@@ -31,6 +33,7 @@ class DependencyManagerService
         UserService $userService,
         LabelService $labelService,
         PriorityService $priorityService,
+        ChecklistService $checklistService,
     ) {
         $this->listService = $listService;
         $this->projectService = $projectService;
@@ -40,5 +43,6 @@ class DependencyManagerService
         $this->taskService = $taskService;
         $this->labelService = $labelService;
         $this->priorityService = $priorityService;
+        $this->checklistService = $checklistService;
     }
 }

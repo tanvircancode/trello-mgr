@@ -178,31 +178,31 @@ class PrioritiesController extends Controller
     public function updateSelected(Request $request)
     {
         // $user_id = $request->input('user_id');
-        $task_id = $request->input('task_id');
+        // $task_id = $request->input('task_id');
 
         // if ($user_id !== Auth::user()->id) {
         //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         // }
 
-        $priorityModel = new Priority();
-        $priority = $priorityModel->changePriority($request->all());
+        // $priorityModel = new Priority();
+        // $priority = $priorityModel->changePriority($request->all());
 
-        if (!$priority) {
-            return response()->json(['status' => false, 'message' => 'Priority not found'], 404);
-        }
+        // if (!$priority) {
+        //     return response()->json(['status' => false, 'message' => 'Priority not found'], 404);
+        // }
 
-        $task = Task::with('priorities')->find($task_id);
-        $project = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
-            ->find($task->project_id);
+        // $task = Task::with('priorities')->find($task_id);
+        // $project = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        //     ->find($task->project_id);
 
-        $response = [
-            'status' => true,
-            'task' => $task,
-            'project' => $project,
-            'message' => "Priority Updated Successfully"
-        ];
+        // $response = [
+        //     'status' => true,
+        //     'task' => $task,
+        //     'project' => $project,
+        //     'message' => "Priority Updated Successfully"
+        // ];
 
-        return response()->json($response, 200);
+        // return response()->json($response, 200);
 
         // new service code below
         $userId = $request->input('user_id');
@@ -211,21 +211,25 @@ class PrioritiesController extends Controller
         }
 
         $priorityId = $request->input('id');
+        $taskId = $request->input('task_id');
+
         $priority = $this->dependencyManagerService->priorityService->findPriorityById($priorityId);
 
-        if (!$priority) {
+        $priorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATaskNew($taskId);
+        $previousSelectedPriority = $this->dependencyManagerService->priorityService->selectPreviousPriority($priorities);
+
+        if ($priorityId === 'null') {
+            return $this->dependencyManagerService->priorityService->deactivatePriority($priorities);
+        } else if (!$priority) {
             return $this->dependencyManagerService->responseService->messageResponse('Priority not found', false, 404);
+        } else if ($previousSelectedPriority !== null  && $previousSelectedPriority->id === $priorityId) {
+            $this->dependencyManagerService->priorityService->unselectSelectedPriority($priority);
+        } else {
+            $this->dependencyManagerService->priorityService->selectNewPriority($priorities, $priorityId);
         }
 
-        $taskId = $request->input('task_id');
-        $priorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATaskNew($taskId);
-
-        $priorityX = $this->dependencyManagerService->priorityService->changeSelectedPriority($priorities, $priorityId, $taskId);
-
-
-
-
         $taskWithPriorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATask($taskId);
-        $priority = $this->dependencyManagerService->priorityService->findPriorityById($priorityId);
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Priority Updated Successfully', $project, $taskWithPriorities, true, 200);
     }
 }

@@ -8,6 +8,7 @@ use App\Repositories\StageRepository;
 use App\Repositories\TaskRepository;
 use App\Repositories\LabelRepository;
 use App\Repositories\PriorityRepository;
+use App\Repositories\ChecklistRepository;
 
 class DependencyManagerRepository
 {
@@ -17,6 +18,7 @@ class DependencyManagerRepository
     public TaskRepository $taskRepository;
     public LabelRepository $labelRepository;
     public PriorityRepository $priorityRepository;
+    public ChecklistRepository $checklistRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -25,6 +27,7 @@ class DependencyManagerRepository
         TaskRepository $taskRepository,
         LabelRepository $labelRepository,
         PriorityRepository $priorityRepository,
+        ChecklistRepository $checklistRepository,
     ) {
         $this->userRepository = $userRepository;
         $this->projectRepository = $projectRepository;
@@ -32,5 +35,6 @@ class DependencyManagerRepository
         $this->taskRepository = $taskRepository;
         $this->labelRepository = $labelRepository;
         $this->priorityRepository = $priorityRepository;
+        $this->checklistRepository = $checklistRepository;
     }
 }

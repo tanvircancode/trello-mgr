@@ -62,20 +62,19 @@ class Checklist extends Model
         return $checklist;
     }
 
-    public static function updateChecklist(array $data)
-    {
+    // public static function updateChecklist(array $data)
+    // {
+        // $checklist = Checklist::find($data['id']);
+        // if (!$checklist) {
+        //     return null;
+        // }
 
-        $checklist = Checklist::find($data['id']);
-        if (!$checklist) {
-            return null;
-        }
+        // if (isset($data['name'])) {
+        //     $checklist->name = $data['name'];
+        // }
 
-        if (isset($data['name'])) {
-            $checklist->name = $data['name'];
-        }
+        // $checklist->save();
 
-        $checklist->save();
-
-        return $checklist;
-    }
+        // return $checklist;
+    // }
 }
