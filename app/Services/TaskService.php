@@ -97,11 +97,12 @@ class TaskService
         return $this->dependencyManagerRepository->taskRepository->detachUserFromTask($task, $userId);
     }
 
-    public function removeMembersFromTask($task, $tusers) {
+    public function removeMembersFromTask($task, $tusers)
+    {
         foreach ($tusers as $user) {
-            $this->removeSingleUserFromTask($task,$user->id);
+            $this->removeSingleUserFromTask($task, $user->id);
         }
-        
+
         $this->dependencyManagerRepository->taskRepository->deleteTask($task);
         return true;
     }

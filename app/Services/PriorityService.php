@@ -44,8 +44,7 @@ class PriorityService
 
     public function fetchPrioritiesOfATask($taskId)
     {
-        $task = $this->dependencyManagerRepository->taskRepository->findById($taskId);
-        $task->priorities();
+        $task = $this->dependencyManagerRepository->taskRepository->findTaskWithRelation('priorities', $taskId);
         return $task;
     }
 

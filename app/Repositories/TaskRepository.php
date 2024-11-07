@@ -78,4 +78,9 @@ class TaskRepository
         $task->labels()->createMany($labelsData);
         return $task;
     }
+
+    public function findTaskWithRelation($relation, $taskId)
+    {
+        return $this->taskModel->with((array) $relation)->find($taskId);
+    }
 }

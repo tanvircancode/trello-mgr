@@ -47,20 +47,20 @@ class Checklist extends Model
     }
 
     //custom methods
-    public static function createChecklist(array $data)
-    {
-        $task = Task::find($data['task_id']);
+    // public static function createChecklist(array $data)
+    // {
+    //     $task = Task::find($data['task_id']);
 
-        if (!$task) {
-            return null;
-        }
+    //     if (!$task) {
+    //         return null;
+    //     }
 
-        $checklist = new static;
-        $checklist->fill($data);
-        $checklist->save();
+    //     $checklist = new static;
+    //     $checklist->fill($data);
+    //     $checklist->save();
 
-        return $checklist;
-    }
+    //     return $checklist;
+    // }
 
     // public static function updateChecklist(array $data)
     // {

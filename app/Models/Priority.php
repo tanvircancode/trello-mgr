@@ -91,7 +91,7 @@ class Priority extends Model
     //             $priority->is_active = 0;
     //             $priority->save();
     //         }
-    //         return true;
+    //          return true;
     //     }
 
     //     $priority = Priority::find($selectedPriorityId);
@@ -107,7 +107,7 @@ class Priority extends Model
     //             break;
     //         }
     //     }
-    
+
     //     if ($prevSelectedPriority !== null  && $prevSelectedPriority->id === $selectedPriorityId) {
     //         $priority->is_active = 0;
     //         $priority->save();
