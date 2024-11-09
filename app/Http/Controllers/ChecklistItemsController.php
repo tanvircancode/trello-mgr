@@ -9,50 +9,84 @@ use App\Models\Checklist;
 use App\Models\ChecklistItem;
 use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Http\Request;
+use App\Services\DependencyManagerService;
 use Illuminate\Support\Facades\Auth;
 
 
 class ChecklistItemsController extends Controller
 {
-    //
+
+    protected ?DependencyManagerService $dependencyManagerService = null;
+
+    public function __construct(DependencyManagerService $dependencyManagerService)
+    {
+        $this->dependencyManagerService = $dependencyManagerService;
+    }
+
     public function store(StoreChecklistItemRequest $request)
     {
-        $user_id = $request->input('user_id');
-        $task_id = $request->input('task_id');
+        // $user_id = $request->input('user_id');
+        // $task_id = $request->input('task_id');
 
 
-        if ($user_id !== Auth::user()->id) {
-            return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // if ($user_id !== Auth::user()->id) {
+        //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
+        // }
+
+        // $task = Task::find($task_id);
+
+        // if (!$task) {
+        //     return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        // }
+
+        // $item = ChecklistItem::createItem($request->all());
+
+        // if (!$item) {
+        //     return response()->json(['status' => false, 'message' => 'Checklist not found'], 404);
+        // }
+
+        // $tasks = Task::with('checklists', 'checklists.checklistitems')->find($task_id);
+        // $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
+        //     ->find($tasks->project_id);
+
+        // $response = [
+        //     'status' => true,
+        //     'task' => $tasks,
+        //     'project' => $projects,
+        //     'message' => "Checklist item Created Successfully"
+        // ];
+
+
+        // return response()->json($response, 200);
+
+        // service layer code starts here
+
+        $userId = $request->input('user_id');
+        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
+            return $this->dependencyManagerService->responseService->unauthorizedResponse();
         }
 
-        $task = Task::find($task_id);
+        $taskId = $request->input('task_id');
+        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
 
-        if (!$task) {
-            return response()->json(['status' => false, 'message' => 'Task not found'], 404);
+        if (!$taskExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
         }
 
+        $checklistId = $request->input('checklist_id');
+        $checklistExists = $this->dependencyManagerService->checklistService->findChecklistById($checklistId);
 
-        $item = ChecklistItem::createItem($request->all());
-
-        if (!$item) {
-            return response()->json(['status' => false, 'message' => 'Checklist not found'], 404);
+        if (!$checklistExists) {
+            return $this->dependencyManagerService->responseService->messageResponse('Checklist not found', false, 404);
         }
 
-        $tasks = Task::with('checklists', 'checklists.checklistitems')->find($task_id);
-        $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
-            ->find($tasks->project_id);
+        $checklistItem = $this->dependencyManagerService->checklistItemService->createChecklistItem($request->all());
 
-        $response = [
-            'status' => true,
-            'task' => $tasks,
-            'project' => $projects,
-            'message' => "Checklist item Created Successfully"
-        ];
-
-
-        return response()->json($response, 200);
+        $taskWithChecklists = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($taskId);
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist Item Created Successfully', $project, $taskWithChecklists, true, 200);
     }
+
     public function update(UpdateChecklistItemRequest $request)
     {
         $user_id = $request->input('user_id');

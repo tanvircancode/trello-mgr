@@ -9,6 +9,7 @@ use App\Repositories\TaskRepository;
 use App\Repositories\LabelRepository;
 use App\Repositories\PriorityRepository;
 use App\Repositories\ChecklistRepository;
+use App\Repositories\ChecklistItemRepository;
 
 class DependencyManagerRepository
 {
@@ -19,6 +20,7 @@ class DependencyManagerRepository
     public LabelRepository $labelRepository;
     public PriorityRepository $priorityRepository;
     public ChecklistRepository $checklistRepository;
+    public ChecklistItemRepository $checklistItemRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -28,6 +30,7 @@ class DependencyManagerRepository
         LabelRepository $labelRepository,
         PriorityRepository $priorityRepository,
         ChecklistRepository $checklistRepository,
+        ChecklistItemRepository $checklistItemRepository,
     ) {
         $this->userRepository = $userRepository;
         $this->projectRepository = $projectRepository;
@@ -36,5 +39,6 @@ class DependencyManagerRepository
         $this->labelRepository = $labelRepository;
         $this->priorityRepository = $priorityRepository;
         $this->checklistRepository = $checklistRepository;
+        $this->checklistRepository = $checklistItemRepository;
     }
 }

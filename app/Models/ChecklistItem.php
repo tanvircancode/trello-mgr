@@ -44,20 +44,20 @@ class ChecklistItem extends Model
     }
 
     //custom methods
-    public static function createItem(array $data)
-    {
-        $checklist = Checklist::find($data['checklist_id']);
+    // public static function createItem(array $data)
+    // {
+    //     $checklist = Checklist::find($data['checklist_id']);
 
-        if (!$checklist) {
-            return null;
-        }
+    //     if (!$checklist) {
+    //         return null;
+    //     }
 
-        $item = new static;
-        $item->fill($data);
-        $item->save();
+    //     $item = new static;
+    //     $item->fill($data);
+    //     $item->save();
 
-        return $item;
-    }
+    //     return $item;
+    // }
 
     public static function updateItem(array $data)
     {

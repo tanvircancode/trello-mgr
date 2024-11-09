@@ -65,9 +65,9 @@ class ChecklistsController extends Controller
 
         $checklist = $this->dependencyManagerService->checklistService->createChecklist($request->all());
 
-        $taskWithPriorities = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($taskId);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist Created Successfully', $project, $taskWithPriorities, true, 200);
+        $taskWithChecklists = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($taskId);
+        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
+        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist Created Successfully', $project, $taskWithChecklists, true, 200);
     }
     public function update(UpdateChecklistRequest $request)
     {
