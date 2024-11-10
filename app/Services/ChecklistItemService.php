@@ -26,18 +26,13 @@ class ChecklistItemService
         return $this->dependencyManagerRepository->checklistItemRepository->storeChecklistItem($checklistItemData);
     }
 
-    public function updateChecklistItem($checklist)
+    public function deleteChecklistItem($checklistItem)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->save($checklist);
+        return $this->dependencyManagerRepository->checklistItemRepository->delete($checklistItem);
     }
 
-    public function deleteChecklistItem($checklist)
+    public function updateChecklistItemWithData($checklistItem, array $data)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->delete($checklist);
-    }
-
-    public function fetchChecklistItemsOfATask($taskId)
-    {
-        return $this->dependencyManagerRepository->taskRepository->findTaskWithRelation(['checklists', 'checklists.checklistitems'], $taskId);
+        return $this->dependencyManagerRepository->checklistItemRepository->saveChecklistItem($checklistItem, $data);
     }
 }

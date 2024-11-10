@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import "./auth.scss";
 import { setLogin } from "../../store";
 
-const AuthForm = ({ mode , setMode}) => {
+const AuthForm = ({ mode, setMode }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -52,7 +52,10 @@ const AuthForm = ({ mode , setMode}) => {
                                 })
                             );
                             localStorage.setItem("token", res.data.data.token);
-                            localStorage.setItem("user_id", res.data.data.user.id);
+                            localStorage.setItem(
+                                "user_id",
+                                res.data.data.user.id
+                            );
 
                             navigate("/");
                         } else {
@@ -89,10 +92,10 @@ const AuthForm = ({ mode , setMode}) => {
 
                 await axios
                     .post(`${BASE_URL}/api/register`, formData)
-                    .then((res) => {  
+                    .then((res) => {
                         if (res.data.status) {
                             // setMode("signup");
-                           
+
                             toast.success("Registration Successful");
                             navigate("/login");
                         } else {
@@ -115,7 +118,6 @@ const AuthForm = ({ mode , setMode}) => {
                             toast.error("Server is not responding");
                         }
                     });
-                    
             }
         }
         setLoading(false);
@@ -199,7 +201,10 @@ const AuthForm = ({ mode , setMode}) => {
                     mode === "login" ? "mt-2" : "mt-4"
                 } ${loading ? "disabled" : ""}`}
                 disabled={loading}
-                style={{ opacity: loading ? 0.5 : 1 , cursor: loading ? 'wait' :  'pointer'}}
+                style={{
+                    opacity: loading ? 0.5 : 1,
+                    cursor: loading ? "wait" : "pointer",
+                }}
             >
                 {loading
                     ? "Loading..."

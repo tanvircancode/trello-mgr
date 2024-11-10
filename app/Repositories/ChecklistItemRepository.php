@@ -27,9 +27,15 @@ class ChecklistItemRepository
     {
         return $checklistItem->delete();
     }
-    
+
     public function save(ChecklistItem $checklistItem)
     {
         return $checklistItem->save();
+    }
+
+    public function saveChecklistItem(ChecklistItem $checklistItem, array $data)
+    {
+        // check later
+        return $checklistItem->update($data);
     }
 }

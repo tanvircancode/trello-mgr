@@ -72,11 +72,11 @@ class ChecklistsController extends Controller
     public function update(UpdateChecklistRequest $request)
     {
         // $user_id = $request->input('user_id');
-        $id = $request->input('id');
+        // $id = $request->input('id');
         // $task_id = $request->input('task_id');
-        $name = $request->input('name');
+        // $name = $request->input('name');
 
-        // if ($user_id !== Auth::user()->id) {
+        // if ($user_id !== Auth::user()->id) { 
         //     return response()->json(['status' => false, 'message' => 'Unauthorized access'], 403);
         // }
 

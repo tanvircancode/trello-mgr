@@ -18,7 +18,7 @@ import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { BASE_URL } from "../../../config";
 
-const Card = ({stage}) => {
+const Card = ({ stage }) => {
     // console.log(stage);
     const tasks = stage.tasks;
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
@@ -62,7 +62,7 @@ const Card = ({stage}) => {
             formData.append("title", cardTitle);
             formData.append("list_id", stage.id);
             // formData.append("project_id", selectedProject.id);
-            
+
             //api
             await axios
                 .post(`${BASE_URL}/api/task/${userId}`, formData, {
@@ -72,7 +72,6 @@ const Card = ({stage}) => {
                     },
                 })
                 .then((res) => {
-                 
                     if (res.data?.status && res.data?.data) {
                         console.log(res.data);
                         dispatch(
@@ -106,20 +105,17 @@ const Card = ({stage}) => {
         dispatch(setMakeBlur({ makeBlur: false }));
     }, []);
 
-    return ( 
-        <div className="card-list d-flex flex-wrap gap-2"> 
-            {isCardsLoading && (                 
-                <div style={{ width: "100px", margin: "50px auto auto" }}> 
-                    <HashLoader color="#36d7b7" /> 
-                </div> 
+    return (
+        <div className="card-list d-flex flex-wrap gap-2">
+            {isCardsLoading && (
+                <div style={{ width: "100px", margin: "50px auto auto" }}>
+                    <HashLoader color="#36d7b7" />
+                </div>
             )}
 
-           
-            
-
-            {!isCardsLoading &&  
-                tasks && 
-                tasks.length > 0 && 
+            {!isCardsLoading &&
+                tasks &&
+                tasks.length > 0 &&
                 tasks.map((task, index) => {
                     const activePriority = task.priorities.find(
                         (priority) => priority.is_active
@@ -143,19 +139,17 @@ const Card = ({stage}) => {
 
                     return (
                         <div
-                        
                             key={index}
                             className={`card custom-card ${
                                 blur ? "is-blur disable-pointer-events" : ""
-                            }`} 
+                            }`}
                             onClick={() => handleOpenPopup(task)}
-                            
                         >
                             <div
                                 className="card-body d-flex flex-column "
                                 style={{ padding: "10px" }}
                             >
-                                <h5 className="card-title custom-card-title">    
+                                <h5 className="card-title custom-card-title">
                                     {task && task.title}
                                 </h5>
                                 {task?.labels.some(
@@ -254,7 +248,7 @@ const Card = ({stage}) => {
                     value={cardTitle}
                     placeholder="+ Add a task"
                     onChange={(e) => setCardTitle(e.target.value)}
-                />        
+                />
                 {cardTitle && (
                     <div className="d-flex align-items-center gap-1 mt-2 ">
                         <button
@@ -267,18 +261,20 @@ const Card = ({stage}) => {
                                 {isLoading ? "Loading..." : "Add task"}
                             </span>
                         </button>
-                     {!isLoading && <button
-                            type="button"
-                            className="btn-close"
-                            aria-label="Close"
-                            disabled={isLoading}
-                            style={{ fontSize: "12px" }}
-                            onClick={cancelAddCard}
-                        ></button>}   
+                        {!isLoading && (
+                            <button
+                                type="button"
+                                className="btn-close"
+                                aria-label="Close"
+                                disabled={isLoading}
+                                style={{ fontSize: "12px" }}
+                                onClick={cancelAddCard}
+                            ></button>
+                        )}
                     </div>
-                )}    
-            </div>  
-                {/* )} */}
+                )}
+            </div>
+            {/* )} */}
 
             <CardMainModal
                 openNewCardModal={openNewCardModal}

@@ -39,6 +39,6 @@ class DependencyManagerRepository
         $this->labelRepository = $labelRepository;
         $this->priorityRepository = $priorityRepository;
         $this->checklistRepository = $checklistRepository;
-        $this->checklistRepository = $checklistItemRepository;
+        $this->checklistItemRepository = $checklistItemRepository;
     }
 }

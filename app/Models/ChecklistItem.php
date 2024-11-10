@@ -19,7 +19,9 @@ class ChecklistItem extends Model
 
 
     protected $fillable = [
-        'checklist_id', 'name', 'is_completed'
+        'checklist_id',
+        'name',
+        'is_completed'
     ];
 
     protected static function boot()
@@ -61,7 +63,6 @@ class ChecklistItem extends Model
 
     public static function updateItem(array $data)
     {
-
         $item = ChecklistItem::find($data['id']);
         if (!$item) {
             return null;
