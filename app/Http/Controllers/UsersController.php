@@ -4,43 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\Project;
-use App\Services\DependencyManagerService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManagerService = null;
+    protected $userService;
 
-    public function __construct(DependencyManagerService $dependencyManagerService)
+    public function __construct(UserService $userService)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
+        $this->userService = $userService;
     }
 
     public function store(StoreUserRequest $request)
     {
-        return response()->json(['dd' => true, 'message' => 'checking now'], 200);
+        // return response()->json(['dd' => true, 'message' => 'checking now'], 200);
 
-        $input = $request->all();
+        // $input = $request->all();
 
-        $user = $this->dependencyManagerService->userService->registerUser($input);
+        // $user = $this->userService->registerUser($input);
 
-        $data['id'] = $user->id;
-        $data['name'] = $user->name;
-        $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
-        if ($user) {
-            return $this->dependencyManagerService->responseService->successMessageDataResponse('Registration Successfully completed', $data, true, 200);
-        }
+        // $data['id'] = $user->id;
+        // $data['name'] = $user->name;
+        // $data['token'] = $user->createToken('MyAppToken')->plainTextToken;
+        // if ($user) {
+        //     return $this->dependencyManagerService->responseService->successMessageDataResponse('Registration Successfully completed', $data, true, 200);
+        // }
     }
 
     public function login(Request $request)
     {
-        return response()->json(['status' => true, 'message' => 'checking now'], 200);
+
         $input = $request->all();
 
-        return $this->dependencyManagerService->userService->userLogin($input);
+        return $this->userService->userLogin($input);
 
         // from here old code
 
@@ -83,7 +80,7 @@ class UsersController extends Controller
         // }
 
         //  new service code below
-        return $this->dependencyManagerService->userService->logout($request->user());
+        return $this->userService->logout($request->user());
     }
 
     public function me()
@@ -101,7 +98,7 @@ class UsersController extends Controller
         // return response()->json($response, 200);
 
         //  new service code below
-        return $this->dependencyManagerService->userService->getUserDetails();
+        return $this->userService->getUserDetails();
     }
 
     public function show($id)
@@ -129,11 +126,10 @@ class UsersController extends Controller
 
         // return response()->json($response, 200);
 
-
         //new services code from here show func
 
 
-        return $this->dependencyManagerService->userService->showUserProjects($id);
+        return $this->userService->showUserProjects($id);
     }
 
     public function searchUsers(Request $request)
@@ -173,7 +169,7 @@ class UsersController extends Controller
 
         //new services code from here show func
         $input = $request->all();
-        return $this->dependencyManagerService->userService->searchUsers($input);
+        return $this->userService->searchUsers($input);
     }
 
 
@@ -218,12 +214,12 @@ class UsersController extends Controller
 
         // new services code from here show func
         $input = $request->all();
-        return $this->dependencyManagerService->userService->addMember($input);
+        return $this->userService->addMember($input);
     }
 
     public function removeMember($projectId, $userId)
     {
-        return $this->dependencyManagerService->userService->removeMemberFromProject($projectId, $userId);
+        return $this->userService->removeMemberFromProject($projectId, $userId);
         // $project = Project::find($projectId);
 
         // if (!$project) {

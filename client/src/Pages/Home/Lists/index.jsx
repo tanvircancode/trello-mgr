@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import React, { useEffect, useState, useCallback } from "react";
+import  {  useState } from "react";
 import { BASE_URL } from "../../../config";
-import { BsPersonPlus, BsTrash3 } from "react-icons/bs";
 import "./lists.scss";
 import Card from "../Cards";
 import {
@@ -16,7 +15,6 @@ import MoveStage from "../../../component/stage/MoveStage";
 import DropArea from "../DropArea";
 
 const List = () => {
-
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
@@ -117,19 +115,19 @@ const List = () => {
     const onDrop = (position) => {
         console.log(`${activeCard} is going to its new position ${position}`);
 
-        if(activeCard == null || activeCard == undefined) return;
+        if (activeCard == null || activeCard == undefined) return;
 
         const stageToMove = stages[activeCard];
-        const updatedStages = stages.filter((stage, index) => index !== activeCard);
-
-
+        const updatedStages = stages.filter(
+            (stage, index) => index !== activeCard
+        );
     };
 
     return (
         <div className="d-flex">
             <div className="stage-list d-flex gap-2">
                 <div className="d-flex gap-2">
-                <DropArea onDrop={() => onDrop(0)} />
+                    <DropArea onDrop={() => onDrop(0)} />
 
                     {stages &&
                         stages.length > 0 &&
@@ -166,9 +164,13 @@ const List = () => {
                                             </span>
                                         </div>
                                         <Card stage={stage} />
-                                    </div>  
-                                    <DropArea index={index+1} activeCard={activeCard} onDrop={onDrop} />  
-                                </>      
+                                    </div>
+                                    <DropArea
+                                        index={index + 1}
+                                        activeCard={activeCard}
+                                        onDrop={onDrop}
+                                    />
+                                </>
                             );
                         })}
                 </div>

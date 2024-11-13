@@ -28,6 +28,7 @@ const AuthForm = ({ mode, setMode }) => {
             } else if (password.length === 0 || password.length > 255) {
                 toast.error("Invalid Input For Password");
             } else {
+                // console.log("before axios");
                 await axios
                     .post(
                         `${BASE_URL}/api/login`,
@@ -42,7 +43,7 @@ const AuthForm = ({ mode, setMode }) => {
                         }
                     )
                     .then((res) => {
-                        //    console.log(res)
+                        console.log(res);
                         if (res.data.status && res.data.data.token) {
                             toast.success("Logged in Successfully");
                             dispatch(
