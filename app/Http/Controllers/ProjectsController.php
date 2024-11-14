@@ -4,26 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
-use App\Models\Project;
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Services\DependencyManagerService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use App\Services\TaskService;
+use App\Services\ProjectService;
 
 
 class ProjectsController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManagerService = null;
+    protected $taskService;
+    protected $projectService;
 
-    public function __construct(DependencyManagerService $dependencyManagerService)
+    public function __construct(TaskService $taskService, ProjectService $projectService)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
+        $this->taskService = $taskService;
+        $this->projectService = $projectService;
     }
 
     public function store(StoreProjectRequest $request)
     {
-        return $this->dependencyManagerService->projectService->storeProject($request->all());
+        return $this->projectService->storeProject($request->all());
         // new service code below
         // $input = $request->all();
 
@@ -57,7 +55,7 @@ class ProjectsController extends Controller
 
     public function showMembers($id)
     {
-        return $this->dependencyManagerService->projectService->showMembersOfAProject($id);
+        return $this->projectService->showMembersOfAProject($id);
         // new service code below
         // $project = Project::find($id);
 
@@ -86,7 +84,7 @@ class ProjectsController extends Controller
 
     public function destroy($id)
     {
-        return $this->dependencyManagerService->projectService->destroyProject($id);
+        return $this->projectService->destroyProject($id);
         // new service code below
         // $project = Project::find($id);
         // $user_id = $project->user_id;
@@ -134,7 +132,7 @@ class ProjectsController extends Controller
 
     public function leaveProject($id, $userId)
     {
-        return $this->dependencyManagerService->projectService->leaveProjectAsMember($id, $userId);
+        return $this->projectService->leaveProjectAsMember($id, $userId);
         // new service code below
         // $project = Project::find($id);
 

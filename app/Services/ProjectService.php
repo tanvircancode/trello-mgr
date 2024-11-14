@@ -2,143 +2,160 @@
 
 namespace App\Services;
 
-use App\Models\Project;
-use App\Services\DependencyManagerService;
-use App\Repositories\DependencyManagerRepository;
+use App\Services\ResponseService;
+use App\Services\AuthService;
+use App\Repositories\UserRepository;
+use App\Repositories\TaskRepository;
+use App\Repositories\StageRepository;
+use App\Repositories\ProjectRepository;
 
 class ProjectService
 {
-    protected DependencyManagerService $dependencyManagerService;
-    protected DependencyManagerRepository $dependencyManagerRepository;
-    
-    public function __construct(DependencyManagerService $dependencyManagerService, DependencyManagerRepository $dependencyManagerRepository)
-    {
-        $this->dependencyManagerService = $dependencyManagerService;
-        $this->dependencyManagerRepository = $dependencyManagerRepository;
+    protected $userRepository;
+    protected $projectRepository;
+    protected $taskRepository;
+    protected $stageRepository;
+    protected $responseService;
+    protected $authService;
+
+    public function __construct(
+        UserRepository $userRepository,
+        ProjectRepository $projectRepository,
+        AuthService $authService,
+        ResponseService $responseService,
+        StageRepository $stageRepository,
+        TaskRepository $taskRepository,
+    ) {
+        $this->userRepository = $userRepository;
+        $this->projectRepository = $projectRepository;
+        $this->responseService = $responseService;
+        $this->authService = $authService;
+        $this->stageRepository = $stageRepository;
+        $this->taskRepository = $taskRepository;
     }
 
     public function stagesOfProject($projectId)
     {
-        return $this->dependencyManagerRepository->projectRepository->projectData($projectId);
+        return $this->projectRepository->projectData($projectId);
     }
 
     public function fetchDetailstWithProjectId($projectId)
     {
-        return $this->dependencyManagerRepository->projectRepository->projectDetails($projectId);
+        return $this->projectRepository->projectDetails($projectId);
     }
 
     public function storeProject(array $projectData)
     {
         $userId = $projectData['user_id'];
 
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
-        $project = $this->dependencyManagerRepository->projectRepository->createProject($projectData);
+        $project = $this->projectRepository->createProject($projectData);
 
         if ($project) {
-            $user = $this->dependencyManagerRepository->userRepository->findById($userId);
-            $this->dependencyManagerRepository->projectRepository->assignMember($project, $userId);
+            $user = $this->userRepository->findById($userId);
+            $this->projectRepository->assignMember($project, $userId);
 
-            $projectsWithRelatedData = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+            $projectsWithRelatedData = $this->userRepository->getProjectsWithOwnerAndTasks($user);
 
             foreach ($projectsWithRelatedData as $project) {
                 $project->is_owner = $project->user_id === $userId;
             }
 
-            return $this->dependencyManagerService->responseService->successMessageDataResponse('Project created Successfully', $projectsWithRelatedData, true, 200);
+            return $this->responseService->successMessageDataResponse('Project created Successfully', $projectsWithRelatedData, true, 200);
         }
-        return $this->dependencyManagerService->responseService->messageResponse('Project not created', false, 404);
+        return $this->responseService->messageResponse('Project not created', false, 404);
     }
 
     public function showMembersOfAProject($projectId)
     {
-        $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
+        $project = $this->projectRepository->findById($projectId);
         if (!$project) {
-            return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
+            return $this->responseService->messageResponse('Project not found', false, 404);
         }
 
-        if (!$this->dependencyManagerService->authService->isAuthenticated($project->user_id)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($project->user_id)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
-        $membersData = $this->dependencyManagerRepository->projectRepository->getMembersOfProject($project);
+        $membersData = $this->projectRepository->getMembersOfProject($project);
         for ($i = 0; $i < count($membersData); $i++) {
             $membersData[$i]->isMember = true;
         }
 
-        return $this->dependencyManagerService->responseService->successMessageDataResponse('Member fetched Successfully', $membersData, true, 200);
+        return $this->responseService->successMessageDataResponse('Member fetched Successfully', $membersData, true, 200);
     }
 
     public function destroyProject($projectId)
     {
-        $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
+        $project = $this->projectRepository->findById($projectId);
 
         if (!$project) {
-            return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
+            return $this->responseService->messageResponse('Project not found', false, 404);
         }
         $userId = $project->user_id;
 
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
-        $stagesUnderProject = $this->dependencyManagerRepository->projectRepository->stagesOfAProject($project);
+        $stagesUnderProject = $this->projectRepository->stagesOfAProject($project);
 
         foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $this->dependencyManagerRepository->stageRepository->stagesOfATask($stage);
+            $tasksUnderStage = $this->stageRepository->stagesOfATask($stage);
             foreach ($tasksUnderStage as $task) {
-                $this->dependencyManagerRepository->taskRepository->deleteUsersOfATask($task);
+                $this->taskRepository->deleteUsersOfATask($task);
             }
         }
 
-        $this->dependencyManagerRepository->projectRepository->deletionOfAProject($project);
+        $this->projectRepository->deletionOfAProject($project);
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($userId);
+        $user = $this->userRepository->findById($userId);
 
-        $projectsWithRelatedData = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+        $projectsWithRelatedData = $this->userRepository->getProjectsWithOwnerAndTasks($user);
 
         foreach ($projectsWithRelatedData as $project) {
             $project->is_owner = $project->user_id === $userId;
         }
 
-        return $this->dependencyManagerService->responseService->successMessageDataResponse("Project Deleted Successfully", $projectsWithRelatedData, true, 200);
+        return $this->responseService->successMessageDataResponse("Project Deleted Successfully", $projectsWithRelatedData, true, 200);
     }
 
     public function leaveProjectAsMember($projectId, $userId)
     {
-        $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
+        $project = $this->projectRepository->findById($projectId);
 
         if (!$project) {
-            return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
+            return $this->responseService->messageResponse('Project not found', false, 404);
         }
 
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
-        $stagesUnderProject = $this->dependencyManagerRepository->projectRepository->stagesOfAProject($project);
+        $stagesUnderProject = $this->projectRepository->stagesOfAProject($project);
 
         foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $this->dependencyManagerRepository->stageRepository->stagesOfATask($stage);
+            $tasksUnderStage = $this->stageRepository->stagesOfATask($stage);
             foreach ($tasksUnderStage as $task) {
-                if ($this->dependencyManagerRepository->taskRepository->checkUserOfTask($task, $userId)) {
-                    $this->dependencyManagerRepository->taskRepository->deleteUserOfATask($task, $userId);
+                if ($this->taskRepository->checkUserOfTask($task, $userId)) {
+                    $this->taskRepository->deleteUserOfATask($task, $userId);
                 }
             }
         }
 
-        $this->dependencyManagerRepository->projectRepository->detachUser($project, $userId);
+        $this->projectRepository->detachUser($project, $userId);
 
-        $user = $this->dependencyManagerRepository->userRepository->findById($userId);
+        $user = $this->userRepository->findById($userId);
 
-        $projectsWithRelatedData = $this->dependencyManagerRepository->userRepository->getProjectsWithOwnerAndTasks($user);
+        $projectsWithRelatedData = $this->userRepository->getProjectsWithOwnerAndTasks($user);
 
         foreach ($projectsWithRelatedData as $project) {
             $project->is_owner = $project->user_id === $userId;
         }
 
-        return $this->dependencyManagerService->responseService->successMessageDataResponse("Left Project Successfully", $projectsWithRelatedData, true, 200);
+        return $this->responseService->successMessageDataResponse("Left Project Successfully", $projectsWithRelatedData, true, 200);
     }
 }

@@ -5,15 +5,31 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreChecklistItemRequest;
 use App\Http\Requests\UpdateChecklistItemRequest;
-use App\Services\DependencyManagerService;
+use App\Services\TaskService;
+use App\Services\AuthService;
+use App\Services\ResponseService;
+use App\Services\ProjectService;
+use App\Services\ChecklistService;
+use App\Services\ChecklistItemService;
 
 class ChecklistItemsController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManagerService = null;
+    protected $taskService;
+    protected $authService;
+    protected $responseService;
+    protected $projectService;
+    protected $checklistService;
+    protected $checklistItemService;
 
-    public function __construct(DependencyManagerService $dependencyManagerService)
+
+    public function __construct(TaskService $taskService, ChecklistItemService $checklistItemService, ChecklistService $checklistService, AuthService $authService, ResponseService $responseService, ProjectService $projectService)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
+        $this->taskService = $taskService;
+        $this->authService = $authService;
+        $this->responseService = $responseService;
+        $this->projectService = $projectService;
+        $this->checklistService = $checklistService;
+        $this->checklistItemService = $checklistItemService;
     }
 
     public function store(StoreChecklistItemRequest $request)
@@ -55,29 +71,29 @@ class ChecklistItemsController extends Controller
         // service layer code starts here
 
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $taskId = $request->input('task_id');
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+        $taskExists = $this->taskService->findTaskById($taskId);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
         $checklistId = $request->input('checklist_id');
-        $checklistExists = $this->dependencyManagerService->checklistService->findChecklistById($checklistId);
+        $checklistExists = $this->checklistService->findChecklistById($checklistId);
 
         if (!$checklistExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Checklist not found', false, 404);
+            return $this->responseService->messageResponse('Checklist not found', false, 404);
         }
 
-        $checklistItem = $this->dependencyManagerService->checklistItemService->createChecklistItem($request->all());
+        $checklistItem = $this->checklistItemService->createChecklistItem($request->all());
 
-        $taskWithChecklists = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($taskId);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist Item Created Successfully', $project, $taskWithChecklists, true, 200);
+        $taskWithChecklists = $this->checklistService->fetchChecklistsOfATask($taskId);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
+        return $this->responseService->successProjectTaskResponse('Checklist Item Created Successfully', $project, $taskWithChecklists, true, 200);
     }
 
     public function update(UpdateChecklistItemRequest $request)
@@ -120,29 +136,29 @@ class ChecklistItemsController extends Controller
         // service layer code starts here
 
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $checklistId = $request->input('checklist_id');
 
-        $checklist = $this->dependencyManagerService->checklistService->findChecklistById($checklistId);
+        $checklist = $this->checklistService->findChecklistById($checklistId);
         if (!$checklist) {
-            return $this->dependencyManagerService->responseService->messageResponse('Checklist not found', false, 404);
+            return $this->responseService->messageResponse('Checklist not found', false, 404);
         }
 
         $checklistItemId = $request->input('id');
 
-        $checklistItem = $this->dependencyManagerService->checklistItemService->findChecklistItemById($checklistItemId);
+        $checklistItem = $this->checklistItemService->findChecklistItemById($checklistItemId);
         if (!$checklistItem) {
-            return $this->dependencyManagerService->responseService->messageResponse('Checklist Item not found', false, 404);
+            return $this->responseService->messageResponse('Checklist Item not found', false, 404);
         }
 
-        $this->dependencyManagerService->checklistItemService->updateChecklistItemWithData($checklistItem, $request->all());
+        $this->checklistItemService->updateChecklistItemWithData($checklistItem, $request->all());
 
-        $taskWithChecklists = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($checklist->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist item Updated Successfully', $project, $taskWithChecklists, true, 200);
+        $taskWithChecklists = $this->checklistService->fetchChecklistsOfATask($checklist->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
+        return $this->responseService->successProjectTaskResponse('Checklist item Updated Successfully', $project, $taskWithChecklists, true, 200);
     }
 
     public function destroy($id)
@@ -171,18 +187,18 @@ class ChecklistItemsController extends Controller
 
         // service layer code starts here
 
-        $checklistItem = $this->dependencyManagerService->checklistItemService->findChecklistItemById($id);
+        $checklistItem = $this->checklistItemService->findChecklistItemById($id);
         if (!$checklistItem) {
-            return $this->dependencyManagerService->responseService->messageResponse('Checklist Item not found', false, 404);
+            return $this->responseService->messageResponse('Checklist Item not found', false, 404);
         }
 
-        $this->dependencyManagerService->checklistItemService->deleteChecklistItem($checklistItem);
+        $this->checklistItemService->deleteChecklistItem($checklistItem);
 
         //check later
         $taskId = $checklistItem->checklist->task->id;
 
-        $taskWithChecklists = $this->dependencyManagerService->checklistService->fetchChecklistsOfATask($taskId);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Checklist item deleted successfully', $project, $taskWithChecklists, true, 200);
+        $taskWithChecklists = $this->checklistService->fetchChecklistsOfATask($taskId);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithChecklists->project_id);
+        return $this->responseService->successProjectTaskResponse('Checklist item deleted successfully', $project, $taskWithChecklists, true, 200);
     }
 }

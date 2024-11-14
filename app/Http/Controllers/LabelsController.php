@@ -6,15 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLabelRequest;
 use App\Http\Requests\UpdateLabelRequest;
 use Illuminate\Http\Request;
-use App\Services\DependencyManagerService;
+use App\Services\TaskService;
+use App\Services\AuthService;
+use App\Services\LabelService;
+use App\Services\ResponseService;
+use App\Services\ListService;
+use App\Services\UserService;
+use App\Services\ProjectService;
 
 class LabelsController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManagerService = null;
+    protected $taskService;
+    protected $authService;
+    protected $responseService;
+    protected $projectService;
+    protected $labelService;
 
-    public function __construct(DependencyManagerService $dependencyManagerService)
+    public function __construct(TaskService $taskService, AuthService $authService, ResponseService $responseService, ProjectService $projectService, LabelService $labelService)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
+        $this->taskService = $taskService;
+        $this->authService = $authService;
+        $this->labelService = $labelService;
+        $this->responseService = $responseService;
+        $this->projectService = $projectService;
     }
 
     public function store(StoreLabelRequest $request)
@@ -35,7 +49,7 @@ class LabelsController extends Controller
         // $tasks = Task::with('labels')->find($label->task_id);
         // $projects = Project::with('members', 'tasks', 'tasks.users', 'tasks.labels', 'tasks.priorities', 'tasks.checklists', 'tasks.checklists.checklistitems')
         //     ->find($project_id);
-    
+
         // $response = [
         //     'status' => true,
         //     'task' => $tasks,
@@ -46,26 +60,26 @@ class LabelsController extends Controller
         // return response()->json($response, 200);
 
         // new service code below
-        
+
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $taskId = $request->input('task_id');
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+        $taskExists = $this->taskService->findTaskById($taskId);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
         $projectId = $request->input('project_id');
 
-        $label = $this->dependencyManagerService->labelService->createLabel($request->all());
+        $label = $this->labelService->createLabel($request->all());
 
-        $taskWithLabels = $this->dependencyManagerService->labelService->fetchLabelsOfATask($label->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($projectId);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Label Created Successfully', $project, $taskWithLabels, true, 200);
+        $taskWithLabels = $this->labelService->fetchLabelsOfATask($label->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($projectId);
+        return $this->responseService->successProjectTaskResponse('Label Created Successfully', $project, $taskWithLabels, true, 200);
     }
 
     public function update(UpdateLabelRequest $request, $id)
@@ -104,20 +118,20 @@ class LabelsController extends Controller
         // new service code below
 
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $taskId = $request->input('task_id');
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+        $taskExists = $this->taskService->findTaskById($taskId);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
-        $label = $this->dependencyManagerService->labelService->findLabelById($id);
+        $label = $this->labelService->findLabelById($id);
         if (!$label) {
-            return $this->dependencyManagerService->responseService->messageResponse('Label not found', false, 404);
+            return $this->responseService->messageResponse('Label not found', false, 404);
         }
 
         $isLabelActive = $request->input('is_active');
@@ -125,11 +139,11 @@ class LabelsController extends Controller
             $label->is_active = $isLabelActive;
         }
 
-        $this->dependencyManagerService->labelService->updateLabel($label, $request->all());
+        $this->labelService->updateLabel($label, $request->all());
 
-        $taskWithLabels = $this->dependencyManagerService->labelService->fetchLabelsOfATask($label->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Label Updated Successfully', $project, $taskWithLabels, true, 200);
+        $taskWithLabels = $this->labelService->fetchLabelsOfATask($label->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
+        return $this->responseService->successProjectTaskResponse('Label Updated Successfully', $project, $taskWithLabels, true, 200);
     }
 
     public function destroy($id)
@@ -156,16 +170,16 @@ class LabelsController extends Controller
         // return response()->json($response, 200);
 
         // new service code below
-        $label = $this->dependencyManagerService->labelService->findLabelById($id);
+        $label = $this->labelService->findLabelById($id);
         if (!$label) {
-            return $this->dependencyManagerService->responseService->messageResponse('Label not found', false, 404);
+            return $this->responseService->messageResponse('Label not found', false, 404);
         }
 
-        $this->dependencyManagerService->labelService->deleteLabel($label);
+        $this->labelService->deleteLabel($label);
 
-        $taskWithLabels = $this->dependencyManagerService->labelService->fetchLabelsOfATask($label->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Label deleted Successfully', $project, $taskWithLabels, true, 200);
+        $taskWithLabels = $this->labelService->fetchLabelsOfATask($label->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
+        return $this->responseService->successProjectTaskResponse('Label deleted Successfully', $project, $taskWithLabels, true, 200);
     }
 
     public function updateSelected(Request $request, $id)
@@ -205,20 +219,20 @@ class LabelsController extends Controller
 
         // new service code below
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $taskId = $request->input('task_id');
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+        $taskExists = $this->taskService->findTaskById($taskId);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
-        $label = $this->dependencyManagerService->labelService->findLabelById($id);
+        $label = $this->labelService->findLabelById($id);
         if (!$label) {
-            return $this->dependencyManagerService->responseService->messageResponse('Label not found', false, 404);
+            return $this->responseService->messageResponse('Label not found', false, 404);
         }
 
         $isLabelActive = $request->input('is_active');
@@ -226,9 +240,9 @@ class LabelsController extends Controller
             $label->is_active = $isLabelActive;
         }
 
-        $this->dependencyManagerService->labelService->updateLabel($label, $request->all());
-        $taskWithLabels = $this->dependencyManagerService->labelService->fetchLabelsOfATask($label->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Label Updated Successfully', $project, $taskWithLabels, true, 200);
+        $this->labelService->updateLabel($label, $request->all());
+        $taskWithLabels = $this->labelService->fetchLabelsOfATask($label->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithLabels->project_id);
+        return $this->responseService->successProjectTaskResponse('Label Updated Successfully', $project, $taskWithLabels, true, 200);
     }
 }

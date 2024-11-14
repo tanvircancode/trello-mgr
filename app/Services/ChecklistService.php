@@ -2,42 +2,42 @@
 
 namespace App\Services;
 
-use App\Services\DependencyManagerService;
-use App\Repositories\DependencyManagerRepository;
+use App\Repositories\ChecklistRepository;
+use App\Repositories\TaskRepository;
 
 class ChecklistService
 {
-    protected DependencyManagerService $dependencyManagerService;
-    protected DependencyManagerRepository $dependencyManagerRepository;
+    protected $checklistRepository;
+    protected $taskRepository;
 
-    public function __construct(DependencyManagerService $dependencyManagerService, DependencyManagerRepository $dependencyManagerRepository)
+    public function __construct(TaskRepository $taskRepository, ChecklistRepository $checklistRepository)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
-        $this->dependencyManagerRepository = $dependencyManagerRepository;
+        $this->taskRepository = $taskRepository;
+        $this->checklistRepository = $checklistRepository;
     }
 
     public function findChecklistById($id)
     {
-        return $this->dependencyManagerRepository->checklistRepository->findById($id);
+        return $this->checklistRepository->findById($id);
     }
 
     public function createChecklist(array $checklistData)
     {
-        return $this->dependencyManagerRepository->checklistRepository->storeChecklist($checklistData);
+        return $this->checklistRepository->storeChecklist($checklistData);
     }
 
     public function updateChecklist($checklist)
     {
-        return $this->dependencyManagerRepository->checklistRepository->save($checklist);
+        return $this->checklistRepository->save($checklist);
     }
 
     public function deleteChecklist($checklist)
     {
-        return $this->dependencyManagerRepository->checklistRepository->delete($checklist);
+        return $this->checklistRepository->delete($checklist);
     }
 
     public function fetchChecklistsOfATask($taskId)
     {
-        return $this->dependencyManagerRepository->taskRepository->findTaskWithRelation(['checklists', 'checklists.checklistitems'], $taskId);
+        return $this->taskRepository->findTaskWithRelation(['checklists', 'checklists.checklistitems'], $taskId);
     }
 }

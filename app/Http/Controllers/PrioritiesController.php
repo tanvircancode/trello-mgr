@@ -5,20 +5,32 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePriorityRequest;
 use App\Http\Requests\UpdatePriorityRequest;
-use App\Models\Priority;
-use App\Models\Project;
-use App\Models\Task;
 use Illuminate\Http\Request;
-use App\Services\DependencyManagerService;
-use Illuminate\Support\Facades\Auth;
+use App\Services\TaskService;
+use App\Services\AuthService;
+use App\Services\ResponseService;
+use App\Services\LabelService;
+use App\Services\ProjectService;
+use App\Services\PriorityService;
 
 class PrioritiesController extends Controller
 {
-    protected ?DependencyManagerService $dependencyManagerService = null;
+    protected $taskService;
+    protected $authService;
+    protected $responseService;
+    protected $labelService;
+    protected $projectService;
+    protected $priorityService;
 
-    public function __construct(DependencyManagerService $dependencyManagerService)
+
+    public function __construct(TaskService $taskService, AuthService $authService, ResponseService $responseService, ProjectService $projectService, LabelService $labelService, PriorityService $priorityService)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
+        $this->taskService = $taskService;
+        $this->authService = $authService;
+        $this->responseService = $responseService;
+        $this->projectService = $projectService;
+        $this->priorityService = $priorityService;
+        $this->labelService = $labelService;
     }
 
     public function store(StorePriorityRequest $request)
@@ -53,24 +65,24 @@ class PrioritiesController extends Controller
         // service layer code starts here
 
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $taskId = $request->input('task_id');
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($taskId);
+        $taskExists = $this->taskService->findTaskById($taskId);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
-        $priority = $this->dependencyManagerService->priorityService->createPriority($request->all());
+        $priority = $this->priorityService->createPriority($request->all());
 
         $projectId = $request->input('project_id');
 
-        $taskWithPriorities = $this->dependencyManagerService->labelService->fetchLabelsOfATask($priority->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($projectId);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Priority Created Successfully', $project, $taskWithPriorities, true, 200);
+        $taskWithPriorities = $this->labelService->fetchLabelsOfATask($priority->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($projectId);
+        return $this->responseService->successProjectTaskResponse('Priority Created Successfully', $project, $taskWithPriorities, true, 200);
     }
 
     public function update(UpdatePriorityRequest $request)
@@ -104,20 +116,20 @@ class PrioritiesController extends Controller
         // service layer code starts here
 
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $priorityId = $request->input('id');
-        $priority = $this->dependencyManagerService->priorityService->findPriorityById($priorityId);
+        $priority = $this->priorityService->findPriorityById($priorityId);
         if (!$priority) {
-            return $this->dependencyManagerService->responseService->messageResponse('Priority not found', false, 404);
+            return $this->responseService->messageResponse('Priority not found', false, 404);
         }
 
-        $taskExists = $this->dependencyManagerService->taskService->findTaskById($priority->task_id);
+        $taskExists = $this->taskService->findTaskById($priority->task_id);
 
         if (!$taskExists) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
         $labelName = $request->input('name');
@@ -130,11 +142,11 @@ class PrioritiesController extends Controller
             $priority->color = $labelColor;
         }
 
-        $this->dependencyManagerService->priorityService->updatePriority($priority, $request->all());
+        $this->priorityService->updatePriority($priority, $request->all());
 
-        $taskWithPriorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATask($priority->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Priority Updated Successfully', $project, $taskWithPriorities, true, 200);
+        $taskWithPriorities = $this->priorityService->fetchPrioritiesOfATask($priority->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
+        return $this->responseService->successProjectTaskResponse('Priority Updated Successfully', $project, $taskWithPriorities, true, 200);
     }
 
     public function destroy($priorityId)
@@ -163,16 +175,16 @@ class PrioritiesController extends Controller
 
         // service layer code starts here
 
-        $priority = $this->dependencyManagerService->priorityService->findPriorityById($priorityId);
+        $priority = $this->priorityService->findPriorityById($priorityId);
         if (!$priority) {
-            return $this->dependencyManagerService->responseService->messageResponse('Priority not found', false, 404);
+            return $this->responseService->messageResponse('Priority not found', false, 404);
         }
 
-        $this->dependencyManagerService->priorityService->deletePriority($priority);
+        $this->priorityService->deletePriority($priority);
 
-        $taskWithPriorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATask($priority->task_id);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Priority Deleted Successfully', $project, $taskWithPriorities, true, 200);
+        $taskWithPriorities = $this->priorityService->fetchPrioritiesOfATask($priority->task_id);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
+        return $this->responseService->successProjectTaskResponse('Priority Deleted Successfully', $project, $taskWithPriorities, true, 200);
     }
 
     public function updateSelected(Request $request)
@@ -206,30 +218,30 @@ class PrioritiesController extends Controller
 
         // new service code below
         $userId = $request->input('user_id');
-        if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-            return $this->dependencyManagerService->responseService->unauthorizedResponse();
+        if (!$this->authService->isAuthenticated($userId)) {
+            return $this->responseService->unauthorizedResponse();
         }
 
         $priorityId = $request->input('id');
         $taskId = $request->input('task_id');
 
-        $priority = $this->dependencyManagerService->priorityService->findPriorityById($priorityId);
+        $priority = $this->priorityService->findPriorityById($priorityId);
 
-        $priorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATaskNew($taskId);
-        $previousSelectedPriority = $this->dependencyManagerService->priorityService->selectPreviousPriority($priorities);
+        $priorities = $this->priorityService->fetchPrioritiesOfATaskNew($taskId);
+        $previousSelectedPriority = $this->priorityService->selectPreviousPriority($priorities);
 
         if ($priorityId === 'null') {
-            return $this->dependencyManagerService->priorityService->deactivatePriority($priorities);
+            return $this->priorityService->deactivatePriority($priorities);
         } else if (!$priority) {
-            return $this->dependencyManagerService->responseService->messageResponse('Priority not found', false, 404);
+            return $this->responseService->messageResponse('Priority not found', false, 404);
         } else if ($previousSelectedPriority !== null  && $previousSelectedPriority->id === $priorityId) {
-            $this->dependencyManagerService->priorityService->unselectSelectedPriority($priority);
+            $this->priorityService->unselectSelectedPriority($priority);
         } else {
-            $this->dependencyManagerService->priorityService->selectNewPriority($priorities, $priorityId);
+            $this->priorityService->selectNewPriority($priorities, $priorityId);
         }
 
-        $taskWithPriorities = $this->dependencyManagerService->priorityService->fetchPrioritiesOfATask($taskId);
-        $project = $this->dependencyManagerService->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Priority Updated Successfully', $project, $taskWithPriorities, true, 200);
+        $taskWithPriorities = $this->priorityService->fetchPrioritiesOfATask($taskId);
+        $project = $this->projectService->fetchDetailstWithProjectId($taskWithPriorities->project_id);
+        return $this->responseService->successProjectTaskResponse('Priority Updated Successfully', $project, $taskWithPriorities, true, 200);
     }
 }

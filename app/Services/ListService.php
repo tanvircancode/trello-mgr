@@ -3,32 +3,45 @@
 namespace App\Services;
 
 use App\Models\Stage;
-use App\Repositories\DependencyManagerRepository;
-use App\Services\DependencyManagerService;
+use App\Services\ResponseService;
+use App\Services\AuthService;
+use App\Services\ProjectService;
+use App\Repositories\StageRepository;
+use App\Repositories\ProjectRepository;
 
 class ListService
 {
-  protected $stageModel;
-  protected DependencyManagerRepository $dependencyManagerRepository;
-  protected DependencyManagerService $dependencyManagerService;
+  protected $projectService;
+  protected $userRepository;
+  protected $projectRepository;
+  protected $stageRepository;
+  protected $responseService;
+  protected $authService;
 
-  public function __construct(Stage $stageModel, DependencyManagerRepository $dependencyManagerRepository, DependencyManagerService $dependencyManagerService)
-  {
-    $this->stageModel = $stageModel;
-    $this->dependencyManagerRepository = $dependencyManagerRepository;
-    $this->dependencyManagerService = $dependencyManagerService;
+  public function __construct(
+    ProjectService $projectService,
+    ProjectRepository $projectRepository,
+    AuthService $authService,
+    ResponseService $responseService,
+    StageRepository $stageRepository,
+  ) {
+    $this->projectService = $projectService;
+    $this->projectRepository = $projectRepository;
+    $this->responseService = $responseService;
+    $this->authService = $authService;
+    $this->stageRepository = $stageRepository;
   }
 
   public function findStage($id)
   {
-    return $this->dependencyManagerRepository->stageRepository->findById($id);
+    return $this->stageRepository->findById($id);
   }
-  
+
   public function storeStage(array $data, $userId)
   {
-    
-    if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-      return $this->dependencyManagerService->responseService->unauthorizedResponse();
+
+    if (!$this->authService->isAuthenticated($userId)) {
+      return $this->responseService->unauthorizedResponse();
     }
 
     $projectId = $data['project_id'];
@@ -38,17 +51,17 @@ class ListService
 
     $data['position'] = $newPosition;
 
-    $project = $this->dependencyManagerRepository->projectRepository->findById($projectId);
+    $project = $this->projectRepository->findById($projectId);
 
     if (!$project) {
-      return $this->dependencyManagerService->responseService->messageResponse('Project not found', false, 404);
+      return $this->responseService->messageResponse('Project not found', false, 404);
     }
 
-    $this->dependencyManagerRepository->stageRepository->createStage($data);
+    $this->stageRepository->createStage($data);
 
-    $stages = $this->dependencyManagerRepository->projectRepository->projectData($projectId);
+    $stages = $this->projectRepository->projectData($projectId);
 
-    return $this->dependencyManagerService->responseService->successMessageDataResponse('List Created Successfully', $stages, true, 200);
+    return $this->responseService->successMessageDataResponse('List Created Successfully', $stages, true, 200);
   }
 
   public function updateStage($data)
@@ -56,16 +69,16 @@ class ListService
     $userId = $data['user_id'];
     $projectId = $data['project_id'];
 
-    if (!$this->dependencyManagerService->authService->isAuthenticated($userId)) {
-      return $this->dependencyManagerService->responseService->unauthorizedResponse();
+    if (!$this->authService->isAuthenticated($userId)) {
+      return $this->responseService->unauthorizedResponse();
     }
 
-    $stage = $this->dependencyManagerRepository->stageRepository->changeStagePosition($data);
+    $stage = $this->stageRepository->changeStagePosition($data);
     if (!$stage) {
-      return $this->dependencyManagerService->responseService->messageResponse('Stage not found', false, 404);
+      return $this->responseService->messageResponse('Stage not found', false, 404);
     }
-    $stages = $this->dependencyManagerService->projectService->stagesOfProject($projectId);
+    $stages = $this->projectService->stagesOfProject($projectId);
 
-    return $this->dependencyManagerService->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
+    return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
   }
 }

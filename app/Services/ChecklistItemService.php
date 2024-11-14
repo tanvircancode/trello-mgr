@@ -1,38 +1,34 @@
 <?php
 
 namespace App\Services;
-
-use App\Services\DependencyManagerService;
-use App\Repositories\DependencyManagerRepository;
+use App\Repositories\ChecklistItemRepository;
 
 class ChecklistItemService
 {
-    protected DependencyManagerService $dependencyManagerService;
-    protected DependencyManagerRepository $dependencyManagerRepository;
+    protected $checklistItemRepository;
 
-    public function __construct(DependencyManagerService $dependencyManagerService, DependencyManagerRepository $dependencyManagerRepository)
+    public function __construct(ChecklistItemRepository $checklistItemRepository)
     {
-        $this->dependencyManagerService = $dependencyManagerService;
-        $this->dependencyManagerRepository = $dependencyManagerRepository;
+        $this->checklistItemRepository = $checklistItemRepository;
     }
 
     public function findChecklistItemById($id)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->findById($id);
+        return $this->checklistItemRepository->findById($id);
     }
 
     public function createChecklistItem(array $checklistItemData)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->storeChecklistItem($checklistItemData);
+        return $this->checklistItemRepository->storeChecklistItem($checklistItemData);
     }
 
     public function deleteChecklistItem($checklistItem)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->delete($checklistItem);
+        return $this->checklistItemRepository->delete($checklistItem);
     }
 
     public function updateChecklistItemWithData($checklistItem, array $data)
     {
-        return $this->dependencyManagerRepository->checklistItemRepository->saveChecklistItem($checklistItem, $data);
+        return $this->checklistItemRepository->saveChecklistItem($checklistItem, $data);
     }
 }

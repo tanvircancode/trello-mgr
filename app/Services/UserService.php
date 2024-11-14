@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\ResponseService;
+use App\Services\AuthService;
 use App\Repositories\UserRepository;
 use App\Repositories\ProjectRepository;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +49,6 @@ class UserService
             return $user;
         }
 
-        // Handle duplicate email scenario
         return $this->responseService->messageResponse('Email is already registered', false, 404);
     }
 

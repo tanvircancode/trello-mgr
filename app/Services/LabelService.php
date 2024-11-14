@@ -2,42 +2,46 @@
 
 namespace App\Services;
 
-use App\Services\DependencyManagerService;
-use App\Repositories\DependencyManagerRepository;
+
+use App\Repositories\LabelRepository;
+use App\Repositories\TaskRepository;
+
 
 class LabelService
 {
-    protected DependencyManagerService $dependencyManagerService;
-    protected DependencyManagerRepository $dependencyManagerRepository;
+    protected $taskRepository;
+    protected $labelRepository;
 
-    public function __construct(DependencyManagerService $dependencyManagerService, DependencyManagerRepository $dependencyManagerRepository)
-    {
-        $this->dependencyManagerService = $dependencyManagerService;
-        $this->dependencyManagerRepository = $dependencyManagerRepository;
+    public function __construct(
+        TaskRepository $taskRepository,
+        LabelRepository $labelRepository,
+    ) {
+        $this->taskRepository = $taskRepository;
+        $this->labelRepository = $labelRepository;
     }
 
     public function findLabelById($id)
     {
-        return $this->dependencyManagerRepository->labelRepository->findById($id);
+        return $this->labelRepository->findById($id);
     }
 
     public function createLabel(array $labelData)
     {
-        return $this->dependencyManagerRepository->labelRepository->storeLabel($labelData);
+        return $this->labelRepository->storeLabel($labelData);
     }
 
     public function updateLabel($label, array $data)
     {
-        return $this->dependencyManagerRepository->labelRepository->saveLabel($label, $data);
+        return $this->labelRepository->saveLabel($label, $data);
     }
     public function deleteLabel($label)
     {
-        return $this->dependencyManagerRepository->labelRepository->delete($label);
+        return $this->labelRepository->delete($label);
     }
 
     public function fetchLabelsOfATask($taskId)
     {
-        $task = $this->dependencyManagerRepository->taskRepository->findById($taskId);
+        $task = $this->taskRepository->findById($taskId);
         $task->labels();
         return $task;
     }

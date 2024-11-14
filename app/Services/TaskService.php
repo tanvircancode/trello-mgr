@@ -2,14 +2,26 @@
 
 namespace App\Services;
 
-use App\Services\DependencyManagerService;
-use App\Repositories\DependencyManagerRepository;
-use Illuminate\Support\Str;
-use App\Models\Task;
+use App\Services\ResponseService;
+use App\Services\UserService;
+use App\Repositories\TaskRepository;
+use App\Repositories\ProjectRepository;
+
 
 class TaskService
 {
-    
+    protected $taskRepository;
+    protected $projectRepository;
+    protected $responseService;
+    protected $userService;
+
+    public function __construct(TaskRepository $taskRepository, ProjectRepository $projectRepository, UserService $userService, ResponseService $responseService)
+    {
+        $this->taskRepository = $taskRepository;
+        $this->projectRepository = $projectRepository;
+        $this->responseService = $responseService;
+        $this->userService = $userService;
+    }
 
     public function createTask(array $taskData, $userId,  $listId)
     {
@@ -32,7 +44,7 @@ class TaskService
         $task = $this->findTaskById($taskId);
 
         if (!$task) {
-            return $this->dependencyManagerService->responseService->messageResponse('Task not found', false, 404);
+            return $this->responseService->messageResponse('Task not found', false, 404);
         }
 
         $description = $data['description'];
@@ -41,14 +53,14 @@ class TaskService
 
         $task = $this->taskRepository->saveTask($task);
         $project = $this->projectRepository->projectDetails($projectId);
-        return $this->dependencyManagerService->responseService->successProjectTaskResponse('Desription Updated Successfully', $project, $task, true, 200);
+        return $this->responseService->successProjectTaskResponse('Desription Updated Successfully', $project, $task, true, 200);
     }
 
     public function assignUserToTask(array $data)
     {
         $userId = $data['user_id'];
 
-        $user = $this->dependencyManagerService->userService->findUserById($userId);
+        $user = $this->userService->findUserById($userId);
 
         if (!$user) {
             return null;
@@ -72,7 +84,7 @@ class TaskService
     {
         $userId = $data['user_id'];
 
-        $user = $this->dependencyManagerService->userService->findUserById($userId);
+        $user = $this->userService->findUserById($userId);
 
         if (!$user) {
             return null;
