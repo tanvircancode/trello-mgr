@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import  {  useState } from "react";
+import { useState } from "react";
 import { BASE_URL } from "../../../config";
 import "./lists.scss";
 import Card from "../Cards";
@@ -13,6 +13,14 @@ import {
 } from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
 import DropArea from "../DropArea";
+
+//new code starts
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+    background: isDragging ? "lightgreen" : "grey",
+    ...draggableStyle,
+});
 
 const List = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -108,71 +116,140 @@ const List = () => {
         dispatch(setShowStageAction({ showStageAction }));
     };
 
-    const handleDragStart = (e, position) => {
-        console.log("dragging " + position);
+    const handleDragEnd = (result) => {
+        // console.log("Result : " + result);
+        if (
+            !result.destination ||
+            result.destination.index === result.source.index
+        ) {
+            return;
+        }
+
+        const items = Array.from(tasks);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        reorderTasks(
+            projectId,
+            result.source.index + 1,
+            result.destination.index + 1
+        );
+
+        setTasks(items);
     };
 
-    const onDrop = (position) => {
-        console.log(`${activeCard} is going to its new position ${position}`);
+    const handleReorder = async (projectId, start, end) => {
+        var formData = new FormData();
+        formData.append("start", start);
+        formData.append("end", end);
+        formData.append("project_id", projectId);
+        await axios
+            .put(`${BASE_URL}/api/reorderStage/${userId}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                if (res.data?.status && res.data?.data) {
+                    console.log(res.data);
+                    dispatch(
+                        setStages({
+                            stages: res.data.data.stages,
+                        })
+                    );
 
-        if (activeCard == null || activeCard == undefined) return;
-
-        const stageToMove = stages[activeCard];
-        const updatedStages = stages.filter(
-            (stage, index) => index !== activeCard
-        );
+                    toast.success(res.data?.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            })
+            .catch((error) => {
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
     };
 
     return (
         <div className="d-flex">
             <div className="stage-list d-flex gap-2">
                 <div className="d-flex gap-2">
-                    <DropArea onDrop={() => onDrop(0)} />
-
-                    {stages &&
-                        stages.length > 0 &&
-                        stages.map((stage, index) => {
-                            return (
-                                <>
-                                    <div
-                                        key={index}
-                                        className={`card custom-card`}
-                                        onDragStart={() => setActiveCard(index)}
-                                        onDragEnd={() => setActiveCard(null)}
-                                        draggable
-                                    >
-                                        <div
-                                            className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                                blur
-                                                    ? "is-blur disable-pointer-events"
-                                                    : ""
-                                            }`}
-                                        >
-                                            <span className="card-title custom-stage-title m-0">
-                                                {stage && stage.title}
-                                            </span>
-                                            <span
-                                                className="stage-horizontal-dots mb-1"
-                                                onClick={(event) =>
-                                                    handleStageAction(
-                                                        event,
-                                                        stage
-                                                    )
-                                                }
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <Droppable droppableId="droppable">
+                            {(provided) => (
+                                <ul
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                >
+                                    {stages &&
+                                        stages.length > 0 &&
+                                        stages.map((stage, index) => (
+                                            <Draggable
+                                                key={stage.id.toString()}
+                                                draggableId={stage.id.toString()}
+                                                index={index}
                                             >
-                                                ...
-                                            </span>
-                                        </div>
-                                        <Card stage={stage} />
-                                    </div>
-                                    <DropArea
-                                        index={index + 1}
-                                        activeCard={activeCard}
-                                        onDrop={onDrop}
-                                    />
-                                </>
-                            );
-                        })}
+                                                {(provided, snapshot) => (
+                                                    <li
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        className="task-item"
+                                                        style={getItemStyle(
+                                                            snapshot.isDragging,
+                                                            provided
+                                                                .draggableProps
+                                                                .style
+                                                        )}
+                                                    >
+                                                        <div
+                                                            key={index}
+                                                            className={`card custom-card`}
+                                                        >
+                                                            <div
+                                                                className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                                                    blur
+                                                                        ? "is-blur disable-pointer-events"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                <span className="card-title custom-stage-title m-0">
+                                                                    {stage &&
+                                                                        stage.title}{" "}
+                                                                    Here stage
+                                                                </span>
+                                                                <span
+                                                                    className="stage-horizontal-dots mb-1"
+                                                                    onClick={(
+                                                                        event
+                                                                    ) =>
+                                                                        handleStageAction(
+                                                                            event,
+                                                                            stage
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    ...
+                                                                </span>
+                                                            </div>
+                                                            <Card
+                                                                stage={stage}
+                                                            />
+                                                        </div>
+                                                    </li>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                </ul>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
 
                 {showStageAction && (

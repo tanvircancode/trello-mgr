@@ -40,4 +40,9 @@ class StagesController extends Controller
     {
         return $this->listService->updateStage($request->all());
     }
+
+    public function reorderStage(MoveStageRequest $request)
+    {
+        return true;
+    }
 }

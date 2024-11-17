@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Repositories;
-
 use App\Repositories\UserRepository;
 use App\Repositories\ProjectRepository;
 use App\Repositories\StageRepository;
