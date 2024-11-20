@@ -34,6 +34,12 @@ class ProjectService
         $this->taskRepository = $taskRepository;
     }
 
+    public function findProjectById($projectId)
+    {
+        return $this->projectRepository->findById($projectId);
+    }
+
+
     public function stagesOfProject($projectId)
     {
         return $this->projectRepository->projectData($projectId);

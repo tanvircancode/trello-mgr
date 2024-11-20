@@ -26,7 +26,6 @@ const List = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
-    const [activeCard, setActiveCard] = useState(null);
 
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
@@ -116,65 +115,88 @@ const List = () => {
         dispatch(setShowStageAction({ showStageAction }));
     };
 
-    const handleDragEnd = (result) => {
+    const handleDragEnd = async (result) => {
         // console.log("Result : " + result);
-        if (
-            !result.destination ||
-            result.destination.index === result.source.index
-        ) {
+        let start = result.source.index;
+        let end = result.destination.index;
+        let projectId = selectedProject.id;
+
+        if (!result.destination || end === start) {
             return;
         }
 
-        const items = Array.from(tasks);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        reorderTasks(
-            projectId,
-            result.source.index + 1,
-            result.destination.index + 1
-        );
+        // const items = Array.from(tasks);
+        // const [reorderedItem] = items.splice(result.source.index, 1);
+        // items.splice(result.destination.index, 0, reorderedItem);
+        // reorderTasks(
+        //     projectId,
+        //     result.source.index + 1,
+        //     result.destination.index + 1
+        // );
 
-        setTasks(items);
-    };
+        // setTasks(items);
 
-    const handleReorder = async (projectId, start, end) => {
+        // new code starts
+
         var formData = new FormData();
         formData.append("start", start);
         formData.append("end", end);
         formData.append("project_id", projectId);
+
+        //api
         await axios
-            .put(`${BASE_URL}/api/reorderStage/${userId}`, formData, {
+            .put(`${BASE_URL}/api/reorderstage`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-type": "application/json",
                 },
             })
             .then((res) => {
-                if (res.data?.status && res.data?.data) {
-                    console.log(res.data);
-                    dispatch(
-                        setStages({
-                            stages: res.data.data.stages,
-                        })
-                    );
-
-                    toast.success(res.data?.message);
-                } else {
-                    toast.error("Server is not responding");
-                }
+                console.log(res);
             })
             .catch((error) => {
-                if (
-                    error.response &&
-                    error.response?.status &&
-                    error.response.data?.message
-                ) {
-                    toast.error(error.response.data.message);
-                } else {
-                    toast.error("Server is not responding");
-                }
+                console.log(error);
             });
     };
+
+    // const handleReorder = async (projectId, start, end) => {
+    //     var formData = new FormData();
+    //     formData.append("start", start);
+    //     formData.append("end", end);
+    //     formData.append("project_id", projectId);
+    //     await axios
+    //         .put(`${BASE_URL}/api/reorderStage/${userId}`, formData, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`,
+    //                 "Content-type": "application/json",
+    //             },
+    //         })
+    //         .then((res) => {
+    //             if (res.data?.status && res.data?.data) {
+    //                 console.log(res.data);
+    //                 dispatch(
+    //                     setStages({
+    //                         stages: res.data.data.stages,
+    //                     })
+    //                 );
+
+    //                 toast.success(res.data?.message);
+    //             } else {
+    //                 toast.error("Server is not responding");
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             if (
+    //                 error.response &&
+    //                 error.response?.status &&
+    //                 error.response.data?.message
+    //             ) {
+    //                 toast.error(error.response.data.message);
+    //             } else {
+    //                 toast.error("Server is not responding");
+    //             }
+    //         });
+    // };
 
     return (
         <div className="d-flex">
@@ -186,6 +208,7 @@ const List = () => {
                                 <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
+                                    className="d-flex gap-2"
                                 >
                                     {stages &&
                                         stages.length > 0 &&
@@ -221,8 +244,7 @@ const List = () => {
                                                             >
                                                                 <span className="card-title custom-stage-title m-0">
                                                                     {stage &&
-                                                                        stage.title}{" "}
-                                                                    Here stage
+                                                                        stage.title}
                                                                 </span>
                                                                 <span
                                                                     className="stage-horizontal-dots mb-1"

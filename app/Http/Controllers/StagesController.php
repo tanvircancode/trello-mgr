@@ -4,17 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\ListService;
+use App\Http\Requests\ReorderTasksRequest;
+use App\Services\ResponseService;
+use App\Services\ProjectService;
 use App\Http\Requests\StoreStageRequest;
 use App\Http\Requests\MoveStageRequest;
+use Illuminate\Http\Client\Request;
 
 class StagesController extends Controller
 {
     protected $listService;
+    protected $responseService;
+    protected $projectService;
 
-    public function __construct(ListService $listService)
+
+    public function __construct(ListService $listService, ResponseService $responseService, ProjectService $projectService)
     {
         $this->listService = $listService;
+        $this->responseService = $responseService;
+        $this->projectService = $projectService;
     }
+
     public function store(StoreStageRequest $request, $id)
     {
         return $this->listService->storeStage($request->all(), $id);
@@ -41,8 +51,23 @@ class StagesController extends Controller
         return $this->listService->updateStage($request->all());
     }
 
-    public function reorderStage(MoveStageRequest $request)
+    public function reorder(ReorderTasksRequest $request)
     {
-        return true;
+        $projectId = $request->input('project_id');
+        $project = $this->projectService->findProjectById($projectId);
+
+        if (!$project) {
+            return $this->responseService->messageResponse('Project not found', false, 404);
+        }
+
+        $result = $this->listService->reorderStage($request->all());
+
+        if (!$result) {
+            return $this->responseService->messageResponse('Dropped position not found', false, 404);
+        }
+
+        $stages = $this->projectService->stagesOfProject($projectId);
+
+        return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
     }
 }

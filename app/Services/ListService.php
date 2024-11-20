@@ -81,4 +81,26 @@ class ListService
 
     return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
   }
+
+  public function reorderStage($data)
+  {
+    $projectId = $data['project_id'];
+    $start = $data['start'];
+    $end = $data['end'];
+
+    $stages = $this->stageRepository->fetchStagesOfAProject($projectId);
+
+    if ($start > $stages->count() || $end > $stages->count()) {
+      return;
+    }
+
+    $stagesArray = $stages->toArray();
+
+    $movedTask = array_splice($stagesArray, $start - 1, 1)[0];
+    array_splice($stagesArray, $end - 1, 0, [$movedTask]);
+
+    $this->stageRepository->updatePosition($stagesArray);
+
+    return true;
+  }
 }

@@ -23,6 +23,15 @@ class StageRepository
         return $this->stageModel->create($data);
     }
 
+    public function fetchStagesOfAProject($projectId)
+    {
+        $stages = $this->stageModel->where('project_id', $projectId)
+            ->orderBy('position', 'asc')
+            ->get();
+
+        return $stages;
+    }
+
     public function changeStagePosition(array $data)
     {
         $projectId = $data['project_id'];
@@ -36,29 +45,27 @@ class StageRepository
             return false;
         }
 
-        $stages = $this->stageModel->where('project_id', $projectId)
-            ->orderBy('position', 'asc')
-            ->get();
+        $stages = $this->fetchStagesOfAProject($projectId);
 
         $stage->position = $newPosition;
         $stage->save();
 
-        if($originalPosition < $newPosition) {
-            foreach($stages as $stage) {
-                if($stage->position > $originalPosition && $stage->position <= $newPosition) {
+        if ($originalPosition < $newPosition) {
+            foreach ($stages as $stage) {
+                if ($stage->position > $originalPosition && $stage->position <= $newPosition) {
                     $stage->position -= 1;
                     $stage->save();
                 }
             }
-         } else if($originalPosition > $newPosition) {
-            foreach($stages as $stage) {
-                if($stage->position < $originalPosition && $stage->position >= $newPosition) {
+        } else if ($originalPosition > $newPosition) {
+            foreach ($stages as $stage) {
+                if ($stage->position < $originalPosition && $stage->position >= $newPosition) {
                     $stage->position += 1;
                     $stage->save();
                 }
             }
-         }
-         return true;
+        }
+        return true;
     }
 
     public function stagesOfATask(Stage $stage)
@@ -66,4 +73,14 @@ class StageRepository
         return $stage->tasks()->get();
     }
 
+    public function updatePosition($data)
+    {
+        foreach ($data as $index => $stage) {
+            $this->stageModel
+                ->where('id', $stage['id'])
+                ->update(['position' => $index + 1]);
+        }
+
+        return true;
+    }
 }
