@@ -72,11 +72,12 @@ class ListService
     if (!$this->authService->isAuthenticated($userId)) {
       return $this->responseService->unauthorizedResponse();
     }
-
+    
     $stage = $this->stageRepository->changeStagePosition($data);
     if (!$stage) {
       return $this->responseService->messageResponse('Stage not found', false, 404);
     }
+
     $stages = $this->projectService->stagesOfProject($projectId);
 
     return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);

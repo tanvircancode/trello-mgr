@@ -19,6 +19,7 @@ const initialState = {
     isCardsLoading: true,
     showStageAction: false,
     showMoveStage: false,
+    showCopyStage: false,
     selectedStage:null,
 };
 
@@ -41,6 +42,7 @@ export const trelloSlice = createSlice({
             state.selectedProject = null;
             state.showStageAction = false;
             state.showMoveStage = false;
+            state.showCopyStage = false;
             state.selectedProjectMembers = [],
             state.selectedTaskMembers = [],
             state.priorities = [],
@@ -75,6 +77,9 @@ export const trelloSlice = createSlice({
         },
         setShowMoveStage: (state, action) => {   
             state.showMoveStage = action.payload.showMoveStage;
+        },
+        setShowCopyStage: (state, action) => {   
+            state.showCopyStage = action.payload.showCopyStage;
         },
         setTasks: (state, action) => {
             if (action.payload === null) {
@@ -167,6 +172,7 @@ export const {
     setMakeCardModalBlur,
     setShowStageAction,
     setShowMoveStage,
+    setShowCopyStage,
     setSelectedStage,
 } = trelloSlice.actions;
 

@@ -9,10 +9,10 @@ import {
     setStages,
     setShowStageAction,
     setShowMoveStage,
+    setShowCopyStage,
     setSelectedStage,
 } from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
-import DropArea from "../DropArea";
 
 //new code starts
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -82,7 +82,6 @@ const List = () => {
                 .then((res) => {
                     console.log(res.data);
                     if (res.data?.status && res.data?.data) {
-                        console.log(res.data);
                         dispatch(
                             setStages({
                                 stages: res.data.data.stages,
@@ -93,7 +92,6 @@ const List = () => {
                     } else {
                         toast.error("Server is not responding");
                     }
-                    setListTitle("");
                 })
                 .catch((error) => {
                     if (
@@ -114,9 +112,12 @@ const List = () => {
         dispatch(setShowMoveStage({ showMoveStage }));
         dispatch(setShowStageAction({ showStageAction }));
     };
+    const handleCopyStageClick = (showCopyStage, showStageAction) => {
+        dispatch(setShowCopyStage({ showCopyStage }));
+        dispatch(setShowStageAction({ showStageAction }));
+    };
 
     const handleDragEnd = async (result) => {
-        // console.log("Result : " + result);
         let start = result.source.index;
         let end = result.destination.index;
         let projectId = selectedProject.id;
@@ -152,51 +153,36 @@ const List = () => {
                 },
             })
             .then((res) => {
-                console.log(res);
+                console.log(res.data);
+                const items = Array.from(stages);
+                const [reorderedItem] = items.splice(result.source.index, 1);
+                items.splice(result.destination.index, 0, reorderedItem);
+                if (res.data?.status && res.data?.data) {
+                    dispatch(
+                        setStages({
+                            // stages: res.data.data.stages,
+                            stages: items,
+                        })
+                    );
+
+                    toast.success(res.data?.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
             })
             .catch((error) => {
                 console.log(error);
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
             });
     };
-
-    // const handleReorder = async (projectId, start, end) => {
-    //     var formData = new FormData();
-    //     formData.append("start", start);
-    //     formData.append("end", end);
-    //     formData.append("project_id", projectId);
-    //     await axios
-    //         .put(`${BASE_URL}/api/reorderStage/${userId}`, formData, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //                 "Content-type": "application/json",
-    //             },
-    //         })
-    //         .then((res) => {
-    //             if (res.data?.status && res.data?.data) {
-    //                 console.log(res.data);
-    //                 dispatch(
-    //                     setStages({
-    //                         stages: res.data.data.stages,
-    //                     })
-    //                 );
-
-    //                 toast.success(res.data?.message);
-    //             } else {
-    //                 toast.error("Server is not responding");
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             if (
-    //                 error.response &&
-    //                 error.response?.status &&
-    //                 error.response.data?.message
-    //             ) {
-    //                 toast.error(error.response.data.message);
-    //             } else {
-    //                 toast.error("Server is not responding");
-    //             }
-    //         });
-    // };
 
     return (
         <div className="d-flex">
@@ -301,7 +287,12 @@ const List = () => {
                             <li className="list-group-item stage-li-item">
                                 Add card
                             </li>
-                            <li className="list-group-item stage-li-item">
+                            <li
+                                className="list-group-item stage-li-item"
+                                onClick={() =>
+                                    handleCopyStageClick(true, false)
+                                }
+                            >
                                 Copy list
                             </li>
                             <li

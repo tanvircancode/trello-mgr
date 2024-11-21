@@ -34,7 +34,7 @@ class UsersController extends Controller
 
     public function login(Request $request)
     {
-
+        // dd($request->all());
         $input = $request->all();
 
         return $this->userService->userLogin($input);

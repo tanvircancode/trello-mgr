@@ -29,13 +29,14 @@ class ResponseService
         ], $statusCode);
     }
 
-    public function successDataResponse( $data, bool $status, int $statusCode): JsonResponse
+    public function successDataResponse($data, bool $status, int $statusCode): JsonResponse
     {
         return response()->json([
             'status' => $status,
             'data' => $data,
         ], $statusCode);
     }
+
     public function successMessageDataResponse(string $message, $data, bool $status, int $statusCode): JsonResponse
     {
         return response()->json([
@@ -44,6 +45,7 @@ class ResponseService
             'status' => $status,
         ], $statusCode);
     }
+    
     public function successProjectTaskResponse(string $message, $project, $task, bool $status, int $statusCode): JsonResponse
     {
         return response()->json([
@@ -53,5 +55,4 @@ class ResponseService
             'status' => $status,
         ], $statusCode);
     }
-    
 }
