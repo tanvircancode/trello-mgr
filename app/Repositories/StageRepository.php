@@ -25,7 +25,8 @@ class StageRepository
 
     public function fetchStagesOfAProject($projectId)
     {
-        $stages = $this->stageModel->where('project_id', $projectId)
+        $stages = $this->stageModel
+            ->where('project_id', $projectId)
             ->orderBy('position', 'asc')
             ->get();
 
@@ -75,12 +76,13 @@ class StageRepository
 
     public function updatePosition($data)
     {
+
         foreach ($data as $index => $stage) {
             $this->stageModel
                 ->where('id', $stage['id'])
                 ->update(['position' => $index + 1]);
+            // echo $stage['id'];
         }
-
         return true;
     }
 }

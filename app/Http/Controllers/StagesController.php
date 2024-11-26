@@ -53,7 +53,7 @@ class StagesController extends Controller
 
     public function reorder(ReorderTasksRequest $request)
     {
-        // dd($request->all());
+        // print_r($request->all());return;
         $projectId = $request->input('project_id');
         $project = $this->projectService->findProjectById($projectId);
 
@@ -62,7 +62,8 @@ class StagesController extends Controller
         }
 
         $result = $this->listService->reorderStage($request->all());
-        
+        // return $result;
+
         if (!$result) {
             return $this->responseService->messageResponse('Dropped position not found', false, 404);
         }

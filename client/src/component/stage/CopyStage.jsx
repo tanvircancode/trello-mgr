@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
-    setSelectedStage,
     setShowCopyStage,
     setShowStageAction,
     setStages,
@@ -29,18 +27,14 @@ const CopyStage = () => {
     };
 
   
-
     const handleCreateList = async () => {
-        const projectId = selectedProjectFromOption.id;
+        const projectId = selectedProject.id;
 
         const payload = {
             project_id: projectId,
-            new_position: newPosition,
-            original_position: originalPosition,
-            stage_id: stageId,
             user_id: userId,
         };
-        
+
         await axios
             .post(`${BASE_URL}/api/copystage`, payload, {
                 headers: {
@@ -52,7 +46,7 @@ const CopyStage = () => {
                 console.log(res.data);
                 if (res.data?.status && res.data?.data) {
                     dispatch(setStages({ stages: res.data.data.stages }));
-                    dispatch(setShowMoveStage({ showMoveStage: false }));
+                    dispatch(setShowCopyStage({ showCopyStage: false }));
                     toast.success(res.data.message);
                 } else {
                     toast.error("Server is not responding");

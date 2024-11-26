@@ -39,7 +39,6 @@ class ProjectService
         return $this->projectRepository->findById($projectId);
     }
 
-
     public function stagesOfProject($projectId)
     {
         return $this->projectRepository->projectData($projectId);

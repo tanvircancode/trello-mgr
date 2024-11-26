@@ -17,12 +17,11 @@ import MoveStage from "../../../component/stage/MoveStage";
 //new code starts
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-    background: isDragging ? "lightgreen" : "grey",
-    ...draggableStyle,
-});
-
 const List = () => {
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        background: isDragging ? "lightgreen" : "grey",
+        ...draggableStyle,
+    });
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
@@ -118,6 +117,8 @@ const List = () => {
     };
 
     const handleDragEnd = async (result) => {
+        console.log(result);
+        console.log(stages);
         let start = result.source.index;
         let end = result.destination.index;
         let projectId = selectedProject.id;
@@ -153,22 +154,24 @@ const List = () => {
                 },
             })
             .then((res) => {
-                console.log(res.data);
-                const items = Array.from(stages);
-                const [reorderedItem] = items.splice(result.source.index, 1);
-                items.splice(result.destination.index, 0, reorderedItem);
+                console.log(res.data.data.stages);
+                // console.log(stages);
+                // const items = Array.from(res.data.data.stages);
+                // const [reorderedItem] = items.splice(result.source.index, 1);
+                // items.splice(result.destination.index, 0, reorderedItem);
                 if (res.data?.status && res.data?.data) {
                     dispatch(
                         setStages({
-                            // stages: res.data.data.stages,
-                            stages: items,
+                            stages: res.data.data.stages,
+                            // stages: items,
                         })
                     );
 
                     toast.success(res.data?.message);
-                } else {
-                    toast.error("Server is not responding");
-                }
+                } 
+                // else {
+                //     toast.error("Server is not responding");
+                // }
             })
             .catch((error) => {
                 console.log(error);
@@ -194,7 +197,6 @@ const List = () => {
                                 <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
-                                    className="d-flex gap-2"
                                 >
                                     {stages &&
                                         stages.length > 0 &&
@@ -219,14 +221,15 @@ const List = () => {
                                                     >
                                                         <div
                                                             key={index}
-                                                            className={`card custom-card`}
+                                                            // className={`card custom-card`}
+                                                            className="task-item-content"
                                                         >
                                                             <div
-                                                                className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                                                    blur
-                                                                        ? "is-blur disable-pointer-events"
-                                                                        : ""
-                                                                }`}
+                                                            // className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                                            //     blur
+                                                            //         ? "is-blur disable-pointer-events"
+                                                            //         : ""
+                                                            // }`}
                                                             >
                                                                 <span className="card-title custom-stage-title m-0">
                                                                     {stage &&
