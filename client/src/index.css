@@ -18,7 +18,7 @@ ul {
 /* body { background-color: whitesmoke; color: rgba(255, 255, 255, 0.7); font-family: "Montserrat", sans-serif; cursor: default; margin: auto 0; } */
 
 /* MODAL start */
-.modal-content {
+/* .modal-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -85,23 +85,23 @@ ul {
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 20px;
-}
+} */
 /* MODAL end */
 
 /* LEFT & RIGHT SIDE start */
-.left-side {
+/* .left-side {
     width: 50%;
     float: left;
 }
 .right-side {
     width: 50%;
     float: left;
-}
+} */
 /* LEFT & RIGHT SIDE end */
 
 /* LEFT SIDE start */
-.left-side .no-tasks {
-    font-size: 1.2rem;
+/* .left-side .no-tasks { */
+    /* font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 20px;
     text-align: center;
@@ -170,7 +170,7 @@ ul {
 /* LEFT SIDE end */
 
 /* RIGHT SIDE start */
-.right-side .projects {
+/* .right-side .projects {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -249,5 +249,5 @@ ul {
 }
 .right-side .add-task-btn-submit:hover {
     background-color: #4a5568;
-}
+}  */
 /* RIGHT SIDE end */

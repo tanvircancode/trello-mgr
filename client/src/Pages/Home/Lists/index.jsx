@@ -19,9 +19,13 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const List = () => {
     const getItemStyle = (isDragging, draggableStyle) => ({
-        background: isDragging ? "lightgreen" : "grey",
         ...draggableStyle,
+        opacity: isDragging ? 0.3 : 1,
+        margin: "0 28px 0 0",
+        display: "inline-block",
+        maxWidth: "250px",
     });
+
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
@@ -49,7 +53,6 @@ const List = () => {
     };
 
     const handleStageAction = (event, stage) => {
-        console.log(stage);
         dispatch(setSelectedStage({ selectedStage: stage }));
         const rect = event.target.getBoundingClientRect();
         setShowRect(rect);
@@ -117,8 +120,6 @@ const List = () => {
     };
 
     const handleDragEnd = async (result) => {
-        console.log(result);
-        console.log(stages);
         let start = result.source.index;
         let end = result.destination.index;
         let projectId = selectedProject.id;
@@ -127,25 +128,18 @@ const List = () => {
             return;
         }
 
-        // const items = Array.from(tasks);
-        // const [reorderedItem] = items.splice(result.source.index, 1);
-        // items.splice(result.destination.index, 0, reorderedItem);
-        // reorderTasks(
-        //     projectId,
-        //     result.source.index + 1,
-        //     result.destination.index + 1
-        // );
-
-        // setTasks(items);
+        // immediately updating stages
+        const reorderedStages = Array.from(stages);
+        const [movedStage] = reorderedStages.splice(start, 1);
+        reorderedStages.splice(end, 0, movedStage);
+        dispatch(setStages({ stages: reorderedStages }));
 
         // new code starts
-
         var formData = new FormData();
         formData.append("start", start);
         formData.append("end", end);
         formData.append("project_id", projectId);
 
-        //api
         await axios
             .put(`${BASE_URL}/api/reorderstage`, formData, {
                 headers: {
@@ -155,26 +149,21 @@ const List = () => {
             })
             .then((res) => {
                 console.log(res.data.data.stages);
-                // console.log(stages);
-                // const items = Array.from(res.data.data.stages);
-                // const [reorderedItem] = items.splice(result.source.index, 1);
-                // items.splice(result.destination.index, 0, reorderedItem);
+
                 if (res.data?.status && res.data?.data) {
                     dispatch(
                         setStages({
                             stages: res.data.data.stages,
-                            // stages: items,
                         })
                     );
 
                     toast.success(res.data?.message);
-                } 
-                // else {
-                //     toast.error("Server is not responding");
-                // }
+                } else {
+                    toast.error("Server is not responding");
+                }
             })
             .catch((error) => {
-                console.log(error);
+                dispatch(setStages({ stages }));
                 if (
                     error.response &&
                     error.response?.status &&
@@ -192,11 +181,15 @@ const List = () => {
             <div className="stage-list d-flex gap-2">
                 <div className="d-flex gap-2">
                     <DragDropContext onDragEnd={handleDragEnd}>
-                        <Droppable droppableId="droppable">
+                        <Droppable
+                            droppableId="droppable"
+                            direction="horizontal"
+                        >
                             {(provided) => (
                                 <ul
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
+                                    className="d-flex"
                                 >
                                     {stages &&
                                         stages.length > 0 &&
@@ -221,15 +214,14 @@ const List = () => {
                                                     >
                                                         <div
                                                             key={index}
-                                                            // className={`card custom-card`}
-                                                            className="task-item-content"
+                                                            className="stage-item"
                                                         >
                                                             <div
-                                                            // className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                                            //     blur
-                                                            //         ? "is-blur disable-pointer-events"
-                                                            //         : ""
-                                                            // }`}
+                                                            className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                                                blur
+                                                                    ? "is-blur disable-pointer-events"
+                                                                    : ""
+                                                            }`}
                                                             >
                                                                 <span className="card-title custom-stage-title m-0">
                                                                     {stage &&
@@ -245,9 +237,7 @@ const List = () => {
                                                                             stage
                                                                         )
                                                                     }
-                                                                >
-                                                                    ...
-                                                                </span>
+                                                                >...</span>
                                                             </div>
                                                             <Card
                                                                 stage={stage}
@@ -257,6 +247,46 @@ const List = () => {
                                                 )}
                                             </Draggable>
                                         ))}
+                                    {provided.placeholder}
+                                    <div className="custom-card-add">
+                                        <input
+                                            type="text"
+                                            className="form-control stage-title-input"
+                                            value={listTitle}
+                                            placeholder={
+                                                stages.length > 0
+                                                    ? "+ Add another list"
+                                                    : "+ Add a list"
+                                            }
+                                            onChange={(e) =>
+                                                setListTitle(e.target.value)
+                                            }
+                                        />
+                                        {listTitle && (
+                                            <div className="d-flex align-items-center gap-3 mt-2 ">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-primary create-card-button"
+                                                    disabled={isLoading}
+                                                    onClick={handleCreateList}
+                                                >
+                                                    <span className="add-card-text">
+                                                        {isLoading
+                                                            ? "Loading..."
+                                                            : "Add List"}
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn-close"
+                                                    aria-label="Close"
+                                                    disabled={isLoading}
+                                                    style={{ fontSize: "12px" }}
+                                                    onClick={cancelAddList}
+                                                ></button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </ul>
                             )}
                         </Droppable>
@@ -311,41 +341,6 @@ const List = () => {
                 )}
 
                 {showMoveStage && <MoveStage showRect={showRect} />}
-                <div className="custom-card-add">
-                    <input
-                        type="text"
-                        className="form-control stage-title-input"
-                        value={listTitle}
-                        placeholder={
-                            stages.length > 0
-                                ? "+ Add another list"
-                                : "+ Add a list"
-                        }
-                        onChange={(e) => setListTitle(e.target.value)}
-                    />
-                    {listTitle && (
-                        <div className="d-flex align-items-center gap-3 mt-2 ">
-                            <button
-                                type="button"
-                                className="btn btn-primary create-card-button"
-                                disabled={isLoading}
-                                onClick={handleCreateList}
-                            >
-                                <span className="add-card-text">
-                                    {isLoading ? "Loading..." : "Add List"}
-                                </span>
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-close"
-                                aria-label="Close"
-                                disabled={isLoading}
-                                style={{ fontSize: "12px" }}
-                                onClick={cancelAddList}
-                            ></button>
-                        </div>
-                    )}
-                </div>
             </div>
         </div>
     );

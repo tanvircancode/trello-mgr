@@ -89,22 +89,7 @@ const Header = () => {
                     className="collapse navbar-collapse position-relative"
                     id="navbarNavDropdown"
                 >
-                    {/* <ul className="navbar-nav">
-                        <li
-                            className={`nav-item ${
-                                activeLink === "/" ? "active" : ""
-                            }`}
-                        >
-                            <a
-                                className="nav-link active"
-                                aria-current="page"
-                                onClick={() => handleNavLinkClick("/")}
-                            >
-                                Home
-                            </a>
-                        </li>
-                     
-                    </ul> */}
+                    
                     <div className="logout-custom d-flex align-items-center gap-2">
                         {token && <button className="circular-button">{initials}</button>} 
                         

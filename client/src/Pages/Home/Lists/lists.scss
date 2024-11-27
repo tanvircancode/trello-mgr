@@ -1,14 +1,8 @@
 .custom-stage-body {
-    padding: 0.4rem 0.6rem;
+    padding: 0.2rem 0.4rem;
     max-height: 37px;
 }
-.custom-stage {
-//   flex: 1; /* All stages get equal width */
-//   display: flex;
-//   flex-direction: column;
-//   min-height: 200px;
-//   max-height: 96px;
-}
+
 .custom-card {
     cursor: grab;
 }
@@ -17,14 +11,15 @@
     border: 1px solid #111;
 }
 
-
 .custom-stage-title {
     font-weight: 600;
     font-size: 16px;
     margin-left: 8px !important;
 }
 .stage-title-input {
+    position: relative;
     padding: 0.45rem 0.6rem;
+    width: 200px;
 }
 .stage-title-input::-webkit-input-placeholder {
     color: #000000;
@@ -43,4 +38,12 @@
     @media (max-width: 870px) {
         justify-content: center;
     }
+}
+.stage-item {
+    border: 1px solid grey;
+    border-radius: 5%;
+    padding: 6px;
+}
+.stage-list ul {
+    padding-left: 1rem;
 }

@@ -76,12 +76,10 @@ class StageRepository
 
     public function updatePosition($data)
     {
-
         foreach ($data as $index => $stage) {
             $this->stageModel
                 ->where('id', $stage['id'])
                 ->update(['position' => $index + 1]);
-            // echo $stage['id'];
         }
         return true;
     }

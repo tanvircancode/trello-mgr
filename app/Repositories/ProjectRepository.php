@@ -78,12 +78,12 @@ class ProjectRepository
     public function getTasksByListId($listId)
     {
         $tasks = $this->projectModel->with([
-           'members',
+            'members',
             'stages' => function ($query) {
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('position', 'asc');
             },
             'stages.tasks' => function ($query) {
-                $query->orderBy('created_at', 'asc'); 
+                $query->orderBy('created_at', 'asc');
             },
             'stages.tasks.labels',
             'stages.tasks.priorities',

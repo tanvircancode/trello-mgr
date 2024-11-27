@@ -1,4 +1,3 @@
-
 $borderRadius: 2px;
 $offset: 150%;
 $inputHeight: 63px;
@@ -6,7 +5,6 @@ $transitionEasing: cubic-bezier(0.36, 1, 0.62, 0.98);
 
 $background1: #433b7c;
 $background2: #2c497f;
-
 
 $yellow: #bf635a;
 
@@ -35,7 +33,8 @@ $yellow: #bf635a;
     right: 0;
     height: 100%;
     overflow-y: scroll;
-    background-image: url("https://unsplash.it/1366/768?image=568");
+    //change here
+    background-image: url("https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bmF0dXJlJTIwd2FsbHBhcGVyc3xlbnwwfHwwfHx8MA%3D%3D");
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -49,7 +48,8 @@ $yellow: #bf635a;
     @include transition(all 0.85s ease-in-out);
     &--is-login {
         opacity: 0.92;
-        background-color: $background2;
+        // background-color: $background2;
+        //change here
     }
     &--is-signup {
         opacity: 0.94;
@@ -91,7 +91,6 @@ $yellow: #bf635a;
         color: rgba(255, 255, 255, 0.65);
     }
 }
-
 
 .form-block__input-wrapper {
     height: 2 * $inputHeight;
@@ -175,7 +174,9 @@ $yellow: #bf635a;
     @include transition(all 0.2s ease-in-out);
     @include box-shadow(0px 0px 13px 8px rgba(0, 0, 0, 0.1));
     &--primary {
-        background: $yellow;
+        // background: $yellow;
+        background: #31195b;
+         //change here
         color: #fff;
     }
     &:hover {
@@ -186,8 +187,6 @@ $yellow: #bf635a;
 .full-width {
     width: 100%;
 }
-
-
 
 ::-webkit-input-placeholder {
     /* Chrome/Opera/Safari */

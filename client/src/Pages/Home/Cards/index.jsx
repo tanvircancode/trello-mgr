@@ -238,7 +238,7 @@ const Card = ({ stage }) => {
                 })}
 
             <div
-                className={`custom-card-add ${
+                className={`custom-card ${
                     blur ? "is-blur disable-pointer-events" : ""
                 }`}
             >
