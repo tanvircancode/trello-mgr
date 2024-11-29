@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { BASE_URL } from "../../../config";
 import "./lists.scss";
 import Card from "../Cards";
@@ -33,6 +33,7 @@ const List = () => {
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
+        visible: false, // Track visibility
     });
 
     const selectedProject = useSelector((state) => state.selectedProject);
@@ -52,15 +53,27 @@ const List = () => {
         setListTitle("");
     };
 
+    const stageListRef = useRef(null);
+
     const handleStageAction = (event, stage) => {
         dispatch(setSelectedStage({ selectedStage: stage }));
         const rect = event.target.getBoundingClientRect();
+        const scrollContainer = event.currentTarget.closest(".stage-list"); // Get the parent scrollable container
+        const scrollLeft = scrollContainer?.scrollLeft || 0;
         setShowRect(rect);
-        setStageActionPosition({ top: rect.bottom + 10, left: rect.left });
+        setStageActionPosition({
+            top: rect.bottom + 10,
+            left:
+                rect.left -
+                scrollContainer.getBoundingClientRect().left +
+                scrollLeft,
+            visible: true, // Show menu
+        });
         dispatch(setShowStageAction({ showStageAction: true }));
     };
 
     const handleCloseStageAction = () => {
+        setStageActionPosition({ ...stageActionPosition, visible: false });
         dispatch(setShowStageAction({ showStageAction: false }));
     };
 
@@ -176,9 +189,31 @@ const List = () => {
             });
     };
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowStageAction({ showStageAction: false }); // Optional: Close the menu on scroll
+        };
+
+        const container = stageListRef.current;
+        if (container) container.addEventListener("scroll", handleScroll);
+
+        return () => {
+            if (container)
+                container.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
     return (
         <div className="d-flex">
-            <div className="stage-list d-flex gap-2">
+            <div
+                className="stage-list d-flex gap-2"
+                ref={stageListRef}
+                style={{
+                    overflowX: "auto",
+                    whiteSpace: "nowrap",
+                    position: "relative", // Make this relative for child absolute positioning
+                }}
+            >
                 <div className="d-flex gap-2">
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable
@@ -203,8 +238,6 @@ const List = () => {
                                                     <li
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className="task-item"
                                                         style={getItemStyle(
                                                             snapshot.isDragging,
                                                             provided
@@ -217,18 +250,19 @@ const List = () => {
                                                             className="stage-item"
                                                         >
                                                             <div
-                                                            className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                                                blur
-                                                                    ? "is-blur disable-pointer-events"
-                                                                    : ""
-                                                            }`}
+                                                                className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
+                                                                    blur
+                                                                        ? "is-blur disable-pointer-events"
+                                                                        : ""
+                                                                }`}
+                                                                {...provided.dragHandleProps}
                                                             >
                                                                 <span className="card-title custom-stage-title m-0">
                                                                     {stage &&
                                                                         stage.title}
                                                                 </span>
                                                                 <span
-                                                                    className="stage-horizontal-dots mb-1"
+                                                                    className="stage-horizontal-dots mb-1 cursor-pointer"
                                                                     onClick={(
                                                                         event
                                                                     ) =>
@@ -237,7 +271,9 @@ const List = () => {
                                                                             stage
                                                                         )
                                                                     }
-                                                                >...</span>
+                                                                >
+                                                                    ...
+                                                                </span>
                                                             </div>
                                                             <Card
                                                                 stage={stage}
@@ -293,7 +329,7 @@ const List = () => {
                     </DragDropContext>
                 </div>
 
-                {showStageAction && (
+                {stageActionPosition.visible && (
                     <div
                         className="card"
                         style={{

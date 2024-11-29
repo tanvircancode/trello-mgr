@@ -6,7 +6,7 @@
 
 .custom-card {
     width: 15rem;
-    cursor: pointer;
+    cursor: pointer !important;
     height: fit-content !important;
     &:hover {
         box-shadow: 5px 5px 5px rgba(36, 34, 34, 0.1);
