@@ -29,11 +29,12 @@ const List = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
     const [showRect, setShowRect] = useState(null);
+    const [good, setGood] = useState(null);
 
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
-        visible: false, // Track visibility
+        visible: false,
     });
 
     const selectedProject = useSelector((state) => state.selectedProject);
@@ -44,7 +45,6 @@ const List = () => {
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
     // console.log(selectedProject.stages);
-    const showStageAction = useSelector((state) => state.showStageAction);
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
     const dispatch = useDispatch();
@@ -59,15 +59,16 @@ const List = () => {
         dispatch(setSelectedStage({ selectedStage: stage }));
         const rect = event.target.getBoundingClientRect();
         const scrollContainer = event.currentTarget.closest(".stage-list"); // Get the parent scrollable container
+        setGood(scrollContainer);
         const scrollLeft = scrollContainer?.scrollLeft || 0;
         setShowRect(rect);
         setStageActionPosition({
-            top: rect.bottom + 10,
+            top: rect.bottom - 110,
             left:
                 rect.left -
                 scrollContainer.getBoundingClientRect().left +
                 scrollLeft,
-            visible: true, // Show menu
+            visible: true,
         });
         dispatch(setShowStageAction({ showStageAction: true }));
     };
@@ -124,6 +125,8 @@ const List = () => {
     };
 
     const handleMoveStageClick = (showMoveStage, showStageAction) => {
+        setStageActionPosition({ ...stageActionPosition, visible: false });
+
         dispatch(setShowMoveStage({ showMoveStage }));
         dispatch(setShowStageAction({ showStageAction }));
     };
@@ -170,7 +173,7 @@ const List = () => {
                         })
                     );
 
-                    toast.success(res.data?.message);
+                    // toast.success(res.data?.message);
                 } else {
                     toast.error("Server is not responding");
                 }
@@ -191,10 +194,13 @@ const List = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setShowStageAction({ showStageAction: false }); // Optional: Close the menu on scroll
+            // setStageActionPosition({ ...stageActionPosition, visible: false });
+
+            dispatch(setShowStageAction({ showStageAction: false }));
         };
 
         const container = stageListRef.current;
+
         if (container) container.addEventListener("scroll", handleScroll);
 
         return () => {
@@ -207,11 +213,11 @@ const List = () => {
         <div className="d-flex">
             <div
                 className="stage-list d-flex gap-2"
-                ref={stageListRef}
+                ref={stageListRef}  
                 style={{
                     overflowX: "auto",
                     whiteSpace: "nowrap",
-                    position: "relative", // Make this relative for child absolute positioning
+                    position: "relative",
                 }}
             >
                 <div className="d-flex gap-2">
@@ -236,8 +242,8 @@ const List = () => {
                                             >
                                                 {(provided, snapshot) => (
                                                     <li
-                                                        ref={provided.innerRef}
                                                         {...provided.draggableProps}
+                                                        ref={provided.innerRef}
                                                         style={getItemStyle(
                                                             snapshot.isDragging,
                                                             provided
@@ -338,6 +344,7 @@ const List = () => {
                             top: stageActionPosition.top,
                             left: stageActionPosition.left,
                             zIndex: 1000,
+                            cursor: "pointer",
                         }}
                     >
                         <div className="card-header d-flex justify-content-between">
@@ -376,7 +383,9 @@ const List = () => {
                     </div>
                 )}
 
-                {showMoveStage && <MoveStage showRect={showRect} />}
+                {showMoveStage && (
+                    <MoveStage stageListRef={stageListRef}  />
+                )}
             </div>
         </div>
     );

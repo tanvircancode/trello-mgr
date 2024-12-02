@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -11,7 +11,8 @@ import {
     setStages,
 } from "../../store";
 import "./moveStage.scss";
-const MoveStage = ({ showRect }) => {
+const MoveStage = ({ stageListRef }) => {
+    const elementRef = useRef(null);
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
         left: 0,
@@ -19,8 +20,6 @@ const MoveStage = ({ showRect }) => {
     const dispatch = useDispatch();
     var stagePos = 0;
 
-    const showStageAction = useSelector((state) => state.showStageAction);
-    const showMoveStage = useSelector((state) => state.showMoveStage);
     const projects = useSelector((state) => state.projects);
     const selectedProject = useSelector((state) => state.selectedProject);
     const selectedStage = useSelector((state) => state.selectedStage);
@@ -81,7 +80,6 @@ const MoveStage = ({ showRect }) => {
                 }
             })
             .catch((error) => {
-                
                 if (
                     error.response &&
                     error.response?.status &&
@@ -95,19 +93,25 @@ const MoveStage = ({ showRect }) => {
     };
 
     useEffect(() => {
-        // const selectedProjectId = selectedProject.id;
-        setSelectedProjectFromOption(selectedProject);
+        console.log(stageListRef.current.getBoundingClientRect());
 
-        if (showRect && showRect.bottom && showRect.left) {
-            setStageActionPosition({
-                top: showRect.bottom + 10,
-                left: showRect.left,
-            });
-        }
-    }, [showRect]);
+        // setSelectedProjectFromOption(selectedProject);
+        // // if (stageListRef.current) {
+        const rect = stageListRef.current.getBoundingClientRect();
+        // console.log(rect.width);
+        // const scrollLeft = stageListRef?.scrollLeft || 0;
+        // // }
+        // // if (showRect && showRect.bottom && showRect.left) {
+        setStageActionPosition({
+            top: stageListRef.current.clientTop + 20,
+            left: stageListRef.current.clientWidth - 400,
+        });
+        // // }
+    }, [stageListRef]);
 
     return (
         <div
+            // ref={elementRef}
             className="card"
             style={{
                 width: "18rem",
@@ -120,7 +124,7 @@ const MoveStage = ({ showRect }) => {
         >
             <div
                 className="card-header d-flex justify-content-between align-items-center"
-                style={{ cursor: "pointer" }} 
+                style={{ cursor: "pointer" }}
             >
                 <BsArrowLeftShort
                     onClick={() => handleMoveStageClick(false, true)}
@@ -143,10 +147,10 @@ const MoveStage = ({ showRect }) => {
                 }
                 className="form-select"
                 onChange={handleProjectSelection}
-            > 
+            >
                 {projects.map((project) => {
                     return (
-                        <option    
+                        <option
                             // selected={selectedProject.id == project.id}
                             key={project.id}
                             value={project.id}
