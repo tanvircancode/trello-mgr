@@ -4,16 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
-import {
-    setSelectedStage,
-    setShowMoveStage,
-    setShowStageAction,
-    setStages,
-} from "../../store";
+import { setShowMoveStage, setShowStageAction, setStages } from "../../store";
 import "./moveStage.scss";
-const MoveStage = ({ stageListRef }) => {
-    const elementRef = useRef(null);
-    const [stageActionPosition, setStageActionPosition] = useState({
+
+const MoveStage = ({
+    stageListRef,
+    savedRect,
+    scrollingLeft,
+    stageActionPosition,
+    setStageActionPosition,
+}) => {
+    const [moveStageActionPosition, setMoveStageActionPosition] = useState({
         top: 0,
         left: 0,
     });
@@ -25,13 +26,17 @@ const MoveStage = ({ stageListRef }) => {
     const selectedStage = useSelector((state) => state.selectedStage);
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
-    console.log(selectedStage);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
         useState(null);
     const [selectedPosition, setSelectedPosition] = useState("");
 
-    const handleMoveStageClick = (showMoveStage, showStageAction) => {
+    const handleMoveStageClick = (showMoveStage, showStageAction, source) => {
+        if (source === "arrow") {
+            setStageActionPosition({ ...stageActionPosition, visible: true });
+        } else {
+            setStageActionPosition({ ...stageActionPosition, visible: false });
+        }
         dispatch(setShowMoveStage({ showMoveStage }));
         dispatch(setShowStageAction({ showStageAction }));
     };
@@ -46,9 +51,6 @@ const MoveStage = ({ stageListRef }) => {
     };
 
     const handleMoveButtonClick = async () => {
-        // console.log(selectedStage);
-
-        // console.log(selectedPosition);
         const projectId = selectedProjectFromOption.id;
         const newPosition = selectedPosition;
         const stageId = selectedStage.id;
@@ -93,52 +95,40 @@ const MoveStage = ({ stageListRef }) => {
     };
 
     useEffect(() => {
-        console.log(stageListRef.current.getBoundingClientRect());
-
-        // setSelectedProjectFromOption(selectedProject);
-        // // if (stageListRef.current) {
-        const rect = stageListRef.current.getBoundingClientRect();
-        // console.log(rect.width);
-        // const scrollLeft = stageListRef?.scrollLeft || 0;
-        // // }
-        // // if (showRect && showRect.bottom && showRect.left) {
-        setStageActionPosition({
-            top: stageListRef.current.clientTop + 20,
-            left: stageListRef.current.clientWidth - 400,
+        setMoveStageActionPosition({
+            top: savedRect?.bottom - 100,
+            left:
+                savedRect?.left -
+                stageListRef.current.getBoundingClientRect().left +
+                scrollingLeft,
         });
-        // // }
-    }, [stageListRef]);
+        // console.log(xxx);
+    }, []);
 
     return (
         <div
-            // ref={elementRef}
-            className="card"
+            className="card move-stage-card"
             style={{
-                width: "18rem",
-                padding: "0 15px 10px",
-                position: "absolute",
-                top: stageActionPosition.top,
-                left: stageActionPosition.left,
-                zIndex: 1000,
+                top: moveStageActionPosition.top,
+                left: moveStageActionPosition.left,
             }}
         >
-            <div
-                className="card-header d-flex justify-content-between align-items-center"
-                style={{ cursor: "pointer" }}
-            >
+            <div className="card-header d-flex justify-content-between align-items-center header">
                 <BsArrowLeftShort
-                    onClick={() => handleMoveStageClick(false, true)}
+                    onClick={() => handleMoveStageClick(false, true, "arrow")}
                 />
 
-                <span>Move list</span>
+                <span className="bold-text">Move list</span>
                 <div
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleMoveStageClick(false, false)}
+                    onClick={() => handleMoveStageClick(false, false, "close")}
                 >
                     x
                 </div>
             </div>
-            <label htmlFor="board">Board</label>
+            <label htmlFor="board" className="bold-text">
+                Board
+            </label>
             <select
                 value={
                     selectedProjectFromOption
@@ -150,11 +140,7 @@ const MoveStage = ({ stageListRef }) => {
             >
                 {projects.map((project) => {
                     return (
-                        <option
-                            // selected={selectedProject.id == project.id}
-                            key={project.id}
-                            value={project.id}
-                        >
+                        <option key={project.id} value={project.id}>
                             {project.title}
                             {selectedProject.id == project.id && " (current)"}
                         </option>
@@ -163,7 +149,9 @@ const MoveStage = ({ stageListRef }) => {
             </select>
 
             <br />
-            <label htmlFor="board">Position</label>
+            <label htmlFor="board" className="bold-text">
+                Position
+            </label>
 
             <select
                 className="form-select"

@@ -16,7 +16,7 @@ import {
     setShowMoveStage,
     setShowStageAction,
     setMakeBlur,
-    setMakeCardModalBlur
+    setMakeCardModalBlur,
 } from "./store";
 
 function App() {
@@ -89,7 +89,7 @@ function InitUser() {
             dispatch(setTasks(null));
             dispatch(setStages(null));
             dispatch(setShowStageAction({ showStageAction: false }));
-                dispatch(setShowMoveStage({ showMoveStage: false }));
+            dispatch(setShowMoveStage({ showMoveStage: false }));
             dispatch(setSelectedProject(null));
             dispatch(setFetchSingleCard(null));
             dispatch(setMakeBlur({ makeBlur: false }));

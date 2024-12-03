@@ -28,8 +28,8 @@ const List = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [listTitle, setListTitle] = useState("");
-    const [showRect, setShowRect] = useState(null);
-    const [good, setGood] = useState(null);
+    const [savedRect, setSavedRect] = useState(null);
+    const [scrollingLeft, setScrollingLeft] = useState(null);
 
     const [stageActionPosition, setStageActionPosition] = useState({
         top: 0,
@@ -44,7 +44,7 @@ const List = () => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
-    // console.log(selectedProject.stages);
+
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
     const dispatch = useDispatch();
@@ -56,21 +56,26 @@ const List = () => {
     const stageListRef = useRef(null);
 
     const handleStageAction = (event, stage) => {
+        dispatch(setShowMoveStage({ showMoveStage: false }));
         dispatch(setSelectedStage({ selectedStage: stage }));
         const rect = event.target.getBoundingClientRect();
+
         const scrollContainer = event.currentTarget.closest(".stage-list"); // Get the parent scrollable container
-        setGood(scrollContainer);
+
+        setSavedRect(rect);
         const scrollLeft = scrollContainer?.scrollLeft || 0;
-        setShowRect(rect);
+
+        setScrollingLeft(scrollLeft);
+
         setStageActionPosition({
-            top: rect.bottom - 110,
+            top: rect.bottom - 100,
             left:
                 rect.left -
                 scrollContainer.getBoundingClientRect().left +
                 scrollLeft,
             visible: true,
         });
-        dispatch(setShowStageAction({ showStageAction: true }));
+        console.log(stageActionPosition);
     };
 
     const handleCloseStageAction = () => {
@@ -96,7 +101,7 @@ const List = () => {
                     },
                 })
                 .then((res) => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     if (res.data?.status && res.data?.data) {
                         dispatch(
                             setStages({
@@ -136,6 +141,9 @@ const List = () => {
     };
 
     const handleDragEnd = async (result) => {
+        setStageActionPosition({ ...stageActionPosition, visible: false });
+        dispatch(setShowMoveStage({ showMoveStage: false }));
+
         let start = result.source.index;
         let end = result.destination.index;
         let projectId = selectedProject.id;
@@ -164,7 +172,7 @@ const List = () => {
                 },
             })
             .then((res) => {
-                console.log(res.data.data.stages);
+                // console.log(res.data.data.stages);
 
                 if (res.data?.status && res.data?.data) {
                     dispatch(
@@ -213,7 +221,7 @@ const List = () => {
         <div className="d-flex">
             <div
                 className="stage-list d-flex gap-2"
-                ref={stageListRef}  
+                ref={stageListRef}
                 style={{
                     overflowX: "auto",
                     whiteSpace: "nowrap",
@@ -384,7 +392,13 @@ const List = () => {
                 )}
 
                 {showMoveStage && (
-                    <MoveStage stageListRef={stageListRef}  />
+                    <MoveStage
+                        stageListRef={stageListRef}
+                        savedRect={savedRect}
+                        scrollingLeft={scrollingLeft}
+                        stageActionPosition={stageActionPosition}
+                        setStageActionPosition={setStageActionPosition}
+                    />
                 )}
             </div>
         </div>
