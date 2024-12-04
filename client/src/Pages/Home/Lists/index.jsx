@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useState, useRef, useEffect } from "react";
+import { BsXLg } from "react-icons/bs";
 import { BASE_URL } from "../../../config";
 import "./lists.scss";
 import Card from "../Cards";
@@ -42,7 +43,7 @@ const List = () => {
     const userId = localStorage.getItem("user_id");
 
     const blur = useSelector((state) => state.makeBlur);
-    const token = useSelector((state) => state.token);
+    const token = useSelector((state) => state.token);  
     const stages = useSelector((state) => state.stages);
 
     const showMoveStage = useSelector((state) => state.showMoveStage);
@@ -75,7 +76,6 @@ const List = () => {
                 scrollLeft,
             visible: true,
         });
-        console.log(stageActionPosition);
     };
 
     const handleCloseStageAction = () => {
@@ -345,42 +345,39 @@ const List = () => {
 
                 {stageActionPosition.visible && (
                     <div
-                        className="card"
+                        className="card list-actions-div"
                         style={{
-                            width: "18rem",
-                            position: "absolute",
                             top: stageActionPosition.top,
                             left: stageActionPosition.left,
-                            zIndex: 1000,
-                            cursor: "pointer",
                         }}
                     >
-                        <div className="card-header d-flex justify-content-between">
-                            <span style={{ fontWeight: "600" }}>
+                        <div className="card-header d-flex justify-content-between align-items-center">
+                            <span className="list-actions-header">
                                 List Actions
                             </span>
-                            <div
-                                style={{ cursor: "pointer" }}
+
+                            <BsXLg
+                                className="cursor-pointer"
                                 onClick={handleCloseStageAction}
-                            >
-                                x
-                            </div>
+                            />
                         </div>
 
                         <ul className="list-group list-group-flush">
-                            <li className="list-group-item stage-li-item">
+                            <li className="list-group-item stage-li-item cursor-pointer">
                                 Add card
                             </li>
+
                             <li
-                                className="list-group-item stage-li-item"
+                                className="list-group-item stage-li-item cursor-pointer"
                                 onClick={() =>
                                     handleCopyStageClick(true, false)
                                 }
                             >
                                 Copy list
                             </li>
+
                             <li
-                                className="list-group-item stage-li-item"
+                                className="list-group-item stage-li-item cursor-pointer"
                                 onClick={() =>
                                     handleMoveStageClick(true, false)
                                 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { BsArrowLeftShort } from "react-icons/bs";
+import { BsChevronLeft, BsXLg } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -18,6 +18,7 @@ const MoveStage = ({
         top: 0,
         left: 0,
     });
+
     const dispatch = useDispatch();
     var stagePos = 0;
 
@@ -26,6 +27,9 @@ const MoveStage = ({
     const selectedStage = useSelector((state) => state.selectedStage);
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
+
+    // const stages = useSelector((state) => state.stages);
+    // console.log(projects);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
         useState(null);
@@ -43,11 +47,15 @@ const MoveStage = ({
 
     const handleProjectSelection = async (e) => {
         const selectedProjectId = e.target.value;
+
         const selectedProject = projects.find(
             (project) => project.id == selectedProjectId
         );
 
         setSelectedProjectFromOption(selectedProject);
+
+        // alert(selectedProjectFromOption?.title);
+        // console.log("XXXXX");
     };
 
     const handleMoveButtonClick = async () => {
@@ -95,6 +103,8 @@ const MoveStage = ({
     };
 
     useEffect(() => {
+        setSelectedProjectFromOption(selectedProject);
+
         setMoveStageActionPosition({
             top: savedRect?.bottom - 100,
             left:
@@ -102,7 +112,6 @@ const MoveStage = ({
                 stageListRef.current.getBoundingClientRect().left +
                 scrollingLeft,
         });
-        // console.log(xxx);
     }, []);
 
     return (
@@ -114,17 +123,15 @@ const MoveStage = ({
             }}
         >
             <div className="card-header d-flex justify-content-between align-items-center header">
-                <BsArrowLeftShort
+                <BsChevronLeft
                     onClick={() => handleMoveStageClick(false, true, "arrow")}
                 />
 
                 <span className="bold-text">Move list</span>
-                <div
-                    style={{ cursor: "pointer" }}
+
+                <BsXLg
                     onClick={() => handleMoveStageClick(false, false, "close")}
-                >
-                    x
-                </div>
+                />
             </div>
             <label htmlFor="board" className="bold-text">
                 Board
@@ -142,7 +149,8 @@ const MoveStage = ({
                     return (
                         <option key={project.id} value={project.id}>
                             {project.title}
-                            {selectedProject.id == project.id && " (current)"}
+                            {selectedProjectFromOption?.id == project.id &&
+                                " (current)"}
                         </option>
                     );
                 })}

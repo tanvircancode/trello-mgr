@@ -30,9 +30,21 @@
     font-weight: 700;
     cursor: pointer !important;
 }
+.list-actions-div {
+    width: 15rem;
+    position: absolute;
+    z-index: 1000;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .stage-li-item {
     font-size: 15px;
+    border: none;
 }
+
 .stage-list {
     padding: 0.4em 0.5em;
 
@@ -46,6 +58,13 @@
     padding: 6px;
     background: #e4ffca61;
 }
-.stage-list ul {
-    padding-left: 1rem;
+
+.list-actions-header {
+    font-weight: 600;
+}
+
+li.stage-li-item:hover {
+    background: rgb(169, 169, 169);
+    color: #ffffff;
+    font-weight: 600;
 }
