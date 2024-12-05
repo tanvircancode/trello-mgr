@@ -43,7 +43,7 @@ const List = () => {
     const userId = localStorage.getItem("user_id");
 
     const blur = useSelector((state) => state.makeBlur);
-    const token = useSelector((state) => state.token);  
+    const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
 
     const showMoveStage = useSelector((state) => state.showMoveStage);

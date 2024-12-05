@@ -40,7 +40,7 @@ class StageRepository
         $newPosition = $data['new_position'];
         $originalPosition = $data['original_position'];
 
-        $stage = $this->findById($stageId);
+        $stage = $this->findById($stageId); 
 
         if (!$stage) {
             return false;

@@ -55,7 +55,7 @@ const MoveStage = ({
         setSelectedProjectFromOption(selectedProject);
 
         // alert(selectedProjectFromOption?.title);
-        // console.log("XXXXX");
+        // console.log(selectedProjectFromOption);
     };
 
     const handleMoveButtonClick = async () => {
@@ -63,6 +63,7 @@ const MoveStage = ({
         const newPosition = selectedPosition;
         const stageId = selectedStage.id;
         const originalPosition = selectedStage.position;
+        console.log(newPosition);
 
         const payload = {
             project_id: projectId,
@@ -80,7 +81,7 @@ const MoveStage = ({
                 },
             })
             .then((res) => {
-                console.log(res.data);
+                console.log(res);
                 if (res.data?.status && res.data?.data) {
                     dispatch(setStages({ stages: res.data.data.stages }));
                     dispatch(setShowMoveStage({ showMoveStage: false }));
@@ -90,6 +91,7 @@ const MoveStage = ({
                 }
             })
             .catch((error) => {
+                console.log(error);
                 if (
                     error.response &&
                     error.response?.status &&
@@ -112,7 +114,8 @@ const MoveStage = ({
                 stageListRef.current.getBoundingClientRect().left +
                 scrollingLeft,
         });
-    }, []);
+        console.log(stagePos);
+    }, [stagePos]);
 
     return (
         <div
@@ -149,8 +152,7 @@ const MoveStage = ({
                     return (
                         <option key={project.id} value={project.id}>
                             {project.title}
-                            {selectedProjectFromOption?.id == project.id &&
-                                " (current)"}
+                            {selectedProject.id == project.id && " (current)"}
                         </option>
                     );
                 })}
@@ -182,10 +184,21 @@ const MoveStage = ({
                             </option>
                         );
                     })}
-                {selectedProjectFromOption &&
+
+                {!stagePos || stagePos === 0
+                    ? selectedProjectFromOption &&
+                      selectedProjectFromOption.id != selectedProject.id && (
+                          <option value={1}>1 first</option>
+                      )
+                    : selectedProjectFromOption &&
+                      selectedProjectFromOption.id != selectedProject.id && (
+                          <option value={stagePos + 1}>{stagePos + 1}</option>
+                      )}
+
+                {/* {selectedProjectFromOption &&
                     selectedProjectFromOption.id != selectedProject.id && (
                         <option value={stagePos + 1}>{stagePos + 1}</option>
-                    )}
+                    )} */}
             </select>
 
             <button

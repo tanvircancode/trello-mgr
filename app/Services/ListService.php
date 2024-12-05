@@ -72,6 +72,7 @@ class ListService
     if (!$this->authService->isAuthenticated($userId)) {
       return $this->responseService->unauthorizedResponse();
     }
+    
 
     $stage = $this->stageRepository->changeStagePosition($data);
     if (!$stage) {
