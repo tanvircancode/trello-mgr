@@ -48,8 +48,8 @@ class StagesController extends Controller
 
     public function moveStage(MoveStageRequest $request)
     {
-        // print_r($request->all());
-        // exit;
+        print_r($request->all());
+        exit;
         return $this->listService->updateStage($request->all());
     }
 
