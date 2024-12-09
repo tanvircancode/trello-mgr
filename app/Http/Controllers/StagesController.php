@@ -48,14 +48,14 @@ class StagesController extends Controller
 
     public function moveStage(MoveStageRequest $request)
     {
-        print_r($request->all());
-        exit;
+        // print_r($request->all());
+        // exit;
         return $this->listService->updateStage($request->all());
     }
 
     public function reorder(ReorderTasksRequest $request)
     {
-        // print_r($request->all());return;
+
         $projectId = $request->input('project_id');
         $project = $this->projectService->findProjectById($projectId);
 

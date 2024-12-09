@@ -1,15 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { BsChevronLeft, BsXLg } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
-import {
-    setShowMoveStage,
-    setShowStageAction,
-    setStages,
-    setSelectedStage,
-} from "../../store";
+import { setShowMoveStage, setShowStageAction, setStages } from "../../store";
 import "./moveStage.scss";
 
 const MoveStage = ({
@@ -32,15 +27,10 @@ const MoveStage = ({
     const selectedStage = useSelector((state) => state.selectedStage);
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
-    var lats = selectedProject.stages[0];
-    // const stages = useSelector((state) => state.stages);
-    // console.log(projects);
 
     const [selectedProjectFromOption, setSelectedProjectFromOption] =
         useState(null);
-    const [selectedPosition, setSelectedPosition] = useState("");
-    const [selectedProjectFromDropdown, setSelectedProjectFromDropdown] =
-        useState(null);
+    const [selectedPosition, setSelectedPosition] = useState(1);
 
     const handleMoveStageClick = (showMoveStage, showStageAction, source) => {
         if (source === "arrow") {
@@ -58,34 +48,25 @@ const MoveStage = ({
         var selectedTempProject = projects.find(
             (project) => project.id == selectedProjectId
         );
-        console.log(selectedTempProject);
-        lats = selectedTempProject.stages[0];
-
-        //  dispatch(setSelectedStage({ selectedStage: selectedTempProject.stages[0] }));
-
         setSelectedProjectFromOption(selectedTempProject);
-        setSelectedProjectFromDropdown();
 
-        console.log(selectedProject);
-        console.log(lats);
+        // console.log(selectedProject);
+        // console.log(lats);
+    };
+
+    const handlePosition = (e) => {
+        setSelectedPosition(Number(e.target.value));
     };
 
     const handleMoveButtonClick = async () => {
-        if (!stagePos || stagePos === 0) {
-            console.log("IF is running");
-            setSelectedPosition(1); // Default to 1
-        }
-        // else {
-        //     setSelectedPosition(stagePos + 1); // Default to stagePos + 1
-        // }
         const projectId = selectedProjectFromOption.id;
         const newPosition = selectedPosition;
         const stageId = selectedStage.id;
         const originalPosition = selectedStage.position;
-        console.log(newPosition);
 
         const payload = {
             project_id: projectId,
+            prior_project_id: selectedProject.id,
             new_position: newPosition,
             original_position: originalPosition,
             stage_id: stageId,
@@ -125,15 +106,15 @@ const MoveStage = ({
 
     useEffect(() => {
         setSelectedProjectFromOption(selectedProject);
-
+        const rect = stageListRef.current?.getBoundingClientRect();
         setMoveStageActionPosition({
-            top: savedRect?.bottom - 100,
+            top: savedRect?.bottom ? savedRect.bottom - 100 : 0,
             left:
-                savedRect?.left -
-                stageListRef.current.getBoundingClientRect().left +
-                scrollingLeft,
+                savedRect?.left && rect?.left
+                    ? savedRect.left - rect.left + scrollingLeft
+                    : 0,
         });
-        console.log(selectedProject);
+        // console.log(selectedProject);
     }, [selectedProject]);
 
     return (
@@ -172,7 +153,7 @@ const MoveStage = ({
                     return (
                         <option key={project.id} value={project.id}>
                             {project.title}
-                            {lats?.id == project.id && " (current)"}
+                            {selectedProject.id == project.id && " (current)"}
                         </option>
                     );
                 })}
@@ -185,23 +166,18 @@ const MoveStage = ({
 
             <select
                 className="form-select"
-                value={selectedPosition}
-                onChange={(e) => setSelectedPosition(Number(e.target.value))}
+                value={selectedPosition ?? ""}
+                onChange={handlePosition}
             >
                 {selectedProjectFromOption &&
                     selectedProjectFromOption.stages.map((stage) => {
                         stagePos = stage.position;
+
                         return (
-                            <option
-                                selected={
-                                    stage.position == selectedStage?.position
-                                }
-                                key={stage.id}
-                                value={stage.position}
-                            >
+                            <option key={stage.id} value={stage.position}>
                                 {stagePos}
-                                {selectedProject.id == lats?.project_id &&
-                                    selectedProject?.position == stagePos &&
+                                {selectedProject.id == stage?.project_id &&
+                                    selectedStage?.position == stagePos &&
                                     " (current)"}
                             </option>
                         );

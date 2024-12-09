@@ -72,9 +72,9 @@ class ListService
     if (!$this->authService->isAuthenticated($userId)) {
       return $this->responseService->unauthorizedResponse();
     }
-    
 
     $stage = $this->stageRepository->changeStagePosition($data);
+
     if (!$stage) {
       return $this->responseService->messageResponse('Stage not found', false, 404);
     }
@@ -92,7 +92,7 @@ class ListService
 
 
     $stages = $this->stageRepository->fetchStagesOfAProject($projectId);
-    // return $stages;
+
 
     if ($start > $stages->count() || $end > $stages->count()) {
       return;
@@ -103,7 +103,7 @@ class ListService
     $movedTask = array_splice($stagesArray, $start, 1)[0];
 
     array_splice($stagesArray, $end, 0, [$movedTask]);
-    // return $stagesArray;
+
 
     $this->stageRepository->updatePosition($stagesArray);
 

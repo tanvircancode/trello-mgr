@@ -146,8 +146,8 @@ const Card = ({ stage }) => {
                             onClick={() => handleOpenPopup(task)}
                         >
                             <div
-                                className="card-body d-flex flex-column "
-                                style={{ padding: "10px" }}
+                                className="card-body d-flex flex-column"
+                                style={{ padding: "7px" }}
                             >
                                 <h5 className="card-title custom-card-title">
                                     {task && task.title}
@@ -244,7 +244,7 @@ const Card = ({ stage }) => {
             >
                 <input
                     type="text"
-                    className="form-control board-title-input custom-task-placeholder"
+                    className="form-control custom-task-placeholder p-0"
                     value={cardTitle}
                     placeholder="+ Add a task"
                     onChange={(e) => setCardTitle(e.target.value)}

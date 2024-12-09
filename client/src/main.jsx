@@ -55,7 +55,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <PersistGate loading={null} persistor={persistor}>
             <BrowserRouter>
                 <ToastContainer
-                    position="top-center"
+                    position="bottom-left"
                     autoClose={1000}
                     closeOnClick
                 />

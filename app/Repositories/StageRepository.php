@@ -33,23 +33,58 @@ class StageRepository
         return $stages;
     }
 
+    public function fetchAndDecrement($projectId, $position)
+    {
+        $this->stageModel
+            ->where('project_id', $projectId)
+            ->where('position', '>', $position)
+            ->decrement('position');
+    }
+
+    public function fetchAndIncrement($projectId, $position)
+    {
+        $this->stageModel
+            ->where('project_id', $projectId)
+            ->where('position', '>=', $position)
+            ->increment('position');
+    }
+
+    public function saveStage($stage, $position, $projectId)
+    {
+        $stage->position = $position;
+        $stage->project_id = $projectId;
+        $stage->save();
+    }
+
     public function changeStagePosition(array $data)
     {
         $projectId = $data['project_id'];
+        $priorProjectId = $data['prior_project_id'];
         $stageId = $data['stage_id'];
         $newPosition = $data['new_position'];
         $originalPosition = $data['original_position'];
 
-        $stage = $this->findById($stageId); 
+        $stage = $this->findById($stageId);
 
         if (!$stage) {
             return false;
         }
 
-        $stages = $this->fetchStagesOfAProject($projectId);
+        // new code added here
+        if ($priorProjectId != $projectId) {
+            $this->fetchAndDecrement($priorProjectId, $originalPosition);
+            $this->fetchAndIncrement($projectId, $newPosition);
+
+            $this->saveStage($stage, $newPosition, $projectId);
+
+            return true;
+        }
+        // end new code added here
 
         $stage->position = $newPosition;
         $stage->save();
+
+        $stages = $this->fetchStagesOfAProject($projectId);
 
         if ($originalPosition < $newPosition) {
             foreach ($stages as $stage) {
