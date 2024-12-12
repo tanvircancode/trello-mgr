@@ -14,6 +14,26 @@ class TaskRepository
         $this->taskModel = $taskModel;
     }
 
+    public function fetchTasksOfAList($listId)
+    {
+        $tasks = $this->taskModel
+            ->where('list_id', $listId)
+            ->orderBy('position', 'asc')
+            ->get();
+
+        return $tasks;
+    }
+
+    public function updatePosition($data)
+    {
+        foreach ($data as $index => $task) {
+            $this->taskModel
+                ->where('id', $task['id'])
+                ->update(['position' => $index + 1]);
+        }
+        return true;
+    }
+
     public function findById($id)
     {
         return $this->taskModel->find($id);

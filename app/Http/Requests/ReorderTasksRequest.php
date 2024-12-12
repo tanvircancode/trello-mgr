@@ -23,6 +23,7 @@ class ReorderTasksRequest extends FormRequest
     {
         return [
             'project_id' => 'required|string',
+            'list_id' => 'required|string',
             'start' => 'required|integer',
             'end' => 'required|integer',
         ];

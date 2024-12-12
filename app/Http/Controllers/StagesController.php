@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Services\ListService;
-use App\Http\Requests\ReorderTasksRequest;
+use App\Http\Requests\ReorderStagesRequest;
 use App\Services\ResponseService;
 use App\Services\ProjectService;
 use App\Http\Requests\StoreStageRequest;
@@ -53,9 +53,8 @@ class StagesController extends Controller
         return $this->listService->updateStage($request->all());
     }
 
-    public function reorder(ReorderTasksRequest $request)
+    public function reorder(ReorderStagesRequest $request)
     {
-
         $projectId = $request->input('project_id');
         $project = $this->projectService->findProjectById($projectId);
 

@@ -19,11 +19,15 @@ class MoveStageRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    
     public function rules(): array
     {
         return [
             'project_id' => 'required|string',
-            'position' => 'nullable|integer',
+            'prior_project_id' => 'required|string',
+            'stage_id' => 'required|string',
+            'new_position' => 'required|integer',
+            'original_position' => 'required|integer',
         ];
     }
 }

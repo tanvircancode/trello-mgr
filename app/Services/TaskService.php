@@ -37,6 +37,31 @@ class TaskService
         return $this->taskRepository->findById($id);
     }
 
+    public function reorderTask($data)
+    {
+        $projectId = $data['project_id'];
+        $listId = $data['list_id'];
+        $start = $data['start'];
+        $end = $data['end'];
+
+        $tasks = $this->taskRepository->fetchTasksOfAList($listId);
+
+
+        if ($start > $tasks->count() || $end > $tasks->count()) {
+            return;
+        }
+
+        $tasksArray = $tasks->toArray();
+    
+        $movedTask = array_splice($tasksArray, $start, 1)[0];
+        
+        array_splice($tasksArray, $end, 0, [$movedTask]);
+    
+        $this->taskRepository->updatePosition($tasksArray);
+    
+        return true;
+    }
+
     public function updateTask(array $data)
     {
         $taskId = $data['task_id'];

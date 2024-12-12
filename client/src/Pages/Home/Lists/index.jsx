@@ -229,7 +229,7 @@ const List = () => {
                 }}
             >
                 <div className="d-flex gap-2">
-                    <DragDropContext onDragEnd={handleDragEnd}>
+                    <DragDropContext onDragEnd={handleDragEnd}> 
                         <Droppable
                             droppableId="droppable"
                             direction="horizontal"
@@ -264,11 +264,10 @@ const List = () => {
                                                             className="stage-item"
                                                         >
                                                             <div
-                                                                className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${
-                                                                    blur
-                                                                        ? "is-blur disable-pointer-events"
-                                                                        : ""
-                                                                }`}
+                                                                className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${blur
+                                                                    ? "is-blur disable-pointer-events"
+                                                                    : ""
+                                                                    }`}
                                                                 {...provided.dragHandleProps}
                                                             >
                                                                 <span className="card-title custom-stage-title m-0">

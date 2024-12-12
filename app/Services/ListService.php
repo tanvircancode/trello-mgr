@@ -90,7 +90,6 @@ class ListService
     $start = $data['start'];
     $end = $data['end'];
 
-
     $stages = $this->stageRepository->fetchStagesOfAProject($projectId);
 
 
@@ -100,9 +99,9 @@ class ListService
 
     $stagesArray = $stages->toArray();
 
-    $movedTask = array_splice($stagesArray, $start, 1)[0];
+    $movedStage = array_splice($stagesArray, $start, 1)[0];
 
-    array_splice($stagesArray, $end, 0, [$movedTask]);
+    array_splice($stagesArray, $end, 0, [$movedStage]);
 
 
     $this->stageRepository->updatePosition($stagesArray);

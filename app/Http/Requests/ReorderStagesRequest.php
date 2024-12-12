@@ -23,6 +23,8 @@ class ReorderStagesRequest extends FormRequest
     {
         return [
             //
+            'start' => 'required|integer',
+            'end' =>  'required|integer',
             'project_id' => 'required|string',
         ];
     }

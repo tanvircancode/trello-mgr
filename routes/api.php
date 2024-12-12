@@ -46,6 +46,7 @@ use App\Models\ChecklistItem;
   Route::post('/task/{id}', [TasksController::class, 'store']);
   Route::put('/task', [TasksController::class, 'update']);
   Route::delete('/deletetask/{id}/{memberId}', [TasksController::class, 'destroy']);
+  Route::put('/reordertask', [TasksController::class, 'reorder']);
 
   //label apis
   Route::post('/label', [LabelsController::class, 'store']);

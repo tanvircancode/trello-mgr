@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\ReorderTasksRequest;
 use Illuminate\Http\Request;
 use App\Services\TaskService;
 use App\Services\AuthService;
@@ -31,6 +32,25 @@ class TasksController extends Controller
         $this->responseService = $responseService;
         $this->userService = $userService;
         $this->projectService = $projectService;
+    }
+
+    public function reorder(ReorderTasksRequest $request) {
+        $projectId = $request->input('project_id');
+        $project = $this->projectService->findProjectById($projectId);
+
+        $listId = $request->input('list_id');
+        $list = $this->listService->findStage($listId);
+
+        $result = $this->taskService->reorderTask($request->all());
+        // return $result;
+
+        if (!$result) {
+            return $this->responseService->messageResponse('Dropped position not found', false, 404);
+        }
+
+        $stages = $this->projectService->stagesOfProject($projectId);
+
+        return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
     }
 
     public function store(StoreTaskRequest $request, $id)
