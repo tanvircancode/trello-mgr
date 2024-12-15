@@ -23,11 +23,16 @@ class TaskService
         $this->userService = $userService;
     }
 
+    public function fetchTasksByListId($listId)
+    {
+        return $this->projectRepository->getTasksByListId($listId);
+    }
+
     public function createTask(array $taskData, $userId,  $listId)
     {
         $task = $this->taskRepository->createTaskWithRelations($taskData, $userId);
 
-        $tasks = $this->projectRepository->getTasksByListId($listId);
+        $tasks = $this->fetchTasksByListId($listId);
 
         return $tasks;
     }
@@ -52,13 +57,13 @@ class TaskService
         }
 
         $tasksArray = $tasks->toArray();
-    
+
         $movedTask = array_splice($tasksArray, $start, 1)[0];
-        
+
         array_splice($tasksArray, $end, 0, [$movedTask]);
-    
+
         $this->taskRepository->updatePosition($tasksArray);
-    
+
         return true;
     }
 

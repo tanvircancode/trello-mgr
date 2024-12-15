@@ -109,7 +109,8 @@ class ProjectService
         $stagesUnderProject = $this->projectRepository->stagesOfAProject($project);
 
         foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $this->stageRepository->stagesOfATask($stage);
+            $tasksUnderStage = $this->stageRepository->tasksOfAStage($stage);
+            
             foreach ($tasksUnderStage as $task) {
                 $this->taskRepository->deleteUsersOfATask($task);
             }
@@ -143,7 +144,7 @@ class ProjectService
         $stagesUnderProject = $this->projectRepository->stagesOfAProject($project);
 
         foreach ($stagesUnderProject as $stage) {
-            $tasksUnderStage = $this->stageRepository->stagesOfATask($stage);
+            $tasksUnderStage = $this->stageRepository->tasksOfAStage($stage);
             foreach ($tasksUnderStage as $task) {
                 if ($this->taskRepository->checkUserOfTask($task, $userId)) {
                     $this->taskRepository->deleteUserOfATask($task, $userId);

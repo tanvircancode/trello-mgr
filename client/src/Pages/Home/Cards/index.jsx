@@ -112,7 +112,7 @@ const Card = ({ stage }) => {
         reorderedTasks.splice(end, 0, movedTask);
         setTasks(reorderedTasks);
 
-        console.log(reorderedTasks);
+        // console.log(reorderedTasks);
         // new code starts
         var formData = new FormData();
         formData.append("start", start);
@@ -121,35 +121,48 @@ const Card = ({ stage }) => {
         formData.append("list_id", stageId);
 
         await axios
-        .put(`${BASE_URL}/api/reordertask`, formData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-type": "application/json",
-            },
-        })
-        .then((res) => {
-            console.log(res);
+            .put(`${BASE_URL}/api/reordertask`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            })
+            .then((res) => {
+                // console.log(res.data.data.stages);
+                // console.log(tasks);
 
-            if (res.data?.status && res.data?.data) {
-                setTasks(res.)
+                if (res.data?.status && res.data?.data) {
+                    var newStages = res.data.data?.stages;
 
-                // toast.success(res.data?.message);
-            } else {
-                toast.error("Server is not responding");
-            }
-        })
-        .catch((error) => {
-            dispatch(setStages({ stages }));
-            if (
-                error.response &&
-                error.response?.status &&
-                error.response.data?.message
-            ) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error("Server is not responding");
-            }
-        });
+                    dispatch(
+                        setStages({
+                            stages: newStages,
+                        })
+                    );
+
+                    var updatedStage = newStages.find(
+                        (stage) => stage.id === stageId
+                    );
+                    setTasks(updatedStage.tasks);
+                    // console.log(updatedStage.tasks);
+                    // toast.success(res.data?.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            })
+            .catch((error) => {
+                setTasks(stage.tasks);
+
+                if (
+                    error.response &&
+                    error.response?.status &&
+                    error.response.data?.message
+                ) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error("Server is not responding");
+                }
+            });
     };
 
     const getItemStyle = (isDragging, draggableStyle) => ({
@@ -159,8 +172,6 @@ const Card = ({ stage }) => {
         display: "inline-block",
         maxWidth: "250px",
     });
-
-
 
     useEffect(() => {
         setTasks(stage.tasks);
@@ -361,7 +372,7 @@ const Card = ({ stage }) => {
                                 </div>
                             )}
                         </div>
-                        {/* )} */}
+
 
                         <CardMainModal
                             openNewCardModal={openNewCardModal}

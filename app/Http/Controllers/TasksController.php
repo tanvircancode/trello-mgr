@@ -34,10 +34,12 @@ class TasksController extends Controller
         $this->projectService = $projectService;
     }
 
-    public function reorder(ReorderTasksRequest $request) {
+    public function reorder(ReorderTasksRequest $request)
+    {
         $projectId = $request->input('project_id');
         $project = $this->projectService->findProjectById($projectId);
 
+        
         $listId = $request->input('list_id');
         $list = $this->listService->findStage($listId);
 
@@ -48,7 +50,7 @@ class TasksController extends Controller
             return $this->responseService->messageResponse('Dropped position not found', false, 404);
         }
 
-        $stages = $this->projectService->stagesOfProject($projectId);
+        $stages = $this->taskService->fetchTasksByListId($listId);
 
         return $this->responseService->successMessageDataResponse('List Updated Successfully', $stages, true, 200);
     }

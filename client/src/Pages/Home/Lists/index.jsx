@@ -229,7 +229,7 @@ const List = () => {
                 }}
             >
                 <div className="d-flex gap-2">
-                    <DragDropContext onDragEnd={handleDragEnd}> 
+                    <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable
                             droppableId="droppable"
                             direction="horizontal"

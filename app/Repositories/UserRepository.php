@@ -56,7 +56,7 @@ class UserRepository
                     $query->orderBy('position', 'asc');
                 },
                 'stages.tasks' => function ($query) {
-                    $query->orderBy('created_at', 'asc');
+                    $query->orderBy('position', 'asc');
                 },
                 'stages.tasks.labels',
                 'stages.tasks.priorities',
