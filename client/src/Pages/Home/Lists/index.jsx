@@ -12,6 +12,7 @@ import {
     setShowMoveStage,
     setShowCopyStage,
     setSelectedStage,
+    setNewStageId
 } from "../../../store";
 import MoveStage from "../../../component/stage/MoveStage";
 
@@ -39,12 +40,12 @@ const List = () => {
     });
 
     const selectedProject = useSelector((state) => state.selectedProject);
-
     const userId = localStorage.getItem("user_id");
 
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const stages = useSelector((state) => state.stages);
+    const newStageId = useSelector((state) => state.newStageId);
 
     const showMoveStage = useSelector((state) => state.showMoveStage);
 
@@ -141,6 +142,7 @@ const List = () => {
     };
 
     const handleDragEnd = async (result) => {
+        console.log("List Comp");
         setStageActionPosition({ ...stageActionPosition, visible: false });
         dispatch(setShowMoveStage({ showMoveStage: false }));
 
@@ -200,22 +202,25 @@ const List = () => {
             });
     };
 
+    const handleStageHover = (result) => {
+        // console.log(result);
+        dispatch(setNewStageId({ newStageId: result }));
+        // console.log(newStageId);
+    }
+
     useEffect(() => {
         const handleScroll = () => {
-            // setStageActionPosition({ ...stageActionPosition, visible: false });
-
             dispatch(setShowStageAction({ showStageAction: false }));
         };
 
         const container = stageListRef.current;
-
         if (container) container.addEventListener("scroll", handleScroll);
 
         return () => {
             if (container)
                 container.removeEventListener("scroll", handleScroll);
         };
-    }, []);
+    }, [newStageId]);
 
     return (
         <div className="d-flex">
@@ -229,7 +234,11 @@ const List = () => {
                 }}
             >
                 <div className="d-flex gap-2">
-                    <DragDropContext onDragEnd={handleDragEnd}>
+                    <DragDropContext
+                        onDragEnd={handleDragEnd}
+                    // onDragStart={handleDragStart}
+
+                    >
                         <Droppable
                             droppableId="droppable"
                             direction="horizontal"
@@ -239,6 +248,7 @@ const List = () => {
                                     {...provided.droppableProps}
                                     ref={provided.innerRef}
                                     className="d-flex"
+
                                 >
                                     {stages &&
                                         stages.length > 0 &&
@@ -252,16 +262,19 @@ const List = () => {
                                                     <li
                                                         {...provided.draggableProps}
                                                         ref={provided.innerRef}
+
                                                         style={getItemStyle(
                                                             snapshot.isDragging,
                                                             provided
                                                                 .draggableProps
                                                                 .style
                                                         )}
+
                                                     >
                                                         <div
                                                             key={index}
                                                             className="stage-item"
+                                                            onMouseOver={() => handleStageHover(stage.id)}
                                                         >
                                                             <div
                                                                 className={`card-body custom-stage-body d-flex justify-content-between align-items-center ${blur

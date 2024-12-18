@@ -21,6 +21,7 @@ const initialState = {
     showMoveStage: false,
     showCopyStage: false,
     selectedStage:null,
+    newStageId: null,
 };
 
 export const trelloSlice = createSlice({
@@ -48,7 +49,8 @@ export const trelloSlice = createSlice({
             state.priorities = [],
             state.checklists = [],
             state.isCardsLoading = true,
-            state.selectedStage = null
+            state.selectedStage = null,
+            state.newStageId = null
         },
         //start trello
 
@@ -127,6 +129,9 @@ export const trelloSlice = createSlice({
         setIsCardsLoading: (state, action) => {
             state.isCardsLoading = action.payload.isCardsLoading;
         },
+        setNewStageId: (state, action) => {
+            state.newStageId = action.payload.newStageId;
+        },
         setFetchSingleCard: (state, action) => {
             if (action.payload === null) {
                 state.fetchSingleCard = null;
@@ -167,6 +172,7 @@ export const {
     setSelectedTaskMembers,
     setSelectedProject,
     setIsCardsLoading,
+    setNewStageId,
     setFetchSingleCard,
     setMakeBlur,
     setMakeCardModalBlur,

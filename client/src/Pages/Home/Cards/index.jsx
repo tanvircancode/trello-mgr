@@ -13,6 +13,7 @@ import {
     setPriorities,
     setSelectedTaskMembers,
     setStages,
+    setNewStageId
 } from "../../../store";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -20,6 +21,8 @@ import HashLoader from "react-spinners/HashLoader";
 import { BASE_URL } from "../../../config";
 
 const Card = ({ stage }) => {
+    var newId = stage.id;
+    // const [newStage, setNewStage] = useState(null);
     const [tasks, setTasks] = useState(stage.tasks || []);
     const stageId = stage.id;
     const isCardsLoading = useSelector((state) => state.isCardsLoading);
@@ -30,6 +33,7 @@ const Card = ({ stage }) => {
     const blur = useSelector((state) => state.makeBlur);
     const token = useSelector((state) => state.token);
     const userId = localStorage.getItem("user_id");
+    const newStageId = useSelector((state) => state.newStageId);
     const dispatch = useDispatch();
 
     //store single task's labels, priorities,checklists here
@@ -95,10 +99,26 @@ const Card = ({ stage }) => {
         setIsLoading(false);
     };
 
-    const handleDragEnd = async (result) => {
 
-        let start = result.source.index;
-        let end = result.destination.index;
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        ...draggableStyle,
+        opacity: isDragging ? 0.3 : 1,
+        // margin: "0 28px 0 0",
+        display: "inline-block",
+        maxWidth: "250px",
+    });
+
+
+
+    const handleDragEnd = async (result) => {
+        
+
+        console.log(result);
+       
+
+        let start = result.source?.index;
+        let end = result.destination?.index;
         let projectId = selectedProject.id;
         console.log(stage);
 
@@ -165,27 +185,33 @@ const Card = ({ stage }) => {
             });
     };
 
-    const getItemStyle = (isDragging, draggableStyle) => ({
-        ...draggableStyle,
-        opacity: isDragging ? 0.3 : 1,
-        margin: "0 28px 0 0",
-        display: "inline-block",
-        maxWidth: "250px",
-    });
+    const handleDragEnter = (result) => {
+        console.log(result);
+    }
+
+    const handleStageHover = (result) => {
+        // console.log(result);
+
+    }
 
     useEffect(() => {
+        // console.log("New Stage ID:", newStageId);
         setTasks(stage.tasks);
         dispatch(setMakeBlur({ makeBlur: false }));
-    }, [stage]);
+    }, [stage, newStageId]);
 
     return (
-        <DragDropContext onDragEnd={handleDragEnd}>
+        <DragDropContext
+            onDragEnd={handleDragEnd}
+        >
             <Droppable
                 droppableId="droppable"
                 direction="vertical"
+                onDragEnter={handleDragEnter}
             >
                 {(provided) => (
                     <div
+                        // onMouseOver={() => handleStageHover(stage.id)}
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                         className="card-list d-flex flex-wrap gap-2">
